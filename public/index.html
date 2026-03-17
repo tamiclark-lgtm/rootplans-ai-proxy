@@ -334,6 +334,102 @@
       color: var(--text);
     }
 
+    /* ── PDF print layout ───────────────────── */
+    #pdfDoc {
+      display: none;
+      font-family: Georgia, serif;
+      color: #1f2b22;
+      padding: 32px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .pdf-header {
+      border-bottom: 3px solid #274c38;
+      padding-bottom: 16px;
+      margin-bottom: 28px;
+    }
+
+    .pdf-header h1 {
+      margin: 0 0 4px;
+      font-size: 32px;
+      color: #274c38;
+      letter-spacing: -0.02em;
+    }
+
+    .pdf-header p {
+      margin: 0;
+      font-size: 14px;
+      color: #5e6d62;
+    }
+
+    .pdf-plant-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 32px;
+    }
+
+    .pdf-plant-card {
+      border: 1px solid #d8e4db;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #f7faf7;
+    }
+
+    .pdf-plant-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .pdf-plant-card .pdf-plant-img-placeholder {
+      width: 100%;
+      height: 140px;
+      background: linear-gradient(135deg, #d8e8d8, #c0d8c0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+    }
+
+    .pdf-plant-card .pdf-plant-name {
+      padding: 10px 12px;
+    }
+
+    .pdf-plant-card .pdf-plant-name strong {
+      display: block;
+      font-size: 14px;
+      color: #1f2b22;
+    }
+
+    .pdf-plant-card .pdf-plant-name em {
+      font-size: 12px;
+      color: #5e6d62;
+    }
+
+    .pdf-plan-text {
+      white-space: pre-wrap;
+      font-size: 13px;
+      line-height: 1.75;
+      color: #2c3a2e;
+      border-top: 2px solid #d8e4db;
+      padding-top: 24px;
+    }
+
+    @media print {
+      body > * { display: none !important; }
+      #pdfDoc {
+        display: block !important;
+        padding: 0;
+      }
+      .pdf-plant-grid {
+        grid-template-columns: repeat(3, 1fr);
+        page-break-inside: avoid;
+      }
+    }
+
     .footer {
       max-width: var(--max);
       margin: 20px auto 0;
@@ -484,6 +580,7 @@
           <div class="row">
             <button id="generateBtn" class="btn" type="button">Generate Plan</button>
             <button id="copyBtn" class="btnSecondary" type="button" style="display:none;">Copy</button>
+            <button id="pdfBtn" class="btnSecondary" type="button" style="display:none;">Download PDF</button>
           </div>
 
           <div class="tinyNote" id="aiStatus" style="margin-top:12px;"></div>
@@ -493,6 +590,16 @@
     </main>
 
     <div class="footer">© RootPlans</div>
+  </div>
+
+  <!-- Hidden PDF document -->
+  <div id="pdfDoc">
+    <div class="pdf-header">
+      <h1>🌱 RootPlans</h1>
+      <p id="pdfMeta"></p>
+    </div>
+    <div class="pdf-plant-grid" id="pdfPlantGrid"></div>
+    <div class="pdf-plan-text" id="pdfPlanText"></div>
   </div>
 
   <script>
@@ -538,6 +645,8 @@
     let detected = { zip: "", zone: "", location: "" };
     let selectedTheme = "";
     let selectedConditions = [];
+    let lastPlanText = "";
+    let lastPlants = [];
 
     async function fetchZoneByZip(zip) {
       if (ZONE_OVERRIDES[zip]) {
@@ -735,6 +844,11 @@ Return the answer in this exact structure:
 6. BEGINNER TIPS
 7. SAFETY NOTE
 
+After section 7, add exactly one line in this format (required, do not skip):
+PLANT_LIST: Common Name|Botanical Name; Common Name|Botanical Name; ...
+
+List every plant recommended in section 2. Use the full botanical (Latin) name.
+
 Make it polished, easy to read, and helpful for a real customer.
       `.trim();
     }
@@ -821,6 +935,9 @@ Make it polished, easy to read, and helpful for a real customer.
       $("aiOutput").style.display = "none";
       $("aiOutput").textContent = "";
       $("copyBtn").style.display = "none";
+      $("pdfBtn").style.display = "none";
+      lastPlanText = "";
+      lastPlants = [];
 
       renderSuggestions("");
       renderSelectedConditions();
@@ -883,11 +1000,25 @@ Make it polished, easy to read, and helpful for a real customer.
           prompt
         });
 
-        const text = data.text || data.output || JSON.stringify(data, null, 2);
+        let text = String(data.text || data.output || JSON.stringify(data, null, 2)).trim();
+
+        // Parse and strip PLANT_LIST from display text
+        const plantMatch = text.match(/PLANT_LIST:\s*(.+)/i);
+        lastPlants = [];
+        if (plantMatch) {
+          lastPlants = plantMatch[1].split(";").map(p => {
+            const [common, botanical] = p.split("|").map(s => s.trim());
+            return { common: common || "", botanical: botanical || common || "" };
+          }).filter(p => p.common);
+          text = text.replace(/\nPLANT_LIST:.+/i, "").trim();
+        }
+
+        lastPlanText = text;
         $("aiOutput").style.display = "block";
-        $("aiOutput").textContent = String(text).trim();
+        $("aiOutput").textContent = text;
         $("aiStatus").textContent = "Done.";
         $("copyBtn").style.display = "inline-block";
+        $("pdfBtn").style.display = "inline-block";
       } catch (e) {
         console.error(e);
         $("aiStatus").textContent = `AI failed: ${e.message || "Unknown error"}`;
@@ -912,6 +1043,62 @@ Make it polished, easy to read, and helpful for a real customer.
 
     renderSuggestions("");
     renderSelectedConditions();
+
+    async function fetchPlantImage(plant) {
+      const name = plant.botanical || plant.common;
+      try {
+        const res = await fetch(
+          `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name)}`,
+          { headers: { "Accept": "application/json" } }
+        );
+        if (!res.ok) throw new Error("no result");
+        const data = await res.json();
+        return data.thumbnail?.source || null;
+      } catch {
+        return null;
+      }
+    }
+
+    $("pdfBtn").addEventListener("click", async () => {
+      $("pdfBtn").disabled = true;
+      $("pdfBtn").textContent = "Building PDF...";
+
+      // Fetch images for all plants in parallel
+      const images = await Promise.all(lastPlants.map(fetchPlantImage));
+
+      // Build plant grid
+      const grid = $("pdfPlantGrid");
+      grid.innerHTML = "";
+      lastPlants.forEach((plant, i) => {
+        const card = document.createElement("div");
+        card.className = "pdf-plant-card";
+        const imgHtml = images[i]
+          ? `<img src="${images[i]}" alt="${escapeHtml(plant.common)}" />`
+          : `<div class="pdf-plant-img-placeholder">🌿</div>`;
+        card.innerHTML = `
+          ${imgHtml}
+          <div class="pdf-plant-name">
+            <strong>${escapeHtml(plant.common)}</strong>
+            <em>${escapeHtml(plant.botanical)}</em>
+          </div>`;
+        grid.appendChild(card);
+      });
+
+      // Set meta and plan text
+      const loc = detected.location ? ` · ${detected.location}` : "";
+      $("pdfMeta").textContent =
+        `Zone ${detected.zone}${loc} · ${selectedTheme} · Generated ${new Date().toLocaleDateString()}`;
+      $("pdfPlanText").textContent = lastPlanText;
+
+      // Show PDF div, print, hide
+      $("pdfDoc").style.display = "block";
+      await new Promise(r => setTimeout(r, 200)); // let images render
+      window.print();
+      $("pdfDoc").style.display = "none";
+
+      $("pdfBtn").disabled = false;
+      $("pdfBtn").textContent = "Download PDF";
+    });
   </script>
 </body>
 </html>
