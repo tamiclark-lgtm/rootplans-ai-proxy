@@ -446,9 +446,64 @@
       .section { padding: 18px; }
       .hero h1 { font-size: 34px; }
     }
+
+    /* ── Access gate ───────────────────────── */
+    #accessGate {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(31,59,43,0.97), rgba(54,92,69,0.95));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .gateBox {
+      background: #fff;
+      border-radius: 24px;
+      padding: 48px 40px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.25);
+    }
+
+    .gateBox h2 {
+      margin: 16px 0 8px;
+      font-size: 26px;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .gateBox p {
+      margin: 0 0 28px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .gateError {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #c0392b;
+      font-weight: 700;
+      min-height: 20px;
+    }
   </style>
 </head>
 <body>
+
+  <!-- Access gate -->
+  <div id="accessGate">
+    <div class="gateBox">
+      <div style="font-size:48px;">🌱</div>
+      <h2>RootPlans</h2>
+      <p>Enter your access code to continue.</p>
+      <input id="accessInput" class="input" type="password" placeholder="Access code" maxlength="20" style="text-align:center;letter-spacing:0.2em;" />
+      <button id="accessBtn" class="btn" type="button" style="width:100%;margin-top:12px;">Enter</button>
+      <div class="gateError" id="gateError"></div>
+    </div>
+  </div>
+
   <div class="shell">
     <section class="hero">
       <div class="eyebrow">RootPlans • Intelligent Garden Planning</div>
@@ -604,6 +659,47 @@
 
   <script>
     const AI_PROXY_URL = "/api/holistic";
+    const AUTH_URL = "/api/auth";
+
+    // Check session
+    if (sessionStorage.getItem("rp_auth") === "1") {
+      $("accessGate").style.display = "none";
+    }
+
+    async function submitAccessCode() {
+      const code = $("accessInput").value.trim();
+      if (!code) return;
+      $("accessBtn").disabled = true;
+      $("accessBtn").textContent = "Checking...";
+      $("gateError").textContent = "";
+
+      try {
+        const res = await fetch(AUTH_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          sessionStorage.setItem("rp_auth", "1");
+          $("accessGate").style.display = "none";
+        } else {
+          $("gateError").textContent = "Incorrect code. Try again.";
+          $("accessInput").value = "";
+          $("accessInput").focus();
+        }
+      } catch {
+        $("gateError").textContent = "Connection error. Please try again.";
+      } finally {
+        $("accessBtn").disabled = false;
+        $("accessBtn").textContent = "Enter";
+      }
+    }
+
+    $("accessBtn").addEventListener("click", submitAccessCode);
+    $("accessInput").addEventListener("keydown", e => {
+      if (e.key === "Enter") submitAccessCode();
+    });
 
     function $(id) {
       return document.getElementById(id);
