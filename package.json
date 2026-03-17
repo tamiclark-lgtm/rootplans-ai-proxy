@@ -1,0 +1,8 @@
+{
+  "name": "rootplans-ai-proxy",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.79.0"
+  }
+}

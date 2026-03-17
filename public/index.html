@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>RootPlans | Intelligent Garden Planning</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --bg: #f4f6f2;
+      --surface: rgba(255, 255, 255, 0.9);
+      --surface-strong: #ffffff;
+      --border: rgba(36, 62, 42, 0.1);
+      --border-strong: rgba(36, 62, 42, 0.16);
+      --text: #1f2b22;
+      --muted: #5e6d62;
+      --primary: #274c38;
+      --primary-2: #3e6a50;
+      --primary-soft: #edf4ef;
+      --shadow: 0 18px 48px rgba(22, 34, 26, 0.08);
+      --radius: 20px;
+      --max: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(100, 140, 108, 0.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(63, 113, 85, 0.08), transparent 24%),
+        linear-gradient(180deg, #f7f9f6 0%, var(--bg) 100%);
+      color: var(--text);
+    }
+
+    .shell {
+      min-height: 100vh;
+      padding: 32px 20px 60px;
+    }
+
+    .hero {
+      max-width: var(--max);
+      margin: 0 auto 28px;
+      padding: 38px 40px;
+      border-radius: 28px;
+      background: linear-gradient(135deg, rgba(31,59,43,0.96), rgba(54,92,69,0.92));
+      color: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.88);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .hero h1 {
+      margin: 18px 0 12px;
+      font-size: clamp(34px, 5vw, 56px);
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+      font-weight: 800;
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.65;
+      color: rgba(255,255,255,0.9);
+      max-width: 700px;
+    }
+
+    .app {
+      max-width: var(--max);
+      margin: 0 auto;
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.5);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .appHeader {
+      padding: 26px 32px 18px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.55);
+    }
+
+    .appHeader h2 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      letter-spacing: -0.02em;
+    }
+
+    .appHeader p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 760px;
+    }
+
+    .content {
+      padding: 12px 32px 32px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .section {
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: rgba(255,255,255,0.78);
+    }
+
+    .sectionHeader {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+
+    .step {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 700;
+      border: 1px solid rgba(39, 76, 56, 0.12);
+      flex: 0 0 auto;
+    }
+
+    .sectionHeaderText h3 {
+      margin: 0 0 4px;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+    }
+
+    .sectionHeaderText p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .input {
+      flex: 1;
+      min-width: 220px;
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--border-strong);
+      font-size: 16px;
+      color: var(--text);
+      outline: none;
+      background: rgba(255,255,255,0.92);
+    }
+
+    .input:focus {
+      border-color: rgba(39, 76, 56, 0.38);
+      box-shadow: 0 0 0 5px rgba(39, 76, 56, 0.08);
+    }
+
+    .btn, .btnSecondary {
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(39, 76, 56, 0.18);
+    }
+
+    .btn:disabled {
+      opacity: 0.66;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btnSecondary {
+      background: rgba(255,255,255,0.9);
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+
+    .statusLine {
+      margin-top: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .resultCard {
+      margin-top: 16px;
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(248,251,248,0.94));
+    }
+
+    .resultTitle {
+      margin: 0 0 8px;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .resultLine {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .tinyNote {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .pillRow {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      border: 1px solid var(--border-strong);
+      background: rgba(255,255,255,0.92);
+      padding: 12px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .pill[aria-pressed="true"] {
+      background: var(--primary-soft);
+      border-color: rgba(39, 76, 56, 0.28);
+      color: var(--primary);
+    }
+
+    .chip {
+      border: 1px solid var(--border-strong);
+      background: #fff;
+      padding: 10px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 18px 0;
+      border: 0;
+    }
+
+    .checkboxStack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .checkboxCard {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.9);
+    }
+
+    .checkboxCard input[type="checkbox"] {
+      margin-top: 3px;
+      transform: scale(1.15);
+      accent-color: var(--primary);
+    }
+
+    .checkboxLabel {
+      margin: 0;
+      font-weight: 800;
+    }
+
+    .checkboxHelp {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .summaryList {
+      margin: 12px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    pre {
+      margin-top: 14px;
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: #fff;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 620px;
+      overflow: auto;
+      line-height: 1.62;
+      font-size: 15px;
+      color: var(--text);
+    }
+
+    .footer {
+      max-width: var(--max);
+      margin: 20px auto 0;
+      padding: 0 8px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 720px) {
+      .shell { padding: 16px 14px 36px; }
+      .hero { padding: 28px 22px; border-radius: 22px; }
+      .appHeader, .content { padding-left: 18px; padding-right: 18px; }
+      .section { padding: 18px; }
+      .hero h1 { font-size: 34px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="eyebrow">RootPlans • Intelligent Garden Planning</div>
+      <h1>Design a garden that fits your zone, goals, and style.</h1>
+      <p>
+        Generate a polished planting plan based on your ZIP code, garden theme,
+        native-plant preference, and optional holistic plant guidance.
+      </p>
+    </section>
+
+    <main class="app">
+      <div class="appHeader">
+        <h2>Build your plan</h2>
+        <p>
+          Start with your ZIP, choose the kind of garden you want, set your preferences,
+          and generate a custom plan powered by your secure AI proxy.
+        </p>
+      </div>
+
+      <div class="content">
+        <section class="section">
+          <div class="sectionHeader">
+            <div class="step">1</div>
+            <div class="sectionHeaderText">
+              <h3>Find your USDA zone</h3>
+              <p>We’ll use your ZIP code to detect the growing zone and tailor the plan.</p>
+            </div>
+          </div>
+
+          <div class="row">
+            <input id="zipInput" class="input" inputmode="numeric" maxlength="5" placeholder="Enter 5-digit ZIP code" />
+            <button id="detectBtn" class="btn" type="button">Detect Zone</button>
+            <button id="resetBtn" class="btnSecondary" type="button">Reset</button>
+          </div>
+
+          <div id="zoneCard" class="resultCard" style="display:none;">
+            <p class="resultTitle" id="zoneTitle">Detected USDA Zone</p>
+            <p class="resultLine" id="zoneDetails"></p>
+            <p class="tinyNote" id="zoneNote"></p>
+          </div>
+
+          <div class="statusLine" id="statusText">Status: Enter a ZIP and click Detect Zone.</div>
+        </section>
+
+        <section class="section">
+          <div class="sectionHeader">
+            <div class="step">2</div>
+            <div class="sectionHeaderText">
+              <h3>Select your garden direction</h3>
+              <p>Choose the plan type you want the AI to build around.</p>
+            </div>
+          </div>
+
+          <div class="pillRow" id="themeRow">
+            <button class="pill" type="button" data-theme="Functional Food" aria-pressed="false">Functional Food</button>
+            <button class="pill" type="button" data-theme="Pollinator Paradise" aria-pressed="false">Pollinator Paradise</button>
+            <button class="pill" type="button" data-theme="Low-Maintenance Beauty" aria-pressed="false">Low-Maintenance Beauty</button>
+          </div>
+
+          <div id="themeCard" class="resultCard" style="display:none;">
+            <p class="resultTitle">Selected theme</p>
+            <p class="resultLine" id="themeText"></p>
+          </div>
+
+          <div id="conditionsCard" class="resultCard" style="display:none;">
+            <p class="resultTitle">Functional Food focus</p>
+            <p class="resultLine">Type a condition and pick a suggestion, or add your own.</p>
+
+            <div class="row" style="margin-top:14px;">
+              <input id="conditionInput" class="input" placeholder="Examples: inflammation, cholesterol, sleep support" />
+              <button id="addConditionBtn" class="btnSecondary" type="button">Add</button>
+            </div>
+
+            <div class="pillRow" id="suggestionsRow" style="margin-top:14px;"></div>
+
+            <hr class="divider" />
+
+            <div class="tinyNote" style="margin-top:0;">Selected items (click one to remove):</div>
+            <div class="pillRow" id="selectedConditionsRow" style="margin-top:10px;"></div>
+
+            <div class="tinyNote">
+              Safety note: this can include food plants and traditional uses, but it is not medical advice.
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="sectionHeader">
+            <div class="step">3</div>
+            <div class="sectionHeaderText">
+              <h3>Set your plan preferences</h3>
+              <p>These options change the prompt sent to your AI proxy.</p>
+            </div>
+          </div>
+
+          <div class="checkboxStack">
+            <label class="checkboxCard">
+              <input type="checkbox" id="nativeOnlyCheckbox" />
+              <div>
+                <p class="checkboxLabel">Only native plants for my zone</p>
+                <p class="checkboxHelp">Restricts the plan to native plants suitable for the user’s USDA zone whenever possible.</p>
+              </div>
+            </label>
+
+            <label class="checkboxCard">
+              <input type="checkbox" id="holisticHealingCheckbox" />
+              <div>
+                <p class="checkboxLabel">Include holistic healing powers</p>
+                <p class="checkboxHelp">Adds traditional uses and “power” notes for each plant using cautious, non-medical language.</p>
+              </div>
+            </label>
+          </div>
+
+          <div id="preferenceCard" class="resultCard" style="display:none;">
+            <p class="resultTitle">Current plan settings</p>
+            <ul class="summaryList" id="preferenceSummary"></ul>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="sectionHeader">
+            <div class="step">4</div>
+            <div class="sectionHeaderText">
+              <h3>Generate your plan</h3>
+              <p>This sends the prompt to your secure Vercel proxy, not directly from the browser.</p>
+            </div>
+          </div>
+
+          <div class="row">
+            <button id="generateBtn" class="btn" type="button">Generate Plan</button>
+            <button id="copyBtn" class="btnSecondary" type="button" style="display:none;">Copy</button>
+          </div>
+
+          <div class="tinyNote" id="aiStatus" style="margin-top:12px;"></div>
+          <pre id="aiOutput" style="display:none;"></pre>
+        </section>
+      </div>
+    </main>
+
+    <div class="footer">© RootPlans</div>
+  </div>
+
+  <script>
+    const AI_PROXY_URL = "/api/holistic";
+
+    function $(id) {
+      return document.getElementById(id);
+    }
+
+    function cleanZip(zip) {
+      return String(zip || "").trim().replace(/\D/g, "").slice(0, 5);
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    const ZONE_OVERRIDES = {
+      "17543": { zone: "7a", city: "Lititz", state: "PA", note: "Override applied for 17543." }
+    };
+
+    const CONDITION_SUGGESTIONS = [
+      "inflammation",
+      "high blood pressure",
+      "cholesterol",
+      "blood sugar support",
+      "digestion / gut health",
+      "sleep support",
+      "anxiety / stress",
+      "immune support",
+      "joint support",
+      "heart health",
+      "skin health",
+      "menopause support",
+      "headaches / migraines"
+    ];
+
+    let detected = { zip: "", zone: "", location: "" };
+    let selectedTheme = "";
+    let selectedConditions = [];
+
+    async function fetchZoneByZip(zip) {
+      if (ZONE_OVERRIDES[zip]) {
+        return { ...ZONE_OVERRIDES[zip], source: "override" };
+      }
+
+      const url = `https://phzmapi.org/${zip}.json`;
+      const res = await fetch(url, { cache: "no-store" });
+
+      if (!res.ok) {
+        throw new Error("Zone service unavailable");
+      }
+
+      const data = await res.json();
+      const zone = (data.zone || data.hardiness_zone || data.zone_id || "").toString().trim();
+
+      if (!zone) {
+        throw new Error("Zone not found");
+      }
+
+      return {
+        zone,
+        city: (data.city || data.place || "").toString().trim(),
+        state: (data.state || data.state_abbr || "").toString().trim(),
+        note: "Zone detected from zone-by-zip dataset.",
+        source: "phzmapi"
+      };
+    }
+
+    function renderZoneOk(result, zip) {
+      const loc = [result.city, result.state].filter(Boolean).join(", ");
+      $("zoneCard").style.display = "block";
+      $("zoneTitle").textContent = `Detected USDA Zone ${result.zone}`;
+      $("zoneDetails").textContent = loc ? `${loc} • ZIP ${zip}` : `ZIP ${zip}`;
+      $("zoneNote").textContent = result.note || "";
+      $("statusText").textContent = `Status: Zone found (${result.zone}). Pick a theme.`;
+    }
+
+    function renderZoneError(message) {
+      $("zoneCard").style.display = "block";
+      $("zoneTitle").textContent = "Unable to detect USDA zone";
+      $("zoneDetails").textContent = message;
+      $("zoneNote").textContent = "Double-check your ZIP and try again.";
+      $("statusText").textContent = "Status: Zone detection failed.";
+    }
+
+    function setTheme(theme) {
+      selectedTheme = theme;
+
+      document.querySelectorAll("#themeRow .pill").forEach(btn => {
+        btn.setAttribute("aria-pressed", btn.dataset.theme === theme ? "true" : "false");
+      });
+
+      $("themeCard").style.display = "block";
+      $("themeText").textContent = theme;
+
+      const showConditions = theme === "Functional Food";
+      $("conditionsCard").style.display = showConditions ? "block" : "none";
+
+      if (!showConditions) {
+        selectedConditions = [];
+        renderSelectedConditions();
+      }
+
+      updatePreferenceSummary();
+    }
+
+    function renderSuggestions(filterText) {
+      const row = $("suggestionsRow");
+      row.innerHTML = "";
+
+      const q = (filterText || "").toLowerCase().trim();
+      const matches = CONDITION_SUGGESTIONS
+        .filter(x => x.toLowerCase().includes(q))
+        .slice(0, 10);
+
+      matches.forEach(item => {
+        const btn = document.createElement("button");
+        btn.className = "pill";
+        btn.type = "button";
+        btn.textContent = item;
+        btn.addEventListener("click", () => addCondition(item));
+        row.appendChild(btn);
+      });
+    }
+
+    function renderSelectedConditions() {
+      const row = $("selectedConditionsRow");
+      row.innerHTML = "";
+
+      if (selectedConditions.length === 0) {
+        const span = document.createElement("span");
+        span.className = "tinyNote";
+        span.style.marginTop = "0";
+        span.textContent = "None selected (optional).";
+        row.appendChild(span);
+        return;
+      }
+
+      selectedConditions.forEach(c => {
+        const chip = document.createElement("button");
+        chip.className = "chip";
+        chip.type = "button";
+        chip.textContent = `✕ ${c}`;
+        chip.addEventListener("click", () => {
+          selectedConditions = selectedConditions.filter(x => x !== c);
+          renderSelectedConditions();
+          updatePreferenceSummary();
+        });
+        row.appendChild(chip);
+      });
+    }
+
+    function addCondition(text) {
+      const c = (text || "").trim();
+      if (!c) return;
+
+      if (!selectedConditions.includes(c)) {
+        selectedConditions.push(c);
+      }
+
+      $("conditionInput").value = "";
+      renderSuggestions("");
+      renderSelectedConditions();
+      updatePreferenceSummary();
+    }
+
+    function getPreferenceState() {
+      return {
+        nativeOnly: $("nativeOnlyCheckbox").checked,
+        holisticHealing: $("holisticHealingCheckbox").checked
+      };
+    }
+
+    function updatePreferenceSummary() {
+      const summary = $("preferenceSummary");
+      const { nativeOnly, holisticHealing } = getPreferenceState();
+      const items = [];
+
+      if (selectedTheme) items.push(`Theme: ${selectedTheme}`);
+      items.push(nativeOnly ? "Only native plants for this zone" : "Native plants preferred when practical, but not required");
+      items.push(holisticHealing ? "Include holistic healing powers / traditional uses" : "Focus on planting plan without healing-power details");
+
+      if (selectedTheme === "Functional Food") {
+        items.push(selectedConditions.length ? `Functional focus: ${selectedConditions.join(", ")}` : "Functional focus: general wellness");
+      }
+
+      summary.innerHTML = items.map(item => `<li>${escapeHtml(item)}</li>`).join("");
+      $("preferenceCard").style.display = "block";
+    }
+
+    function buildUserPrompt() {
+      const zip = detected.zip || cleanZip($("zipInput").value);
+      const zone = detected.zone || "";
+      const locationLine = detected.location ? `Location: ${detected.location}.` : "Location not specified.";
+      const { nativeOnly, holisticHealing } = getPreferenceState();
+
+      const conditionText =
+        selectedTheme === "Functional Food"
+          ? (selectedConditions.length ? selectedConditions.join(", ") : "general wellness")
+          : "";
+
+      return `
+You are RootPlans, an expert garden designer specializing in small home gardens, edible landscapes, pollinator support, and holistic plant planning.
+
+Create a practical, beautiful, beginner-friendly garden plan for:
+- ZIP: ${zip}
+- USDA Zone: ${zone}
+- ${locationLine}
+- Theme: ${selectedTheme}
+- Native plants only: ${nativeOnly ? "Yes" : "No"}
+- Include holistic healing powers: ${holisticHealing ? "Yes" : "No"}
+${selectedTheme === "Functional Food" ? `- Functional focus: ${conditionText}` : ""}
+
+Follow these rules carefully:
+1. Make the plan realistic for a homeowner with a small yard, raised beds, or containers.
+2. If native plants only = Yes, use only native plants appropriate for the zone when possible.
+3. If native plants only = No, prefer native plants first, then include well-adapted plants if needed.
+4. If holistic healing powers = Yes, include a short cautious note for each plant using language like:
+   - "traditionally used for..."
+   - "commonly valued for..."
+   - "often associated with..."
+   Do NOT make medical claims and do NOT present medical advice.
+5. Keep the recommendations beginner-friendly and practical.
+6. Do not suggest invasive plants.
+7. Include only plants that are realistic for the stated zone.
+
+Return the answer in this exact structure:
+
+1. GARDEN CONCEPT
+2. RECOMMENDED PLANTS
+3. SIMPLE LAYOUT
+4. SEASONAL CARE PLAN
+5. HARVEST / USE IDEAS
+6. BEGINNER TIPS
+7. SAFETY NOTE
+
+Make it polished, easy to read, and helpful for a real customer.
+      `.trim();
+    }
+
+    async function callAIProxy(payload) {
+      const resp = await fetch(AI_PROXY_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const raw = await resp.text();
+
+      if (!resp.ok) {
+        throw new Error(raw || `Request failed with status ${resp.status}`);
+      }
+
+      try {
+        return JSON.parse(raw);
+      } catch {
+        throw new Error("Proxy returned invalid JSON");
+      }
+    }
+
+    $("detectBtn").addEventListener("click", async () => {
+      const zip = cleanZip($("zipInput").value);
+      $("zipInput").value = zip;
+
+      if (zip.length !== 5) {
+        renderZoneError("Please enter a valid 5-digit ZIP code.");
+        return;
+      }
+
+      $("detectBtn").disabled = true;
+      $("detectBtn").textContent = "Detecting...";
+
+      try {
+        const result = await fetchZoneByZip(zip);
+
+        if (!/^\d{1,2}[ab]?$/.test(result.zone)) {
+          throw new Error("Invalid zone format");
+        }
+
+        detected.zip = zip;
+        detected.zone = result.zone;
+        detected.location = [result.city, result.state].filter(Boolean).join(", ");
+
+        renderZoneOk(result, zip);
+      } catch (e) {
+        renderZoneError("Zone lookup failed. Please try again.");
+      } finally {
+        $("detectBtn").disabled = false;
+        $("detectBtn").textContent = "Detect Zone";
+      }
+    });
+
+    $("zipInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") $("detectBtn").click();
+    });
+
+    $("resetBtn").addEventListener("click", () => {
+      $("zipInput").value = "";
+      $("zoneCard").style.display = "none";
+      $("themeCard").style.display = "none";
+      $("conditionsCard").style.display = "none";
+      $("preferenceCard").style.display = "none";
+      $("statusText").textContent = "Status: Enter a ZIP and click Detect Zone.";
+
+      detected = { zip: "", zone: "", location: "" };
+      selectedTheme = "";
+      selectedConditions = [];
+
+      $("nativeOnlyCheckbox").checked = false;
+      $("holisticHealingCheckbox").checked = false;
+
+      document.querySelectorAll("#themeRow .pill").forEach(btn => btn.setAttribute("aria-pressed", "false"));
+
+      $("conditionInput").value = "";
+      $("suggestionsRow").innerHTML = "";
+      $("selectedConditionsRow").innerHTML = "";
+      $("preferenceSummary").innerHTML = "";
+
+      $("aiStatus").textContent = "";
+      $("aiOutput").style.display = "none";
+      $("aiOutput").textContent = "";
+      $("copyBtn").style.display = "none";
+
+      renderSuggestions("");
+      renderSelectedConditions();
+    });
+
+    document.querySelectorAll("#themeRow .pill").forEach(btn => {
+      btn.addEventListener("click", () => setTheme(btn.dataset.theme));
+    });
+
+    $("conditionInput").addEventListener("input", (e) => renderSuggestions(e.target.value));
+
+    $("conditionInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addCondition($("conditionInput").value);
+      }
+    });
+
+    $("addConditionBtn").addEventListener("click", () => addCondition($("conditionInput").value));
+    $("nativeOnlyCheckbox").addEventListener("change", updatePreferenceSummary);
+    $("holisticHealingCheckbox").addEventListener("change", updatePreferenceSummary);
+
+    $("generateBtn").addEventListener("click", async () => {
+      $("aiOutput").style.display = "none";
+      $("aiOutput").textContent = "";
+      $("copyBtn").style.display = "none";
+
+      const zip = cleanZip($("zipInput").value);
+      if (zip.length !== 5) {
+        $("aiStatus").textContent = "Enter a valid ZIP first, then Detect Zone.";
+        return;
+      }
+
+      if (!detected.zone) {
+        $("aiStatus").textContent = "Click Detect Zone first.";
+        return;
+      }
+
+      if (!selectedTheme) {
+        $("aiStatus").textContent = "Pick a theme first.";
+        return;
+      }
+
+      const { nativeOnly, holisticHealing } = getPreferenceState();
+      const prompt = buildUserPrompt();
+
+      $("aiStatus").textContent = "Generating...";
+      $("generateBtn").disabled = true;
+      $("generateBtn").textContent = "Working...";
+
+      try {
+        const data = await callAIProxy({
+          zip: detected.zip,
+          zone: detected.zone,
+          location: detected.location,
+          theme: selectedTheme,
+          nativeOnly,
+          holisticHealing,
+          conditions: selectedTheme === "Functional Food" ? selectedConditions : [],
+          prompt
+        });
+
+        const text = data.text || data.output || JSON.stringify(data, null, 2);
+        $("aiOutput").style.display = "block";
+        $("aiOutput").textContent = String(text).trim();
+        $("aiStatus").textContent = "Done.";
+        $("copyBtn").style.display = "inline-block";
+      } catch (e) {
+        console.error(e);
+        $("aiStatus").textContent = `AI failed: ${e.message || "Unknown error"}`;
+      } finally {
+        $("generateBtn").disabled = false;
+        $("generateBtn").textContent = "Generate Plan";
+      }
+    });
+
+    $("copyBtn").addEventListener("click", async () => {
+      const text = $("aiOutput").textContent || "";
+      try {
+        await navigator.clipboard.writeText(text);
+        $("aiStatus").textContent = "Copied.";
+        setTimeout(() => {
+          $("aiStatus").textContent = "Done.";
+        }, 900);
+      } catch {
+        $("aiStatus").textContent = "Copy failed. You can manually select and copy.";
+      }
+    });
+
+    renderSuggestions("");
+    renderSelectedConditions();
+  </script>
+</body>
+</html>
