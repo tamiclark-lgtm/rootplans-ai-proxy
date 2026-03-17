@@ -319,19 +319,44 @@
       line-height: 1.65;
     }
 
-    pre {
+    .planOutput {
       margin-top: 14px;
-      padding: 18px;
+      padding: 24px 28px;
       border-radius: 18px;
       border: 1px solid var(--border);
       background: #fff;
-      white-space: pre-wrap;
-      word-break: break-word;
-      max-height: 620px;
+      max-height: 680px;
       overflow: auto;
-      line-height: 1.62;
+      line-height: 1.75;
       font-size: 15px;
       color: var(--text);
+    }
+
+    .planOutput h1, .planOutput h2, .planOutput h3 {
+      margin: 22px 0 8px;
+      color: var(--primary);
+      letter-spacing: -0.01em;
+    }
+
+    .planOutput h1 { font-size: 20px; }
+    .planOutput h2 { font-size: 18px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+    .planOutput h3 { font-size: 16px; }
+
+    .planOutput p { margin: 0 0 10px; }
+
+    .planOutput ul, .planOutput ol {
+      margin: 0 0 12px;
+      padding-left: 22px;
+    }
+
+    .planOutput li { margin-bottom: 6px; }
+
+    .planOutput strong { color: var(--primary); }
+
+    .planOutput hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 18px 0;
     }
 
     /* ── PDF print layout ───────────────────── */
@@ -410,13 +435,24 @@
     }
 
     .pdf-plan-text {
-      white-space: pre-wrap;
       font-size: 13px;
       line-height: 1.75;
       color: #2c3a2e;
       border-top: 2px solid #d8e4db;
       padding-top: 24px;
     }
+
+    .pdf-plan-text h1, .pdf-plan-text h2, .pdf-plan-text h3 {
+      color: #274c38;
+      margin: 18px 0 6px;
+    }
+
+    .pdf-plan-text h2 { font-size: 15px; border-bottom: 1px solid #d8e4db; padding-bottom: 4px; }
+    .pdf-plan-text h3 { font-size: 14px; }
+    .pdf-plan-text p { margin: 0 0 8px; }
+    .pdf-plan-text ul, .pdf-plan-text ol { padding-left: 20px; margin: 0 0 10px; }
+    .pdf-plan-text li { margin-bottom: 4px; }
+    .pdf-plan-text strong { color: #274c38; }
 
     @media print {
       body > * { display: none !important; }
@@ -639,7 +675,7 @@
           </div>
 
           <div class="tinyNote" id="aiStatus" style="margin-top:12px;"></div>
-          <pre id="aiOutput" style="display:none;"></pre>
+          <div id="aiOutput" class="planOutput" style="display:none;"></div>
         </section>
       </div>
     </main>
@@ -657,6 +693,7 @@
     <div class="pdf-plan-text" id="pdfPlanText"></div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
   <script>
     const AI_PROXY_URL = "/api/holistic";
     const AUTH_URL = "/api/auth";
@@ -1029,7 +1066,7 @@ Make it polished, easy to read, and helpful for a real customer.
 
       $("aiStatus").textContent = "";
       $("aiOutput").style.display = "none";
-      $("aiOutput").textContent = "";
+      $("aiOutput").innerHTML = "";
       $("copyBtn").style.display = "none";
       $("pdfBtn").style.display = "none";
       lastPlanText = "";
@@ -1058,7 +1095,7 @@ Make it polished, easy to read, and helpful for a real customer.
 
     $("generateBtn").addEventListener("click", async () => {
       $("aiOutput").style.display = "none";
-      $("aiOutput").textContent = "";
+      $("aiOutput").innerHTML = "";
       $("copyBtn").style.display = "none";
 
       const zip = cleanZip($("zipInput").value);
@@ -1111,7 +1148,7 @@ Make it polished, easy to read, and helpful for a real customer.
 
         lastPlanText = text;
         $("aiOutput").style.display = "block";
-        $("aiOutput").textContent = text;
+        $("aiOutput").innerHTML = marked.parse(text);
         $("aiStatus").textContent = "Done.";
         $("copyBtn").style.display = "inline-block";
         $("pdfBtn").style.display = "inline-block";
@@ -1125,7 +1162,7 @@ Make it polished, easy to read, and helpful for a real customer.
     });
 
     $("copyBtn").addEventListener("click", async () => {
-      const text = $("aiOutput").textContent || "";
+      const text = lastPlanText || "";
       try {
         await navigator.clipboard.writeText(text);
         $("aiStatus").textContent = "Copied.";
@@ -1184,7 +1221,7 @@ Make it polished, easy to read, and helpful for a real customer.
       const loc = detected.location ? ` · ${detected.location}` : "";
       $("pdfMeta").textContent =
         `Zone ${detected.zone}${loc} · ${selectedTheme} · Generated ${new Date().toLocaleDateString()}`;
-      $("pdfPlanText").textContent = lastPlanText;
+      $("pdfPlanText").innerHTML = marked.parse(lastPlanText);
 
       // Show PDF div, print, hide
       $("pdfDoc").style.display = "block";
