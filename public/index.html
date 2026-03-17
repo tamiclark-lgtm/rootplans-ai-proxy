@@ -325,8 +325,6 @@
       border-radius: 18px;
       border: 1px solid var(--border);
       background: #fff;
-      max-height: 680px;
-      overflow: auto;
       line-height: 1.75;
       font-size: 15px;
       color: var(--text);
@@ -476,11 +474,30 @@
     }
 
     @media (max-width: 720px) {
-      .shell { padding: 16px 14px 36px; }
-      .hero { padding: 28px 22px; border-radius: 22px; }
-      .appHeader, .content { padding-left: 18px; padding-right: 18px; }
-      .section { padding: 18px; }
-      .hero h1 { font-size: 34px; }
+      .shell { padding: 12px 10px 40px; }
+      .hero { padding: 24px 18px; border-radius: 18px; }
+      .hero h1 { font-size: 28px; }
+      .hero p { font-size: 15px; }
+      .appHeader { padding: 18px 16px 14px; }
+      .appHeader h2 { font-size: 21px; }
+      .content { padding: 10px 12px 24px; gap: 14px; }
+      .section { padding: 16px 14px; border-radius: 16px; }
+      .sectionHeaderText h3 { font-size: 18px; }
+      .row { flex-direction: column; align-items: stretch; }
+      .row .btn, .row .btnSecondary { width: 100%; text-align: center; }
+      .input { min-width: unset; }
+      .pillRow { gap: 8px; }
+      .pill { font-size: 14px; padding: 10px 13px; }
+      .planOutput {
+        max-height: none;
+        font-size: 14px;
+        padding: 16px;
+        border-radius: 14px;
+      }
+      .planOutput h2 { font-size: 16px; }
+      .planOutput h3 { font-size: 15px; }
+      .checkboxCard { padding: 12px; }
+      .resultCard { padding: 14px; }
     }
 
     /* ── Access gate ───────────────────────── */
