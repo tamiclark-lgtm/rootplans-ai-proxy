@@ -1188,6 +1188,7 @@
         chip.textContent = `✕ ${c}`;
         chip.addEventListener("click", () => {
           selectedConditions = selectedConditions.filter(x => x !== c);
+          renderSuggestions($("conditionInput").value);
           renderSelectedConditions();
           updatePreferenceSummary();
         });
