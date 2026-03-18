@@ -524,15 +524,42 @@
     .pdf-plan-text strong { color: #274c38; }
 
     @media print {
+      * {
+        background: white !important;
+        color: black !important;
+        border-color: #ccc !important;
+        box-shadow: none !important;
+      }
       body > * { display: none !important; }
       #pdfDoc {
         display: block !important;
         padding: 0;
+        font-family: Georgia, serif;
+        font-size: 12px;
+        color: black;
       }
-      .pdf-plant-grid {
-        grid-template-columns: repeat(3, 1fr);
-        page-break-inside: avoid;
+      .pdf-header {
+        border-bottom: 1px solid #ccc !important;
+        padding-bottom: 8px;
+        margin-bottom: 16px;
       }
+      .pdf-header h1 { font-size: 20px; }
+      .pdf-header p { font-size: 11px; }
+      /* Hide plant photo grid — saves most ink */
+      .pdf-plant-grid { display: none !important; }
+      .pdf-plan-text {
+        border-top: none !important;
+        padding-top: 0;
+        font-size: 11px;
+        line-height: 1.6;
+      }
+      .pdf-plan-text h2 {
+        font-size: 13px;
+        border-bottom: 1px solid #ccc !important;
+        padding-bottom: 2px;
+      }
+      .pdf-plan-text h3 { font-size: 12px; }
+      .pdf-plan-text strong { font-weight: bold; }
     }
 
     .footer {
