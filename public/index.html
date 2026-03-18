@@ -1106,12 +1106,15 @@
       const c = (text || "").trim();
       if (!c) return;
 
-      if (!selectedConditions.includes(c)) {
+      if (selectedConditions.includes(c)) {
+        // Toggle off — remove it
+        selectedConditions = selectedConditions.filter(x => x !== c);
+      } else {
         selectedConditions.push(c);
       }
 
       $("conditionInput").value = "";
-      renderSuggestions("");
+      renderSuggestions($("conditionInput").value);
       renderSelectedConditions();
       updatePreferenceSummary();
     }
