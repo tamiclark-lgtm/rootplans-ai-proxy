@@ -834,7 +834,7 @@
 
           <div class="row">
             <input id="zipInput" class="input" inputmode="numeric" maxlength="5" placeholder="Enter 5-digit ZIP code" />
-            <button id="detectBtn" class="btn" type="button">Detect Zone</button>
+            <button id="detectBtn" class="btn" type="button">Enter</button>
             <button id="resetBtn" class="btnSecondary" type="button">Reset</button>
           </div>
 
@@ -852,7 +852,7 @@
             <div id="zoneInfoPanel" class="zoneInfoPanel" style="display:none;"></div>
           </div>
 
-          <div class="statusLine" id="statusText">Status: Enter a ZIP and click Detect Zone.</div>
+          <div class="statusLine" id="statusText"></div>
         </section>
 
         <section class="section">
@@ -1113,7 +1113,10 @@
       $("zoneTitle").textContent = `Detected USDA Zone ${result.zone}`;
       $("zoneDetails").textContent = loc ? `${loc} • ZIP ${zip}` : `ZIP ${zip}`;
       $("zoneNote").textContent = result.note || "";
-      $("statusText").textContent = `Status: Zone found (${result.zone}). Pick a theme.`;
+      $("statusText").textContent = `✅ Zone ${result.zone} detected — scroll down to choose your garden.`;
+        setTimeout(() => {
+          document.querySelectorAll(".section")[1]?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 600);
     }
 
     function renderZoneError(message) {
@@ -1342,7 +1345,7 @@ Make it polished, easy to read, and helpful for a real customer.
         renderZoneError("Zone lookup failed. Please try again.");
       } finally {
         $("detectBtn").disabled = false;
-        $("detectBtn").textContent = "Detect Zone";
+        $("detectBtn").textContent = "Enter";
       }
     });
 
@@ -1358,7 +1361,7 @@ Make it polished, easy to read, and helpful for a real customer.
       $("themeCard").style.display = "none";
       $("conditionsCard").style.display = "none";
       $("preferenceCard").style.display = "none";
-      $("statusText").textContent = "Status: Enter a ZIP and click Detect Zone.";
+      $("statusText").textContent = "";
 
       detected = { zip: "", zone: "", location: "" };
       selectedTheme = "";
@@ -1421,12 +1424,12 @@ Make it polished, easy to read, and helpful for a real customer.
 
       const zip = cleanZip($("zipInput").value);
       if (zip.length !== 5) {
-        $("aiStatus").textContent = "Enter a valid ZIP first, then Detect Zone.";
+        $("aiStatus").textContent = "Please enter a valid ZIP code first.";
         return;
       }
 
       if (!detected.zone) {
-        $("aiStatus").textContent = "Click Detect Zone first.";
+        $("aiStatus").textContent = "Please enter your ZIP code in Step 1 first.";
         return;
       }
 
