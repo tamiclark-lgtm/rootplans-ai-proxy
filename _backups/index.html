@@ -1147,10 +1147,7 @@
       $("zoneTitle").textContent = `Detected USDA Zone ${result.zone}`;
       $("zoneDetails").textContent = loc ? `${loc} • ZIP ${zip}` : `ZIP ${zip}`;
       $("zoneNote").textContent = result.note || "";
-      $("statusText").textContent = `✅ Zone ${result.zone} detected — scroll down to choose your garden.`;
-        setTimeout(() => {
-          document.querySelectorAll(".section")[1]?.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 600);
+      $("statusText").textContent = `✅ Zone ${result.zone} detected — see your soil and planting details below.`;
     }
 
     function renderZoneError(message) {
