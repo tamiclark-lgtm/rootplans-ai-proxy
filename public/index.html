@@ -1445,33 +1445,70 @@ Make it polished, easy to read, and helpful for a real customer.
       $("generateBtn").textContent = "Working...";
 
       try {
-        const data = await callAIProxy({
-          zip: detected.zip,
-          zone: detected.zone,
-          location: detected.location,
-          theme: selectedTheme,
-          nativeOnly,
-          holisticHealing,
-          conditions: selectedTheme === "Functional Food" ? selectedConditions : [],
-          prompt
+        const resp = await fetch(AI_PROXY_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            zip: detected.zip,
+            zone: detected.zone,
+            location: detected.location,
+            theme: selectedTheme,
+            nativeOnly,
+            holisticHealing,
+            conditions: selectedTheme === "Functional Food" ? selectedConditions : [],
+            prompt
+          })
         });
 
-        let text = String(data.text || data.output || JSON.stringify(data, null, 2)).trim();
+        if (!resp.ok) {
+          throw new Error((await resp.text()) || `Request failed (${resp.status})`);
+        }
 
-        // Parse and strip PLANT_LIST from display text
-        const plantMatch = text.match(/PLANT_LIST:\s*(.+)/i);
+        const reader = resp.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        let fullText = "";
+
+        $("aiOutput").style.display = "block";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop();
+
+          for (const line of lines) {
+            if (!line.startsWith("data: ")) continue;
+            const payload = line.slice(6).trim();
+            if (payload === "[DONE]") continue;
+            try {
+              const parsed = JSON.parse(payload);
+              if (parsed.error) throw new Error(parsed.error);
+              if (parsed.text) {
+                fullText += parsed.text;
+                $("aiOutput").innerHTML = marked.parse(fullText);
+              }
+            } catch (parseErr) {
+              if (parseErr.message !== "Unexpected token") throw parseErr;
+            }
+          }
+        }
+
+        // Strip PLANT_LIST from display and store plants
+        const plantMatch = fullText.match(/PLANT_LIST:\s*(.+)/i);
         lastPlants = [];
         if (plantMatch) {
           lastPlants = plantMatch[1].split(";").map(p => {
             const [common, botanical] = p.split("|").map(s => s.trim());
             return { common: common || "", botanical: botanical || common || "" };
           }).filter(p => p.common);
-          text = text.replace(/\nPLANT_LIST:.+/i, "").trim();
+          fullText = fullText.replace(/\nPLANT_LIST:.+/i, "").trim();
+          $("aiOutput").innerHTML = marked.parse(fullText);
         }
 
-        lastPlanText = text;
-        $("aiOutput").style.display = "block";
-        $("aiOutput").innerHTML = marked.parse(text);
+        lastPlanText = fullText;
         $("aiStatus").textContent = "Done.";
         $("copyBtn").style.display = "inline-block";
         $("pdfBtn").style.display = "inline-block";

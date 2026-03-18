@@ -33,29 +33,34 @@ export default async function handler(req, res) {
 
   try {
     const body = req.body || {};
-
-    // Use the rich prompt built by the frontend if provided,
-    // otherwise fall back to a simple prompt from zone/nativeOnly
     const userMessage = body.prompt || buildFallbackPrompt(body);
 
-    const response = await client.messages.create({
+    // Stream the response using SSE so the connection stays alive
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("X-Accel-Buffering", "no");
+    res.flushHeaders();
+
+    const stream = client.messages.stream({
       model: "claude-opus-4-6",
       max_tokens: 6000,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: userMessage }]
     });
 
-    const text = response.content
-      .filter(b => b.type === "text")
-      .map(b => b.text)
-      .join("\n");
-
-    return res.status(200).json({ text });
-  } catch (e) {
-    if (e instanceof Anthropic.APIError) {
-      return res.status(e.status ?? 500).send(e.message);
+    for await (const chunk of stream) {
+      if (chunk.type === "content_block_delta" && chunk.delta.type === "text_delta") {
+        res.write(`data: ${JSON.stringify({ text: chunk.delta.text })}\n\n`);
+        if (res.flush) res.flush();
+      }
     }
-    return res.status(500).send("Proxy error");
+
+    res.write("data: [DONE]\n\n");
+    res.end();
+  } catch (e) {
+    const msg = e instanceof Anthropic.APIError ? e.message : "Proxy error";
+    res.write(`data: ${JSON.stringify({ error: msg })}\n\n`);
+    res.end();
   }
 }
 
