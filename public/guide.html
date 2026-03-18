@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>RootPlans — User Guide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f4f6f2;
+      color: #1f2b22;
+      padding: 32px 20px 60px;
+    }
+
+    .page {
+      max-width: 760px;
+      margin: 0 auto 40px;
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(22,34,26,0.10);
+    }
+
+    /* ── Header ── */
+    .doc-header {
+      background: linear-gradient(135deg, #1f3b2b, #365c45);
+      color: #fff;
+      padding: 36px 40px 28px;
+    }
+
+    .doc-header .label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 10px;
+    }
+
+    .doc-header h1 {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+
+    .doc-header p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.6;
+    }
+
+    /* ── Body ── */
+    .doc-body {
+      padding: 36px 40px;
+    }
+
+    /* ── Section ── */
+    .doc-section {
+      margin-bottom: 30px;
+    }
+
+    .doc-section h2 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #274c38;
+      border-bottom: 2px solid #e8f0ea;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+
+    /* ── Steps ── */
+    .steps { display: grid; gap: 14px; }
+
+    .step {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      flex: 0 0 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #edf4ef;
+      color: #274c38;
+      font-weight: 800;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(39,76,56,0.14);
+    }
+
+    .step-body h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #1f2b22;
+    }
+
+    .step-body p {
+      font-size: 14px;
+      color: #4a5e50;
+      line-height: 1.6;
+    }
+
+    .step-body ul {
+      margin-top: 6px;
+      padding-left: 18px;
+    }
+
+    .step-body li {
+      font-size: 14px;
+      color: #4a5e50;
+      line-height: 1.65;
+    }
+
+    /* ── Two-col grid ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .info-card {
+      background: #f7faf7;
+      border: 1px solid #dce8de;
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .info-card h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #274c38;
+      margin-bottom: 6px;
+    }
+
+    .info-card p, .info-card li {
+      font-size: 13px;
+      color: #4a5e50;
+      line-height: 1.6;
+    }
+
+    .info-card ul { padding-left: 16px; }
+
+    /* ── Tips box ── */
+    .tip-box {
+      background: #fffbeb;
+      border: 1px solid #f0d060;
+      border-radius: 12px;
+      padding: 16px 18px;
+      font-size: 14px;
+      color: #6b4f00;
+      line-height: 1.65;
+    }
+
+    .tip-box strong { color: #5a3f00; }
+
+    /* ── Footer ── */
+    .doc-footer {
+      background: #f4f6f2;
+      border-top: 1px solid #dce8de;
+      padding: 18px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #7a8f7e;
+    }
+
+    .page-num {
+      font-weight: 700;
+      color: #274c38;
+    }
+
+    /* ── Badges ── */
+    .badge {
+      display: inline-block;
+      background: #edf4ef;
+      color: #274c38;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(39,76,56,0.15);
+      margin-right: 4px;
+    }
+
+    .badge.blue {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-color: rgba(37,99,235,0.2);
+    }
+
+    /* ── Print ── */
+    @media print {
+      body { background: #fff; padding: 0; }
+      .page { box-shadow: none; border-radius: 0; margin: 0; page-break-after: always; }
+      .page:last-child { page-break-after: auto; }
+      .doc-footer { background: #fff; }
+      .print-btn { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      .doc-body { padding: 24px 20px; }
+      .doc-header { padding: 28px 20px 22px; }
+      .two-col { grid-template-columns: 1fr; }
+      .doc-footer { padding: 14px 20px; flex-direction: column; gap: 4px; text-align: center; }
+    }
+
+    .print-btn {
+      display: block;
+      max-width: 760px;
+      margin: 0 auto 20px;
+      text-align: right;
+    }
+
+    .print-btn button {
+      background: #274c38;
+      color: #fff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="print-btn">
+    <button onclick="window.print()">Save as PDF</button>
+  </div>
+
+  <!-- ══════════════ PAGE 1 ══════════════ -->
+  <div class="page">
+    <div class="doc-header">
+      <div class="label">RootPlans • End User Guide</div>
+      <h1>How to Use RootPlans</h1>
+      <p>Generate a personalized garden plan in four simple steps — powered by AI and tailored to your zone, goals, and style.</p>
+    </div>
+
+    <div class="doc-body">
+
+      <div class="doc-section">
+        <h2>Getting Started</h2>
+        <p style="font-size:14px;color:#4a5e50;line-height:1.65;margin-bottom:14px;">
+          When you visit the site, you'll be prompted to enter your <strong>access code</strong>. Once entered, your session stays unlocked until you close the browser. You will not need to re-enter the code unless you open a new browser session.
+        </p>
+      </div>
+
+      <div class="doc-section">
+        <h2>Building Your Plan — 4 Steps</h2>
+        <div class="steps">
+
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <h3>Find Your USDA Zone</h3>
+              <p>Enter your 5-digit ZIP code and tap <strong>Detect Zone</strong>. RootPlans will automatically identify your USDA hardiness zone and location. This ensures every plant recommended will thrive in your climate.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <h3>Select Your Garden Direction</h3>
+              <p>Choose the type of garden you want to create:</p>
+              <ul>
+                <li><strong>Functional Food</strong> — Edible plants chosen to support specific health focuses</li>
+                <li><strong>Pollinator Paradise</strong> — Plants that attract bees, butterflies, and beneficial insects</li>
+                <li><strong>Low-Maintenance Beauty</strong> — Attractive plants that are easy to care for</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <h3>Set Your Preferences</h3>
+              <p>Customize your plan with two optional settings:</p>
+              <ul>
+                <li><strong>Only native plants</strong> — Limits recommendations to plants native to your zone</li>
+                <li><strong>Holistic healing powers</strong> — Adds traditional-use notes for each plant (non-medical)</li>
+              </ul>
+              <p style="margin-top:8px;">If you selected <strong>Functional Food</strong>, you can also add specific health focuses such as <em>liver health</em>, <em>inflammation</em>, <em>sleep support</em>, and more. Tap a suggestion to select it — it will turn <span class="badge blue">blue</span> when active. Tap again to remove it.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <h3>Generate Your Plan</h3>
+              <p>Tap <strong>Generate Plan</strong>. Your personalized garden plan will appear on screen, fully formatted with plant recommendations, a layout guide, seasonal care tips, and more.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="doc-footer">
+      <span>© RootPlans</span>
+      <span class="page-num">Page 1 of 2</span>
+    </div>
+  </div>
+
+
+  <!-- ══════════════ PAGE 2 ══════════════ -->
+  <div class="page">
+    <div class="doc-header">
+      <div class="label">RootPlans • End User Guide</div>
+      <h1>Reading & Saving Your Plan</h1>
+      <p>Everything you need to know about using, downloading, and sharing your garden plan.</p>
+    </div>
+
+    <div class="doc-body">
+
+      <div class="doc-section">
+        <h2>What's Inside Your Plan</h2>
+        <p style="font-size:14px;color:#4a5e50;line-height:1.65;margin-bottom:14px;">Every plan is structured into seven sections for easy reading:</p>
+        <div class="two-col">
+          <div class="info-card">
+            <h3>🌿 Garden Concept</h3>
+            <p>An overview of your garden's design direction and what makes it unique to your zone and goals.</p>
+          </div>
+          <div class="info-card">
+            <h3>🌱 Recommended Plants</h3>
+            <p>A curated list of plants with common and botanical names, and optional traditional-use notes.</p>
+          </div>
+          <div class="info-card">
+            <h3>📐 Simple Layout</h3>
+            <p>A beginner-friendly arrangement guide showing how to position plants for best results.</p>
+          </div>
+          <div class="info-card">
+            <h3>📅 Seasonal Care Plan</h3>
+            <p>What to do in spring, summer, fall, and winter to keep your garden thriving year-round.</p>
+          </div>
+          <div class="info-card">
+            <h3>🍃 Harvest / Use Ideas</h3>
+            <p>Practical suggestions for harvesting and using what your garden produces.</p>
+          </div>
+          <div class="info-card">
+            <h3>💡 Beginner Tips & Safety Note</h3>
+            <p>Easy-to-follow advice for new gardeners, plus an important reminder that plant notes are not medical advice.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="doc-section">
+        <h2>Saving & Sharing Your Plan</h2>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num" style="background:#eff6ff;color:#1d4ed8;border-color:rgba(37,99,235,0.15);">↓</div>
+            <div class="step-body">
+              <h3>Download as PDF</h3>
+              <p>Tap <strong>Download PDF</strong> after your plan generates. RootPlans will automatically fetch photos of each recommended plant from Wikipedia, build a polished document with a plant photo grid and your full plan, then open your device's print dialog. Choose <strong>Save as PDF</strong> to save it to your device.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:#eff6ff;color:#1d4ed8;border-color:rgba(37,99,235,0.15);">⎘</div>
+            <div class="step-body">
+              <h3>Copy to Clipboard</h3>
+              <p>Tap <strong>Copy</strong> to copy the full plan text. You can then paste it into an email, notes app, or any document.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="doc-section">
+        <h2>Tips for Best Results</h2>
+        <div class="tip-box">
+          <strong>Be specific with your preferences.</strong> The more options you fill in — zone, theme, health focuses, native-only — the more tailored your plan will be.<br><br>
+          <strong>Try different themes.</strong> Hit <strong>Reset</strong> to start over and generate a new plan with a different theme or conditions. Each plan is unique.<br><br>
+          <strong>Holistic notes are traditional, not medical.</strong> All plant descriptions use cautious, traditional-use language and are not intended as medical advice. Always consult a healthcare provider for health concerns.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="doc-footer">
+      <span>© RootPlans</span>
+      <span class="page-num">Page 2 of 2</span>
+    </div>
+  </div>
+
+</body>
+</html>
