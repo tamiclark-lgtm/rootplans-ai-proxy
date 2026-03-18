@@ -42,8 +42,8 @@ export default async function handler(req, res) {
     res.flushHeaders();
 
     const stream = client.messages.stream({
-      model: "claude-sonnet-4-6",
-      max_tokens: 4000,
+      model: "claude-haiku-4-5",
+      max_tokens: 2500,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: userMessage }]
     });
