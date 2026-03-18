@@ -363,6 +363,71 @@
       margin: 18px 0;
     }
 
+    /* ── Zone info panel ───────────────────── */
+    .zoneInfoBtn {
+      background: var(--primary-soft);
+      border: 1px solid rgba(39,76,56,0.18);
+      color: var(--primary);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .zoneInfoBtn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .zoneInfoPanel {
+      margin-top: 16px;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .zoneInfoCard {
+      background: #f7faf7;
+      border: 1px solid #dce8de;
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+
+    .zoneInfoCard h4 {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .zoneInfoCard ul {
+      margin: 0;
+      padding-left: 16px;
+      list-style: disc;
+    }
+
+    .zoneInfoCard li {
+      font-size: 13px;
+      color: #4a5e50;
+      line-height: 1.65;
+      margin-bottom: 4px;
+    }
+
+    .zoneInfoCard li strong {
+      color: var(--text);
+    }
+
+    @media (max-width: 600px) {
+      .zoneInfoPanel { grid-template-columns: 1fr; }
+    }
+
     /* ── PDF print layout ───────────────────── */
     #pdfDoc {
       display: none;
@@ -693,9 +758,17 @@
           </div>
 
           <div id="zoneCard" class="resultCard" style="display:none;">
-            <p class="resultTitle" id="zoneTitle">Detected USDA Zone</p>
-            <p class="resultLine" id="zoneDetails"></p>
-            <p class="tinyNote" id="zoneNote"></p>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+              <div>
+                <p class="resultTitle" id="zoneTitle">Detected USDA Zone</p>
+                <p class="resultLine" id="zoneDetails"></p>
+                <p class="tinyNote" id="zoneNote"></p>
+              </div>
+              <button id="zoneInfoBtn" class="zoneInfoBtn" type="button" title="Soil &amp; Planting Info">
+                🌍 Soil &amp; Schedule
+              </button>
+            </div>
+            <div id="zoneInfoPanel" class="zoneInfoPanel" style="display:none;"></div>
           </div>
 
           <div class="statusLine" id="statusText">Status: Enter a ZIP and click Detect Zone.</div>
@@ -1181,6 +1254,8 @@ Make it polished, easy to read, and helpful for a real customer.
     $("resetBtn").addEventListener("click", () => {
       $("zipInput").value = "";
       $("zoneCard").style.display = "none";
+      $("zoneInfoPanel").style.display = "none";
+      $("zoneInfoBtn").classList.remove("active");
       $("themeCard").style.display = "none";
       $("conditionsCard").style.display = "none";
       $("preferenceCard").style.display = "none";
@@ -1312,6 +1387,54 @@ Make it polished, easy to read, and helpful for a real customer.
 
     renderSuggestions("");
     renderSelectedConditions();
+
+    // ── Zone soil & planting data ──────────────
+    const ZONE_DATA = {
+      "3":  { soil: ["Cold, often clay-heavy or sandy loam","Amend heavily with compost to improve drainage and warmth","Mulch deeply (4–6 in) to protect roots over winter","Slightly acidic to neutral pH (6.0–7.0)"], schedule: ["Start seeds indoors: Feb–Mar","Last frost: late May","Safe outdoor planting: early June","First fall frost: mid-Sept","Growing season: ~90 days"] },
+      "4":  { soil: ["Loamy to clay soils, often nutrient-rich","Add compost and perlite for drainage","Mulch well to extend the season","pH: 6.0–7.0"], schedule: ["Start seeds indoors: Feb–Mar","Last frost: mid-May","Safe outdoor planting: late May","First fall frost: late Sept","Growing season: ~120 days"] },
+      "5":  { soil: ["Mixed loam and clay, good base fertility","Work in compost each spring","Good drainage important for root crops","pH: 6.0–7.0"], schedule: ["Start seeds indoors: Mar","Last frost: mid-Apr","Safe outdoor planting: early May","First fall frost: mid-Oct","Growing season: ~150 days"] },
+      "6":  { soil: ["Fertile loam in many regions; clay in others","Amend with compost and aged manure annually","Watch for compaction in clay-heavy areas","pH: 6.0–7.0"], schedule: ["Start seeds indoors: Feb–Mar","Last frost: mid-Apr","Safe outdoor planting: late Apr","First fall frost: late Oct","Growing season: ~165 days"] },
+      "7":  { soil: ["Varied — red clay in SE, sandy loam in west","Clay soils benefit from gypsum and compost","Excellent for a wide range of edibles","pH: 6.0–7.5"], schedule: ["Start cool-season crops: Feb–Mar","Last frost: late Mar–mid-Apr","Plant warm-season crops: late Apr","Fall garden: plant Aug–Sept","Growing season: ~200 days"] },
+      "8":  { soil: ["Often clay-heavy in South; sandy on coasts","Amend clay with compost and coarse sand","Raised beds recommended to improve drainage","pH: 6.0–7.5"], schedule: ["Cool crops (lettuce, kale): Feb & Sept–Oct","Last frost: mid-Feb–Mar","Warm crops: mid-Mar–Apr","Fall planting: Sept–Oct","Growing season: ~240 days"] },
+      "9":  { soil: ["Sandy to loamy, often alkaline in arid areas","Amend with organic matter and sulfur if pH is high","Drip irrigation highly recommended","pH: 6.5–8.0"], schedule: ["Cool crops: Jan–Feb & Oct–Nov","Last frost: Jan–Feb","Warm crops: Mar–Apr","Summer heat rest recommended","Fall garden: Oct–Nov","Growing season: ~280 days"] },
+      "10": { soil: ["Sandy, well-draining soils common","Add compost generously — nutrients leach fast","Raised beds with enriched mix work best","pH: 6.5–7.5"], schedule: ["Year-round gardening possible","Cool crops: Oct–Mar","Warm crops: Feb–Apr & Sept","Avoid planting in peak summer heat","Growing season: ~365 days"] },
+      "11": { soil: ["Tropical soils — often highly weathered and leached","Needs consistent compost and fertilization","Excellent drainage critical","pH: 5.5–7.0"], schedule: ["Year-round planting possible","Avoid dry-season planting without irrigation","Rainy season: best for most crops","Growing season: 365 days"] }
+    };
+
+    function getZoneData(zone) {
+      const key = String(zone || "").replace(/[ab]/i, "").trim();
+      return ZONE_DATA[key] || null;
+    }
+
+    function renderZoneInfoPanel(zone) {
+      const data = getZoneData(zone);
+      const panel = $("zoneInfoPanel");
+      if (!data) { panel.style.display = "none"; return; }
+
+      panel.innerHTML = `
+        <div class="zoneInfoCard">
+          <h4>🪴 Soil Profile</h4>
+          <ul>${data.soil.map(s => `<li>${s}</li>`).join("")}</ul>
+        </div>
+        <div class="zoneInfoCard">
+          <h4>📅 Planting Schedule</h4>
+          <ul>${data.schedule.map(s => `<li>${s}</li>`).join("")}</ul>
+        </div>`;
+    }
+
+    $("zoneInfoBtn").addEventListener("click", () => {
+      const panel = $("zoneInfoPanel");
+      const btn = $("zoneInfoBtn");
+      const isOpen = panel.style.display !== "none";
+      if (isOpen) {
+        panel.style.display = "none";
+        btn.classList.remove("active");
+      } else {
+        renderZoneInfoPanel(detected.zone);
+        panel.style.display = "grid";
+        btn.classList.add("active");
+      }
+    });
 
     async function fetchPlantImage(plant) {
       const name = plant.botanical || plant.common;
