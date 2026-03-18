@@ -547,6 +547,82 @@
       font-weight: 700;
       min-height: 20px;
     }
+
+    /* ── Disclaimer modal ───────────────────── */
+    #disclaimerModal {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 20, 14, 0.72);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 20px;
+    }
+
+    .disclaimerBox {
+      background: #fff;
+      border-radius: 24px;
+      padding: 36px 36px 28px;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.28);
+    }
+
+    .disclaimerBox .disc-icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+    }
+
+    .disclaimerBox h2 {
+      font-size: 22px;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .disclaimerBox .disc-body {
+      font-size: 14px;
+      color: #4a5e50;
+      line-height: 1.7;
+      background: #f7faf7;
+      border: 1px solid #dce8de;
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 20px;
+    }
+
+    .disclaimerBox .disc-body strong {
+      color: #1f2b22;
+    }
+
+    .disc-checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .disc-checkbox-row input[type="checkbox"] {
+      margin-top: 3px;
+      transform: scale(1.3);
+      accent-color: var(--primary);
+      flex: 0 0 auto;
+    }
+
+    .disc-checkbox-row label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.55;
+      cursor: pointer;
+    }
+
+    #discAgreeBtn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
   </style>
 </head>
 <body>
@@ -560,6 +636,24 @@
       <input id="accessInput" class="input" type="password" placeholder="Access code" maxlength="20" style="text-align:center;letter-spacing:0.2em;" />
       <button id="accessBtn" class="btn" type="button" style="width:100%;margin-top:12px;">Enter</button>
       <div class="gateError" id="gateError"></div>
+    </div>
+  </div>
+
+  <!-- Disclaimer modal -->
+  <div id="disclaimerModal" style="display:none;">
+    <div class="disclaimerBox">
+      <div class="disc-icon">⚕️</div>
+      <h2>Important Disclaimer</h2>
+      <div class="disc-body">
+        <strong>I am not a medical professional.</strong> The plant information provided on RootPlans — including any references to traditional uses, holistic properties, or health-related topics — is for <strong>educational and informational purposes only</strong>.<br><br>
+        Nothing on this site constitutes medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider before making any decisions related to your health, diet, or use of plants for medicinal purposes.<br><br>
+        RootPlans is a <strong>garden planning tool</strong>. Any wellness-related plant notes use cautious, traditional-use language and are not intended to replace professional medical guidance.
+      </div>
+      <div class="disc-checkbox-row">
+        <input type="checkbox" id="discCheck" />
+        <label for="discCheck">I understand that RootPlans is not a medical resource and that the information provided is not medical advice. I agree to use this tool for garden planning purposes only.</label>
+      </div>
+      <button id="discAgreeBtn" class="btn" type="button" style="width:100%;" disabled>I Understand &amp; Agree</button>
     </div>
   </div>
 
@@ -721,9 +815,12 @@
     const AI_PROXY_URL = "/api/holistic";
     const AUTH_URL = "/api/auth";
 
-    // Check session
+    // Check session — both auth and disclaimer must be accepted
     if (sessionStorage.getItem("rp_auth") === "1") {
       $("accessGate").style.display = "none";
+      if (sessionStorage.getItem("rp_disc") !== "1") {
+        $("disclaimerModal").style.display = "flex";
+      }
     }
 
     async function submitAccessCode() {
@@ -743,6 +840,10 @@
         if (data.ok) {
           sessionStorage.setItem("rp_auth", "1");
           $("accessGate").style.display = "none";
+          // Show disclaimer if not yet acknowledged this session
+          if (sessionStorage.getItem("rp_disc") !== "1") {
+            $("disclaimerModal").style.display = "flex";
+          }
         } else {
           $("gateError").textContent = "Incorrect code. Try again.";
           $("accessInput").value = "";
@@ -759,6 +860,16 @@
     $("accessBtn").addEventListener("click", submitAccessCode);
     $("accessInput").addEventListener("keydown", e => {
       if (e.key === "Enter") submitAccessCode();
+    });
+
+    // Disclaimer logic
+    $("discCheck").addEventListener("change", () => {
+      $("discAgreeBtn").disabled = !$("discCheck").checked;
+    });
+
+    $("discAgreeBtn").addEventListener("click", () => {
+      sessionStorage.setItem("rp_disc", "1");
+      $("disclaimerModal").style.display = "none";
     });
 
     function $(id) {
