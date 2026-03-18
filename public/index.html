@@ -1080,6 +1080,12 @@
             <button class="pill" type="button" data-planttype="decorative" aria-pressed="false">🌸 Decorative only</button>
           </div>
 
+          <div id="staplesCard" style="display:none;margin-bottom:20px;padding:16px;background:#f7faf7;border:1px solid #dce8de;border-radius:14px;">
+            <p style="font-weight:700;font-size:14px;color:#274c38;margin-bottom:4px;">Must-Have Vegetables</p>
+            <p style="font-size:13px;color:#4a5e50;margin-bottom:12px;">Tap any to make sure it's included in your plan.</p>
+            <div class="pillRow" id="staplesRow" style="flex-wrap:wrap;gap:8px;"></div>
+          </div>
+
           <div class="checkboxStack">
             <label class="checkboxCard">
               <input type="checkbox" id="nativeOnlyCheckbox" />
@@ -1244,8 +1250,28 @@
     let selectedConditions = [];
     let selectedPlantType = "both";
     let selectedSunlight = "";
+    let selectedStaples = [];
     let lastPlanText = "";
     let lastPlants = [];
+
+    const STAPLE_VEGGIES = [
+      { label: "🍅 Tomatoes",  value: "Tomatoes" },
+      { label: "🫑 Peppers",   value: "Peppers" },
+      { label: "🥦 Broccoli",  value: "Broccoli" },
+      { label: "🥕 Carrots",   value: "Carrots" },
+      { label: "🥒 Cucumbers", value: "Cucumbers" },
+      { label: "🫛 Peas",      value: "Peas" },
+      { label: "🫘 Beans",     value: "Beans" },
+      { label: "🥬 Lettuce",   value: "Lettuce" },
+      { label: "🍃 Kale",      value: "Kale" },
+      { label: "🌿 Spinach",   value: "Spinach" },
+      { label: "🎃 Zucchini",  value: "Zucchini" },
+      { label: "🧅 Onions",    value: "Onions" },
+      { label: "🧄 Garlic",    value: "Garlic" },
+      { label: "🫚 Beets",     value: "Beets" },
+      { label: "🌽 Sweet Corn", value: "Sweet Corn" },
+      { label: "🍠 Sweet Potato", value: "Sweet Potato" },
+    ];
 
     async function fetchZoneByZip(zip) {
       if (ZONE_OVERRIDES[zip]) {
@@ -1401,6 +1427,10 @@
         items.push(selectedConditions.length ? `Functional focus: ${selectedConditions.join(", ")}` : "Functional focus: general wellness");
       }
 
+      if (selectedStaples.length) {
+        items.push(`Must include: ${selectedStaples.join(", ")}`);
+      }
+
       summary.innerHTML = items.map(item => `<li>${escapeHtml(item)}</li>`).join("");
       $("preferenceCard").style.display = "block";
     }
@@ -1443,8 +1473,9 @@ Follow these rules carefully:
    Do NOT make medical claims and do NOT present medical advice.
 6. Sunlight rule: ${selectedSunlight ? `Only recommend plants that thrive in "${selectedSunlight}" conditions. Label each plant with a sunlight icon: ☀️ Full Sun, ⛅ Partial Shade, or 🌑 Full Shade.` : "Include a variety of sun tolerances and label each plant with ☀️ Full Sun, ⛅ Partial Shade, or 🌑 Full Shade."}
 7. Keep the recommendations beginner-friendly and practical.
+${selectedStaples.length ? `8. REQUIRED VEGETABLES — the user specifically requested these and they MUST appear in the plan: ${selectedStaples.join(", ")}. Do not skip any of them. If one isn't ideal for the zone, include it anyway and note any care adjustments.` : ""}
 9. Do not suggest invasive plants.
-10. Include only plants that are realistic for the stated zone.
+10. Include only plants that are realistic for the stated zone (except any required vegetables from rule 8).
 11. For every edible plant in section 2, include a brief **Nutrition:** line (2–3 highlights) and a **Best consumed:** line (1 sentence). Keep these concise.
 
 Return the answer in this exact structure:
@@ -1550,6 +1581,8 @@ Be concise in each section — 3 to 5 bullet points max per section. Complete AL
       $("suggestionsRow").innerHTML = "";
       $("selectedConditionsRow").innerHTML = "";
       $("preferenceSummary").innerHTML = "";
+      selectedStaples = [];
+      $("staplesCard").style.display = "none";
 
       $("aiStatus").textContent = "";
       $("zoneBadge").style.display = "none";
@@ -1582,9 +1615,35 @@ Be concise in each section — 3 to 5 bullet points max per section. Complete AL
         selectedPlantType = btn.dataset.planttype;
         document.querySelectorAll("#plantTypeRow .pill").forEach(b => b.setAttribute("aria-pressed", "false"));
         btn.setAttribute("aria-pressed", "true");
+        renderStaples();
         updatePreferenceSummary();
       });
     });
+
+    function renderStaples() {
+      const show = selectedPlantType !== "decorative";
+      $("staplesCard").style.display = show ? "block" : "none";
+      const row = $("staplesRow");
+      row.innerHTML = "";
+      STAPLE_VEGGIES.forEach(veg => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "pill";
+        btn.textContent = veg.label;
+        const active = selectedStaples.includes(veg.value);
+        btn.setAttribute("aria-pressed", active ? "true" : "false");
+        btn.addEventListener("click", () => {
+          if (selectedStaples.includes(veg.value)) {
+            selectedStaples = selectedStaples.filter(s => s !== veg.value);
+          } else {
+            selectedStaples.push(veg.value);
+          }
+          renderStaples();
+          updatePreferenceSummary();
+        });
+        row.appendChild(btn);
+      });
+    }
 
     $("conditionInput").addEventListener("input", (e) => renderSuggestions(e.target.value));
 
