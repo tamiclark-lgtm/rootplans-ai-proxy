@@ -613,7 +613,6 @@
       .section > .checkboxStack { padding-top: 16px; padding-bottom: 4px; }
       .section > .pillRow { padding-top: 16px; padding-bottom: 4px; }
       .section > .row:first-of-type { padding-top: 16px; }
-      .section > #sizeRow { padding-top: 16px; }
       .section > p[style] { padding-top: 16px; }
       .section > .resultCard { margin: 12px 16px 0; padding: 14px; }
       .section > .statusLine { padding-bottom: 16px; }
@@ -906,14 +905,6 @@
             </div>
           </div>
 
-          <p style="font-weight:700;margin-bottom:10px;font-size:15px;">Garden size</p>
-          <div class="pillRow" id="sizeRow" style="margin-bottom:20px;">
-            <button class="pill" type="button" data-size="Container / Patio (under 50 sq ft)" aria-pressed="false">🪴 Container / Patio</button>
-            <button class="pill" type="button" data-size="Small yard or raised beds (50–200 sq ft)" aria-pressed="false">🌿 Small Yard</button>
-            <button class="pill" type="button" data-size="Medium yard (200–500 sq ft)" aria-pressed="false">🌳 Medium Yard</button>
-            <button class="pill" type="button" data-size="Large yard (500+ sq ft)" aria-pressed="false">🏡 Large Yard</button>
-          </div>
-
           <div class="checkboxStack">
             <label class="checkboxCard">
               <input type="checkbox" id="nativeOnlyCheckbox" />
@@ -1076,7 +1067,6 @@
     let selectedTheme = "";
     let selectedConditions = [];
     let lastPlanText = "";
-    let selectedSize = "";
     let lastPlants = [];
 
     async function fetchZoneByZip(zip) {
@@ -1226,7 +1216,6 @@
       const items = [];
 
       if (selectedTheme) items.push(`Theme: ${selectedTheme}`);
-      if (selectedSize) items.push(`Garden size: ${selectedSize}`);
       items.push(nativeOnly ? "Only native plants for this zone" : "Native plants preferred when practical, but not required");
       items.push(holisticHealing ? "Include holistic healing powers / traditional uses" : "Focus on planting plan without healing-power details");
 
@@ -1257,13 +1246,12 @@ Create a practical, beautiful, beginner-friendly garden plan for:
 - USDA Zone: ${zone}
 - ${locationLine}
 - Theme: ${selectedTheme}
-- Garden size: ${selectedSize || "Not specified"}
 - Native plants only: ${nativeOnly ? "Yes" : "No"}
 - Include holistic healing powers: ${holisticHealing ? "Yes" : "No"}
 ${selectedTheme === "Functional Food" ? `- Functional focus: ${conditionText}` : ""}
 
 Follow these rules carefully:
-1. Make the plan realistic for a homeowner with a small yard, raised beds, or containers.
+1. Make the plan realistic for a homeowner with a typical backyard or raised beds.
 2. If native plants only = Yes, use only native plants appropriate for the zone when possible.
 3. If native plants only = No, prefer native plants first, then include well-adapted plants if needed.
 4. If holistic healing powers = Yes, include a short cautious note for each plant using language like:
@@ -1280,7 +1268,7 @@ Return the answer in this exact structure:
 
 1. GARDEN CONCEPT
 2. RECOMMENDED PLANTS
-   (For each edible plant include: name, description, Nutrition highlights, and Best consumed)
+   (For each plant include: name, description, and a **Good companions:** line listing 2–3 plants that grow well next to it. For edible plants also include: **Nutrition:** highlights and **Best consumed:** line.)
 3. SIMPLE LAYOUT
 4. SEASONAL CARE PLAN
 5. HARVEST / USE IDEAS
@@ -1365,13 +1353,11 @@ Make it polished, easy to read, and helpful for a real customer.
       detected = { zip: "", zone: "", location: "" };
       selectedTheme = "";
       selectedConditions = [];
-      selectedSize = "";
 
       $("nativeOnlyCheckbox").checked = false;
       $("holisticHealingCheckbox").checked = false;
 
       document.querySelectorAll("#themeRow .pill").forEach(btn => btn.setAttribute("aria-pressed", "false"));
-      document.querySelectorAll("#sizeRow .pill").forEach(btn => btn.setAttribute("aria-pressed", "false"));
 
       $("conditionInput").value = "";
       $("suggestionsRow").innerHTML = "";
@@ -1394,14 +1380,6 @@ Make it polished, easy to read, and helpful for a real customer.
       btn.addEventListener("click", () => setTheme(btn.dataset.theme));
     });
 
-    document.querySelectorAll("#sizeRow .pill").forEach(btn => {
-      btn.addEventListener("click", () => {
-        selectedSize = btn.dataset.size;
-        document.querySelectorAll("#sizeRow .pill").forEach(b => b.setAttribute("aria-pressed", "false"));
-        btn.setAttribute("aria-pressed", "true");
-        updatePreferenceSummary();
-      });
-    });
 
     $("conditionInput").addEventListener("input", (e) => renderSuggestions(e.target.value));
 
