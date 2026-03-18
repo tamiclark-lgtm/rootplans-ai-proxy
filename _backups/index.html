@@ -939,7 +939,7 @@
           </div>
 
           <div class="pillRow" id="themeRow">
-            <button class="pill" type="button" data-theme="Functional Food" aria-pressed="false">Functional Food</button>
+            <button class="pill" type="button" data-theme="Ailment Support" aria-pressed="false">Ailment Support</button>
             <button class="pill" type="button" data-theme="Pollinator Paradise" aria-pressed="false">Pollinator Paradise</button>
             <button class="pill" type="button" data-theme="Low-Maintenance Beauty" aria-pressed="false">Low-Maintenance Beauty</button>
           </div>
@@ -950,7 +950,7 @@
           </div>
 
           <div id="conditionsCard" class="resultCard" style="display:none;">
-            <p class="resultTitle">Functional Food focus</p>
+            <p class="resultTitle">Ailment Support focus</p>
             <p class="resultLine">Type a condition and pick a suggestion, or add your own.</p>
 
             <div class="row" style="margin-top:14px;">
@@ -1216,7 +1216,7 @@
       $("themeCard").style.display = "block";
       $("themeText").textContent = theme;
 
-      const showConditions = theme === "Functional Food";
+      const showConditions = theme === "Ailment Support";
       $("conditionsCard").style.display = showConditions ? "block" : "none";
 
       if (!showConditions) {
@@ -1311,7 +1311,7 @@
       items.push(nativeOnly ? "Only native plants for this zone" : "Native plants preferred when practical, but not required");
       items.push(holisticHealing ? "Include holistic healing powers / traditional uses" : "Focus on planting plan without healing-power details");
 
-      if (selectedTheme === "Functional Food") {
+      if (selectedTheme === "Ailment Support") {
         items.push(selectedConditions.length ? `Functional focus: ${selectedConditions.join(", ")}` : "Functional focus: general wellness");
       }
 
@@ -1326,7 +1326,7 @@
       const { nativeOnly, holisticHealing } = getPreferenceState();
 
       const conditionText =
-        selectedTheme === "Functional Food"
+        selectedTheme === "Ailment Support"
           ? (selectedConditions.length ? selectedConditions.join(", ") : "general wellness")
           : "";
 
@@ -1342,7 +1342,7 @@ Create a practical, beautiful, beginner-friendly garden plan for:
 - Plant type preference: ${selectedPlantType === "edible" ? "Edible plants only" : selectedPlantType === "decorative" ? "Decorative/ornamental plants only" : "Both edible and decorative (group them separately in section 2)"}
 - Native plants only: ${nativeOnly ? "Yes" : "No"}
 - Include holistic healing powers: ${holisticHealing ? "Yes" : "No"}
-${selectedTheme === "Functional Food" ? `- Functional focus: ${conditionText}` : ""}
+${selectedTheme === "Ailment Support" ? `- Functional focus: ${conditionText}` : ""}
 
 Follow these rules carefully:
 1. Make the plan realistic for a homeowner with a typical backyard or raised beds.
@@ -1551,7 +1551,7 @@ Be concise in each section — 3 to 5 bullet points max per section. Complete AL
             theme: selectedTheme,
             nativeOnly,
             holisticHealing,
-            conditions: selectedTheme === "Functional Food" ? selectedConditions : [],
+            conditions: selectedTheme === "Ailment Support" ? selectedConditions : [],
             prompt
           })
         });
