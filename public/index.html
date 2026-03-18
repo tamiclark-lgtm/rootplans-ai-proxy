@@ -932,6 +932,13 @@
             </div>
           </div>
 
+          <p style="font-weight:700;margin-bottom:10px;font-size:15px;">Plant type</p>
+          <div class="pillRow" id="plantTypeRow" style="margin-bottom:20px;">
+            <button class="pill" type="button" data-planttype="both" aria-pressed="false">🌿 Both</button>
+            <button class="pill" type="button" data-planttype="edible" aria-pressed="false">🍓 Edible only</button>
+            <button class="pill" type="button" data-planttype="decorative" aria-pressed="false">🌸 Decorative only</button>
+          </div>
+
           <div class="checkboxStack">
             <label class="checkboxCard">
               <input type="checkbox" id="nativeOnlyCheckbox" />
@@ -1094,6 +1101,7 @@
     let detected = { zip: "", zone: "", location: "" };
     let selectedTheme = "";
     let selectedConditions = [];
+    let selectedPlantType = "both";
     let lastPlanText = "";
     let lastPlants = [];
 
@@ -1244,6 +1252,8 @@
       const items = [];
 
       if (selectedTheme) items.push(`Theme: ${selectedTheme}`);
+      const ptLabel = { both: "Edible & decorative plants (grouped)", edible: "Edible plants only", decorative: "Decorative plants only" };
+      items.push(ptLabel[selectedPlantType] || "Edible & decorative plants");
       items.push(nativeOnly ? "Only native plants for this zone" : "Native plants preferred when practical, but not required");
       items.push(holisticHealing ? "Include holistic healing powers / traditional uses" : "Focus on planting plan without healing-power details");
 
@@ -1274,23 +1284,25 @@ Create a practical, beautiful, beginner-friendly garden plan for:
 - USDA Zone: ${zone}
 - ${locationLine}
 - Theme: ${selectedTheme}
+- Plant type preference: ${selectedPlantType === "edible" ? "Edible plants only" : selectedPlantType === "decorative" ? "Decorative/ornamental plants only" : "Both edible and decorative (group them separately in section 2)"}
 - Native plants only: ${nativeOnly ? "Yes" : "No"}
 - Include holistic healing powers: ${holisticHealing ? "Yes" : "No"}
 ${selectedTheme === "Functional Food" ? `- Functional focus: ${conditionText}` : ""}
 
 Follow these rules carefully:
 1. Make the plan realistic for a homeowner with a typical backyard or raised beds.
-2. If native plants only = Yes, use only native plants appropriate for the zone when possible.
-3. If native plants only = No, prefer native plants first, then include well-adapted plants if needed.
-4. If holistic healing powers = Yes, include a short cautious note for each plant using language like:
+2. Plant type rule: ${selectedPlantType === "edible" ? "Include ONLY edible plants. Do not include purely ornamental plants." : selectedPlantType === "decorative" ? "Include ONLY decorative/ornamental plants. Do not include edible plants." : "Include both edible AND decorative plants. In section 2, group them under two clear subheadings: '🍓 Edible Plants' and '🌸 Decorative Plants'."}
+3. If native plants only = Yes, use only native plants appropriate for the zone when possible.
+4. If native plants only = No, prefer native plants first, then include well-adapted plants if needed.
+5. If holistic healing powers = Yes, include a short cautious note for each plant using language like:
    - "traditionally used for..."
    - "commonly valued for..."
    - "often associated with..."
    Do NOT make medical claims and do NOT present medical advice.
-5. Keep the recommendations beginner-friendly and practical.
-6. Do not suggest invasive plants.
-7. Include only plants that are realistic for the stated zone.
-8. For every edible plant in section 2, include a brief **Nutrition:** line (2–3 highlights) and a **Best consumed:** line (1 sentence). Keep these concise.
+6. Keep the recommendations beginner-friendly and practical.
+7. Do not suggest invasive plants.
+8. Include only plants that are realistic for the stated zone.
+9. For every edible plant in section 2, include a brief **Nutrition:** line (2–3 highlights) and a **Best consumed:** line (1 sentence). Keep these concise.
 
 Return the answer in this exact structure:
 
@@ -1381,11 +1393,13 @@ Make it polished, easy to read, and helpful for a real customer.
       detected = { zip: "", zone: "", location: "" };
       selectedTheme = "";
       selectedConditions = [];
+      selectedPlantType = "both";
 
       $("nativeOnlyCheckbox").checked = false;
       $("holisticHealingCheckbox").checked = false;
 
       document.querySelectorAll("#themeRow .pill").forEach(btn => btn.setAttribute("aria-pressed", "false"));
+      document.querySelectorAll("#plantTypeRow .pill").forEach(btn => btn.setAttribute("aria-pressed", "false"));
 
       $("conditionInput").value = "";
       $("suggestionsRow").innerHTML = "";
@@ -1409,6 +1423,14 @@ Make it polished, easy to read, and helpful for a real customer.
       btn.addEventListener("click", () => setTheme(btn.dataset.theme));
     });
 
+    document.querySelectorAll("#plantTypeRow .pill").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedPlantType = btn.dataset.planttype;
+        document.querySelectorAll("#plantTypeRow .pill").forEach(b => b.setAttribute("aria-pressed", "false"));
+        btn.setAttribute("aria-pressed", "true");
+        updatePreferenceSummary();
+      });
+    });
 
     $("conditionInput").addEventListener("input", (e) => renderSuggestions(e.target.value));
 
