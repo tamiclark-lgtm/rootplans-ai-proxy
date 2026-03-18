@@ -672,7 +672,7 @@
         <h2>Build your plan</h2>
         <p>
           Start with your ZIP, choose the kind of garden you want, set your preferences,
-          and generate a custom plan powered by your secure AI proxy.
+          and generate a custom planting plan tailored to you.
         </p>
       </div>
 
@@ -706,7 +706,7 @@
             <div class="step">2</div>
             <div class="sectionHeaderText">
               <h3>Select your garden direction</h3>
-              <p>Choose the plan type you want the AI to build around.</p>
+              <p>Choose the type of garden you want to create.</p>
             </div>
           </div>
 
@@ -748,7 +748,7 @@
             <div class="step">3</div>
             <div class="sectionHeaderText">
               <h3>Set your plan preferences</h3>
-              <p>These options change the prompt sent to your AI proxy.</p>
+              <p>These options customize what goes into your plan.</p>
             </div>
           </div>
 
@@ -781,7 +781,7 @@
             <div class="step">4</div>
             <div class="sectionHeaderText">
               <h3>Generate your plan</h3>
-              <p>This sends the prompt to your secure Vercel proxy, not directly from the browser.</p>
+              <p>Generate a personalized planting plan based on your selections above.</p>
             </div>
           </div>
 
@@ -1290,7 +1290,7 @@ Make it polished, easy to read, and helpful for a real customer.
         $("pdfBtn").style.display = "inline-block";
       } catch (e) {
         console.error(e);
-        $("aiStatus").textContent = `AI failed: ${e.message || "Unknown error"}`;
+        $("aiStatus").textContent = `Something went wrong: ${e.message || "Unknown error"}`;
       } finally {
         $("generateBtn").disabled = false;
         $("generateBtn").textContent = "Generate Plan";
