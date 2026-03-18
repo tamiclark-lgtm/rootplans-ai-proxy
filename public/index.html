@@ -1572,11 +1572,11 @@ Be concise in each section — 3 to 5 bullet points max per section. Complete AL
 
         while (true) {
           const { done, value } = await reader.read();
-          if (done) break;
+          if (!done) buffer += decoder.decode(value, { stream: true });
 
-          buffer += decoder.decode(value, { stream: true });
           const lines = buffer.split("\n");
-          buffer = lines.pop();
+          // On done, process ALL lines; otherwise hold the last incomplete line
+          buffer = done ? "" : lines.pop();
 
           for (const line of lines) {
             if (!line.startsWith("data: ")) continue;
@@ -1593,6 +1593,8 @@ Be concise in each section — 3 to 5 bullet points max per section. Complete AL
               if (parseErr.message !== "Unexpected token") throw parseErr;
             }
           }
+
+          if (done) break;
         }
 
         // Strip PLANT_LIST from display and store plants
