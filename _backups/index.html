@@ -325,6 +325,54 @@
       line-height: 1.65;
     }
 
+    .plantPhotoGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .plantPhotoCard {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #f7faf7;
+      text-align: center;
+    }
+
+    .plantPhotoCard img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .plantPhotoCard .plantPhotoPlaceholder {
+      width: 100%;
+      height: 100px;
+      background: linear-gradient(135deg, #d8e8d8, #c0d8c0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+
+    .plantPhotoCard .plantPhotoName {
+      padding: 6px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #1f2b22;
+      line-height: 1.3;
+    }
+
+    .plantPhotoCard .plantPhotoName em {
+      display: block;
+      font-weight: 400;
+      font-style: italic;
+      color: #7a8f7e;
+      font-size: 10px;
+    }
+
     .planOutput {
       margin-top: 14px;
       padding: 24px 28px;
@@ -987,6 +1035,7 @@
 
           <div class="tinyNote" id="aiStatus" style="margin-top:12px;"></div>
           <div id="zoneBadge" style="display:none;margin-top:12px;padding:10px 14px;background:#edf4ef;border:1px solid #c6dcc9;border-radius:10px;font-size:13px;color:#274c38;font-weight:600;"></div>
+          <div id="plantPhotoGrid" style="display:none;margin-top:16px;"></div>
           <div id="aiOutput" class="planOutput" style="display:none;"></div>
         </section>
       </div>
@@ -1418,6 +1467,8 @@ Make it polished, easy to read, and helpful for a real customer.
 
       $("aiStatus").textContent = "";
       $("zoneBadge").style.display = "none";
+      $("plantPhotoGrid").style.display = "none";
+      $("plantPhotoGrid").innerHTML = "";
       $("aiOutput").style.display = "none";
       $("aiOutput").innerHTML = "";
       $("copyBtn").style.display = "none";
@@ -1563,6 +1614,25 @@ Make it polished, easy to read, and helpful for a real customer.
         $("pdfBtn").style.display = "inline-block";
         $("zoneBadge").textContent = `🌿 All plants in this plan are selected specifically for USDA Zone ${detected.zone}${detected.location ? " · " + detected.location : ""}.`;
         $("zoneBadge").style.display = "block";
+
+        // Build plant photo grid
+        if (lastPlants.length) {
+          const grid = $("plantPhotoGrid");
+          grid.innerHTML = `<p style="font-weight:700;font-size:14px;color:#274c38;margin-bottom:10px;">Your Recommended Plants</p><div class="plantPhotoGrid" id="plantPhotoInner"></div>`;
+          grid.style.display = "block";
+          const inner = $("plantPhotoInner");
+          lastPlants.forEach(plant => {
+            const card = document.createElement("div");
+            card.className = "plantPhotoCard";
+            card.innerHTML = `<div class="plantPhotoPlaceholder">🌿</div><div class="plantPhotoName">${escapeHtml(plant.common)}<em>${escapeHtml(plant.botanical)}</em></div>`;
+            inner.appendChild(card);
+            fetchPlantImage(plant).then(url => {
+              if (url) {
+                card.querySelector(".plantPhotoPlaceholder").outerHTML = `<img src="${url}" alt="${escapeHtml(plant.common)}" loading="lazy">`;
+              }
+            });
+          });
+        }
       } catch (e) {
         console.error(e);
         $("aiStatus").textContent = `Something went wrong: ${e.message || "Unknown error"}`;
