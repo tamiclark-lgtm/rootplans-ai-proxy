@@ -1035,8 +1035,8 @@
 
           <div class="tinyNote" id="aiStatus" style="margin-top:12px;"></div>
           <div id="zoneBadge" style="display:none;margin-top:12px;padding:10px 14px;background:#edf4ef;border:1px solid #c6dcc9;border-radius:10px;font-size:13px;color:#274c38;font-weight:600;"></div>
-          <div id="plantPhotoGrid" style="display:none;margin-top:16px;"></div>
           <div id="aiOutput" class="planOutput" style="display:none;"></div>
+          <div id="plantPhotoGrid" style="display:none;margin-top:20px;"></div>
         </section>
       </div>
     </main>
@@ -1618,17 +1618,21 @@ Be concise in each section — 3 to 5 bullet points max per section. Complete AL
         $("zoneBadge").style.display = "block";
 
         // Build plant photo grid
-        if (lastPlants.length) {
-          const grid = $("plantPhotoGrid");
-          const inner = document.createElement("div");
-          inner.className = "plantPhotoGrid";
-          grid.innerHTML = "";
+        const grid = $("plantPhotoGrid");
+        grid.innerHTML = "";
+        grid.style.display = "block";
+
+        if (!lastPlants.length) {
+          grid.innerHTML = `<p style="font-size:12px;color:#999;">📷 Plant photos unavailable — plant list not detected in response.</p>`;
+        } else {
           const heading = document.createElement("p");
           heading.style.cssText = "font-weight:700;font-size:14px;color:#274c38;margin-bottom:10px;";
           heading.textContent = "Your Recommended Plants";
           grid.appendChild(heading);
+
+          const inner = document.createElement("div");
+          inner.className = "plantPhotoGrid";
           grid.appendChild(inner);
-          grid.style.display = "block";
 
           lastPlants.forEach(plant => {
             const card = document.createElement("div");
