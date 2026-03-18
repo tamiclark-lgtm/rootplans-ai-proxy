@@ -1372,10 +1372,10 @@ Return the answer in this exact structure:
 6. BEGINNER TIPS
 7. SAFETY NOTE
 
-After section 7, add exactly one line in this format (required, do not skip):
+IMPORTANT — you MUST end your response with this exact line (no exceptions):
 PLANT_LIST: Common Name|Botanical Name; Common Name|Botanical Name; ...
 
-List every plant recommended in section 2. Use the full botanical (Latin) name.
+Replace with the actual plants from section 2. Use full botanical (Latin) names. This line is required for the plant photo feature to work.
 
 Make it polished, easy to read, and helpful for a real customer.
       `.trim();
@@ -1596,14 +1596,14 @@ Make it polished, easy to read, and helpful for a real customer.
         }
 
         // Strip PLANT_LIST from display and store plants
-        const plantMatch = fullText.match(/PLANT_LIST:\s*(.+)/i);
+        const plantMatch = fullText.match(/PLANT_LIST:\s*([^\n]+)/i);
         lastPlants = [];
         if (plantMatch) {
           lastPlants = plantMatch[1].split(";").map(p => {
             const [common, botanical] = p.split("|").map(s => s.trim());
             return { common: common || "", botanical: botanical || common || "" };
           }).filter(p => p.common);
-          fullText = fullText.replace(/\nPLANT_LIST:.+/i, "").trim();
+          fullText = fullText.replace(/\n?PLANT_LIST:[^\n]+/i, "").trim();
           $("aiOutput").innerHTML = marked.parse(fullText);
         }
 
@@ -1618,17 +1618,36 @@ Make it polished, easy to read, and helpful for a real customer.
         // Build plant photo grid
         if (lastPlants.length) {
           const grid = $("plantPhotoGrid");
-          grid.innerHTML = `<p style="font-weight:700;font-size:14px;color:#274c38;margin-bottom:10px;">Your Recommended Plants</p><div class="plantPhotoGrid" id="plantPhotoInner"></div>`;
+          const inner = document.createElement("div");
+          inner.className = "plantPhotoGrid";
+          grid.innerHTML = "";
+          const heading = document.createElement("p");
+          heading.style.cssText = "font-weight:700;font-size:14px;color:#274c38;margin-bottom:10px;";
+          heading.textContent = "Your Recommended Plants";
+          grid.appendChild(heading);
+          grid.appendChild(inner);
           grid.style.display = "block";
-          const inner = $("plantPhotoInner");
+
           lastPlants.forEach(plant => {
             const card = document.createElement("div");
             card.className = "plantPhotoCard";
-            card.innerHTML = `<div class="plantPhotoPlaceholder">🌿</div><div class="plantPhotoName">${escapeHtml(plant.common)}<em>${escapeHtml(plant.botanical)}</em></div>`;
+            const placeholder = document.createElement("div");
+            placeholder.className = "plantPhotoPlaceholder";
+            placeholder.textContent = "🌿";
+            const nameDiv = document.createElement("div");
+            nameDiv.className = "plantPhotoName";
+            nameDiv.innerHTML = `${escapeHtml(plant.common)}<em>${escapeHtml(plant.botanical)}</em>`;
+            card.appendChild(placeholder);
+            card.appendChild(nameDiv);
             inner.appendChild(card);
+
             fetchPlantImage(plant).then(url => {
               if (url) {
-                card.querySelector(".plantPhotoPlaceholder").outerHTML = `<img src="${url}" alt="${escapeHtml(plant.common)}" loading="lazy">`;
+                const img = document.createElement("img");
+                img.src = url;
+                img.alt = plant.common;
+                img.loading = "lazy";
+                placeholder.replaceWith(img);
               }
             });
           });
