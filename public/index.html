@@ -932,6 +932,13 @@
             </div>
           </div>
 
+          <p style="font-weight:700;margin-bottom:10px;font-size:15px;">Sunlight available</p>
+          <div class="pillRow" id="sunlightRow" style="margin-bottom:20px;">
+            <button class="pill" type="button" data-sun="full sun" aria-pressed="false">☀️ Full Sun</button>
+            <button class="pill" type="button" data-sun="partial shade" aria-pressed="false">⛅ Partial Shade</button>
+            <button class="pill" type="button" data-sun="full shade" aria-pressed="false">🌑 Full Shade</button>
+          </div>
+
           <p style="font-weight:700;margin-bottom:10px;font-size:15px;">Plant type</p>
           <div class="pillRow" id="plantTypeRow" style="margin-bottom:20px;">
             <button class="pill" type="button" data-planttype="both" aria-pressed="false">🌿 Both</button>
@@ -1102,6 +1109,7 @@
     let selectedTheme = "";
     let selectedConditions = [];
     let selectedPlantType = "both";
+    let selectedSunlight = "";
     let lastPlanText = "";
     let lastPlants = [];
 
@@ -1252,6 +1260,7 @@
       const items = [];
 
       if (selectedTheme) items.push(`Theme: ${selectedTheme}`);
+      if (selectedSunlight) items.push(`Sunlight: ${selectedSunlight}`);
       const ptLabel = { both: "Edible & decorative plants (grouped)", edible: "Edible plants only", decorative: "Decorative plants only" };
       items.push(ptLabel[selectedPlantType] || "Edible & decorative plants");
       items.push(nativeOnly ? "Only native plants for this zone" : "Native plants preferred when practical, but not required");
@@ -1284,6 +1293,7 @@ Create a practical, beautiful, beginner-friendly garden plan for:
 - USDA Zone: ${zone}
 - ${locationLine}
 - Theme: ${selectedTheme}
+- Sunlight available: ${selectedSunlight || "Not specified — include a mix"}
 - Plant type preference: ${selectedPlantType === "edible" ? "Edible plants only" : selectedPlantType === "decorative" ? "Decorative/ornamental plants only" : "Both edible and decorative (group them separately in section 2)"}
 - Native plants only: ${nativeOnly ? "Yes" : "No"}
 - Include holistic healing powers: ${holisticHealing ? "Yes" : "No"}
@@ -1299,10 +1309,11 @@ Follow these rules carefully:
    - "commonly valued for..."
    - "often associated with..."
    Do NOT make medical claims and do NOT present medical advice.
-6. Keep the recommendations beginner-friendly and practical.
-7. Do not suggest invasive plants.
-8. Include only plants that are realistic for the stated zone.
-9. For every edible plant in section 2, include a brief **Nutrition:** line (2–3 highlights) and a **Best consumed:** line (1 sentence). Keep these concise.
+6. Sunlight rule: ${selectedSunlight ? `Only recommend plants that thrive in "${selectedSunlight}" conditions. Label each plant with a sunlight icon: ☀️ Full Sun, ⛅ Partial Shade, or 🌑 Full Shade.` : "Include a variety of sun tolerances and label each plant with ☀️ Full Sun, ⛅ Partial Shade, or 🌑 Full Shade."}
+7. Keep the recommendations beginner-friendly and practical.
+9. Do not suggest invasive plants.
+10. Include only plants that are realistic for the stated zone.
+11. For every edible plant in section 2, include a brief **Nutrition:** line (2–3 highlights) and a **Best consumed:** line (1 sentence). Keep these concise.
 
 Return the answer in this exact structure:
 
@@ -1394,11 +1405,13 @@ Make it polished, easy to read, and helpful for a real customer.
       selectedTheme = "";
       selectedConditions = [];
       selectedPlantType = "both";
+      selectedSunlight = "";
 
       $("nativeOnlyCheckbox").checked = false;
       $("holisticHealingCheckbox").checked = false;
 
       document.querySelectorAll("#themeRow .pill").forEach(btn => btn.setAttribute("aria-pressed", "false"));
+      document.querySelectorAll("#sunlightRow .pill").forEach(btn => btn.setAttribute("aria-pressed", "false"));
       document.querySelectorAll("#plantTypeRow .pill").forEach(btn => btn.setAttribute("aria-pressed", "false"));
 
       $("conditionInput").value = "";
@@ -1421,6 +1434,15 @@ Make it polished, easy to read, and helpful for a real customer.
 
     document.querySelectorAll("#themeRow .pill").forEach(btn => {
       btn.addEventListener("click", () => setTheme(btn.dataset.theme));
+    });
+
+    document.querySelectorAll("#sunlightRow .pill").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedSunlight = btn.dataset.sun;
+        document.querySelectorAll("#sunlightRow .pill").forEach(b => b.setAttribute("aria-pressed", "false"));
+        btn.setAttribute("aria-pressed", "true");
+        updatePreferenceSummary();
+      });
     });
 
     document.querySelectorAll("#plantTypeRow .pill").forEach(btn => {
