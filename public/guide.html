@@ -231,15 +231,24 @@
       font-size: 14px;
       font-weight: 700;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .print-btn button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
   </style>
 </head>
 <body>
 
   <div class="print-btn">
-    <button onclick="window.print()">Save as PDF</button>
+    <button id="dlBtn" onclick="downloadPDF()">⬇ Download PDF</button>
   </div>
 
+  <div id="guideContent">
   <!-- ══════════════ PAGE 1 ══════════════ -->
   <div class="page">
     <div class="doc-header">
@@ -393,5 +402,28 @@
     </div>
   </div>
 
+  </div><!-- end guideContent -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script>
+    async function downloadPDF() {
+      const btn = document.getElementById("dlBtn");
+      btn.disabled = true;
+      btn.textContent = "Generating…";
+
+      const content = document.getElementById("guideContent");
+      await html2pdf().set({
+        margin: [10, 10, 10, 10],
+        filename: "RootPlans-User-Guide.pdf",
+        image: { type: "jpeg", quality: 0.97 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: "mm", format: "letter", orientation: "portrait" },
+        pagebreak: { mode: ["avoid-all", "css"] }
+      }).from(content).save();
+
+      btn.disabled = false;
+      btn.innerHTML = "⬇ Download PDF";
+    }
+  </script>
 </body>
 </html>
