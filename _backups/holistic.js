@@ -43,7 +43,7 @@ export default async function handler(req, res) {
 
     const stream = client.messages.stream({
       model: "claude-haiku-4-5",
-      max_tokens: 2500,
+      max_tokens: 3500,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: userMessage }]
     });
