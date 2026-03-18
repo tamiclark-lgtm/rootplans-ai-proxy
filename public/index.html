@@ -945,6 +945,7 @@
           </div>
 
           <div class="tinyNote" id="aiStatus" style="margin-top:12px;"></div>
+          <div id="zoneBadge" style="display:none;margin-top:12px;padding:10px 14px;background:#edf4ef;border:1px solid #c6dcc9;border-radius:10px;font-size:13px;color:#274c38;font-weight:600;"></div>
           <div id="aiOutput" class="planOutput" style="display:none;"></div>
         </section>
       </div>
@@ -1365,6 +1366,7 @@ Make it polished, easy to read, and helpful for a real customer.
       $("preferenceSummary").innerHTML = "";
 
       $("aiStatus").textContent = "";
+      $("zoneBadge").style.display = "none";
       $("aiOutput").style.display = "none";
       $("aiOutput").innerHTML = "";
       $("copyBtn").style.display = "none";
@@ -1490,6 +1492,8 @@ Make it polished, easy to read, and helpful for a real customer.
         $("aiStatus").textContent = "Done.";
         $("copyBtn").style.display = "inline-block";
         $("pdfBtn").style.display = "inline-block";
+        $("zoneBadge").textContent = `🌿 All plants in this plan are selected specifically for USDA Zone ${detected.zone}${detected.location ? " · " + detected.location : ""}.`;
+        $("zoneBadge").style.display = "block";
       } catch (e) {
         console.error(e);
         $("aiStatus").textContent = `Something went wrong: ${e.message || "Unknown error"}`;
