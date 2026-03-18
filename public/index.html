@@ -617,44 +617,46 @@
     #disclaimerModal {
       position: fixed;
       inset: 0;
-      background: rgba(10, 20, 14, 0.72);
+      background: rgba(10, 20, 14, 0.75);
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: center;
       z-index: 999;
-      padding: 20px;
+      padding: 0;
     }
 
     .disclaimerBox {
       background: #fff;
-      border-radius: 24px;
-      padding: 36px 36px 28px;
-      max-width: 520px;
+      border-radius: 24px 24px 0 0;
+      padding: 28px 22px 32px;
       width: 100%;
-      box-shadow: 0 32px 80px rgba(0,0,0,0.28);
+      max-width: 560px;
+      max-height: 92vh;
+      overflow-y: auto;
+      box-shadow: 0 -12px 48px rgba(0,0,0,0.22);
     }
 
     .disclaimerBox .disc-icon {
-      font-size: 36px;
-      margin-bottom: 12px;
+      font-size: 30px;
+      margin-bottom: 10px;
     }
 
     .disclaimerBox h2 {
-      font-size: 22px;
+      font-size: 20px;
       letter-spacing: -0.02em;
       margin-bottom: 10px;
       color: var(--text);
     }
 
     .disclaimerBox .disc-body {
-      font-size: 14px;
+      font-size: 13px;
       color: #4a5e50;
       line-height: 1.7;
       background: #f7faf7;
       border: 1px solid #dce8de;
       border-radius: 14px;
-      padding: 16px 18px;
-      margin-bottom: 20px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
     }
 
     .disclaimerBox .disc-body strong {
@@ -665,7 +667,7 @@
       display: flex;
       align-items: flex-start;
       gap: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .disc-checkbox-row input[type="checkbox"] {
@@ -687,6 +689,18 @@
       opacity: 0.45;
       cursor: not-allowed;
       box-shadow: none;
+    }
+
+    @media (min-width: 560px) {
+      #disclaimerModal {
+        align-items: center;
+        padding: 20px;
+      }
+      .disclaimerBox {
+        border-radius: 24px;
+        padding: 36px 36px 28px;
+        max-height: 90vh;
+      }
     }
   </style>
 </head>
