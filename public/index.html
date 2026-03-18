@@ -545,30 +545,94 @@
     }
 
     @media (max-width: 720px) {
-      .shell { padding: 12px 10px 40px; }
-      .hero { padding: 24px 18px; border-radius: 18px; }
-      .hero h1 { font-size: 28px; }
-      .hero p { font-size: 15px; }
-      .appHeader { padding: 18px 16px 14px; }
-      .appHeader h2 { font-size: 21px; }
-      .content { padding: 10px 12px 24px; gap: 14px; }
-      .section { padding: 16px 14px; border-radius: 16px; }
-      .sectionHeaderText h3 { font-size: 18px; }
-      .row { flex-direction: column; align-items: stretch; }
+      /* Shell & hero */
+      .shell { padding: 0 0 48px; }
+      .hero { margin: 0 0 0; border-radius: 0; padding: 24px 18px 20px; }
+      .hero h1 { font-size: 26px; }
+      .hero p { font-size: 14px; }
+
+      /* Strip the outer app card — let sections be the cards */
+      .app {
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+        background: transparent;
+      }
+      .appHeader { display: none; }
+      .content {
+        padding: 14px 12px 24px;
+        gap: 12px;
+      }
+
+      /* Each section becomes a strong stand-alone card */
+      .section {
+        border-radius: 18px;
+        border: none;
+        padding: 0;
+        background: #fff;
+        box-shadow: 0 2px 12px rgba(22,34,26,0.08);
+        overflow: hidden;
+      }
+
+      /* Green accent bar + step label at top of each section */
+      .sectionHeader {
+        background: linear-gradient(135deg, #1f3b2b, #3a6647);
+        padding: 14px 18px;
+        margin-bottom: 0;
+        border-radius: 0;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .step {
+        background: rgba(255,255,255,0.18);
+        color: #fff;
+        border-color: rgba(255,255,255,0.25);
+        width: 30px;
+        height: 30px;
+        font-size: 13px;
+      }
+
+      .sectionHeaderText h3 {
+        font-size: 16px;
+        color: #fff;
+        margin-bottom: 2px;
+      }
+
+      .sectionHeaderText p {
+        font-size: 12px;
+        color: rgba(255,255,255,0.78);
+      }
+
+      /* Section body padding */
+      .section > *:not(.sectionHeader) {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .section > .checkboxStack { padding-top: 16px; padding-bottom: 4px; }
+      .section > .pillRow { padding-top: 16px; padding-bottom: 4px; }
+      .section > .row:first-of-type { padding-top: 16px; }
+      .section > #sizeRow { padding-top: 16px; }
+      .section > p[style] { padding-top: 16px; }
+      .section > .resultCard { margin: 12px 16px 0; padding: 14px; }
+      .section > .statusLine { padding-bottom: 16px; }
+      .section > #conditionsCard { margin: 0 16px 16px; }
+      .section > #preferenceCard { margin: 0 16px 16px; }
+      .section > #zoneCard { margin: 12px 16px 0; }
+      .section > .tinyNote { padding-top: 10px; padding-bottom: 4px; }
+      .section > .planOutput { margin: 12px 0 0; border-radius: 0 0 18px 18px; }
+
+      /* Inputs & buttons */
+      .row { flex-direction: column; align-items: stretch; padding-top: 14px; padding-bottom: 14px; }
       .row .btn, .row .btnSecondary { width: 100%; text-align: center; }
       .input { min-width: unset; }
       .pillRow { gap: 8px; }
       .pill { font-size: 14px; padding: 10px 13px; }
-      .planOutput {
-        max-height: none;
-        font-size: 14px;
-        padding: 16px;
-        border-radius: 14px;
-      }
+      .checkboxCard { padding: 12px; border-radius: 14px; }
+      .planOutput { font-size: 14px; padding: 18px 16px; border-radius: 0; }
       .planOutput h2 { font-size: 16px; }
       .planOutput h3 { font-size: 15px; }
-      .checkboxCard { padding: 12px; }
-      .resultCard { padding: 14px; }
     }
 
     /* ── Access gate ───────────────────────── */
