@@ -1608,20 +1608,25 @@ Be concise in each section — 3 to 5 bullet points max per section. Complete AL
 
         // Fallback: extract bold names from Recommended Plants section
         if (!lastPlants.length) {
-          const secMatch = fullText.match(/recommended plants?([\s\S]*?)(?:\n#{1,3}\s|\n\d+\.\s+[A-Z]|$)/i);
+          // Words that disqualify a bold phrase from being a plant name
+          const NOT_PLANT = /consult|contains|provider|always|never|avoid|caution|warning|important|companion|harvest|holistic|traditional|safety|note:|tip:|section|step|your|this|these|when|before|after|during|health|medical|advice|remember|consider|each|every/i;
+          // Must look like a plant name: 1–4 words, first word capitalized, no sentence-ending punctuation
+          const LOOKS_LIKE_PLANT = /^[A-Z][a-z]+(?: [A-Za-z'-]+){0,3}$/;
+
+          const secMatch = fullText.match(/recommended plants?([\s\S]*?)(?=\n#{1,3}\s|\n\*{0,3}#{1,3}\s|\n\d+\.\s+[A-Z][A-Z]|$)/i);
           if (secMatch) {
-            const boldNames = [...secMatch[1].matchAll(/\*\*([^*\n:]{2,50})\*\*/g)]
+            const boldNames = [...secMatch[1].matchAll(/\*\*([^*\n]{2,40})\*\*/g)]
               .map(m => m[1].trim())
-              .filter(n => n.length > 2 && !/^(note|tip|warning|important|good companion|harvest|use|holistic|traditional)/i.test(n));
+              .filter(n => LOOKS_LIKE_PLANT.test(n) && !NOT_PLANT.test(n));
             if (boldNames.length) {
-              lastPlants = boldNames.slice(0, 12).map(name => ({ common: name, botanical: name }));
+              lastPlants = [...new Set(boldNames)].slice(0, 12).map(name => ({ common: name, botanical: name }));
             }
           }
-          // Last resort: any bold phrase 3–40 chars that looks like a plant name
+          // Last resort: bold proper-cased 1–3 word phrases anywhere in the doc
           if (!lastPlants.length) {
-            const allBold = [...fullText.matchAll(/\*\*([A-Z][a-z]+(?: [A-Za-z]+){0,3})\*\*/g)]
+            const allBold = [...fullText.matchAll(/\*\*([A-Z][a-z]+(?: [A-Za-z'-]+){0,2})\*\*/g)]
               .map(m => m[1].trim())
-              .filter(n => n.split(" ").length <= 4 && !/^(note|tip|section|step)/i.test(n));
+              .filter(n => LOOKS_LIKE_PLANT.test(n) && !NOT_PLANT.test(n));
             if (allBold.length) {
               lastPlants = [...new Set(allBold)].slice(0, 12).map(name => ({ common: name, botanical: name }));
             }
@@ -1739,18 +1744,26 @@ Be concise in each section — 3 to 5 bullet points max per section. Complete AL
     });
 
     async function fetchPlantImage(plant) {
-      const name = plant.botanical || plant.common;
-      try {
-        const res = await fetch(
-          `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name)}`,
-          { headers: { "Accept": "application/json" } }
-        );
-        if (!res.ok) throw new Error("no result");
-        const data = await res.json();
-        return data.thumbnail?.source || null;
-      } catch {
-        return null;
+      // Try multiple name variations in order: botanical, common, first-word only
+      const candidates = [...new Set([
+        plant.botanical,
+        plant.common,
+        plant.common.split(" ")[0]  // e.g. "Mint" from "Mint (Spearmint)"
+      ].filter(Boolean))];
+
+      for (const name of candidates) {
+        try {
+          const res = await fetch(
+            `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name)}`,
+            { headers: { "Accept": "application/json" } }
+          );
+          if (!res.ok) continue;
+          const data = await res.json();
+          const thumb = data.thumbnail?.source;
+          if (thumb) return thumb;
+        } catch { /* try next */ }
       }
+      return null;
     }
 
     $("pdfBtn").addEventListener("click", async () => {
