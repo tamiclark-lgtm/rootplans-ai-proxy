@@ -205,6 +205,33 @@
       border-color: var(--border-strong);
     }
 
+    .favBtn { padding: 14px 16px; font-size: 18px; line-height: 1; }
+    .favBtn.saved { background: #fffbeb; border-color: #f0c040; color: #c08000; }
+
+    .fav-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #fffbeb;
+      border: 1px solid #f0d060;
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #5a3f00;
+      cursor: pointer;
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+    .fav-chip:hover { background: #fef3b0; }
+    .fav-chip .fav-remove {
+      font-size: 14px;
+      color: #b08000;
+      margin-left: 2px;
+      line-height: 1;
+    }
+    .fav-chip .fav-remove:hover { color: #c00; }
+
     .statusLine {
       margin-top: 14px;
       font-size: 14px;
@@ -1002,8 +1029,11 @@
           <div class="row">
             <input id="zipInput" class="input" inputmode="numeric" maxlength="5" placeholder="Enter 5-digit ZIP code" />
             <button id="detectBtn" class="btn" type="button">Enter</button>
+            <button id="favBtn" class="btnSecondary favBtn" type="button" title="Save as favorite">☆</button>
             <button id="resetBtn" class="btnSecondary" type="button">Reset</button>
           </div>
+
+          <div id="favRow" style="display:none;margin-top:10px;"></div>
 
           <div id="zoneCard" class="resultCard" style="display:none;">
             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
@@ -1260,6 +1290,65 @@
 
     let detected = { zip: "", zone: "", location: "" };
     let selectedTheme = "";
+
+    // ── Favorite ZIPs (persisted in localStorage) ───────────────────────
+    function getFavs() {
+      try { return JSON.parse(localStorage.getItem("rp_favZips") || "[]"); } catch { return []; }
+    }
+    function saveFavs(arr) {
+      localStorage.setItem("rp_favZips", JSON.stringify(arr));
+    }
+    function renderFavs() {
+      const favs = getFavs();
+      const row = $("favRow");
+      if (!favs.length) { row.style.display = "none"; return; }
+      row.style.display = "block";
+      row.innerHTML = favs.map(zip =>
+        `<span class="fav-chip" data-zip="${zip}">⭐ ${zip}<span class="fav-remove" data-zip="${zip}" title="Remove">✕</span></span>`
+      ).join("");
+      // Click chip body → load that ZIP
+      row.querySelectorAll(".fav-chip").forEach(chip => {
+        chip.addEventListener("click", e => {
+          if (e.target.classList.contains("fav-remove")) return;
+          const z = chip.dataset.zip;
+          $("zipInput").value = z;
+          $("detectBtn").click();
+        });
+      });
+      // Click ✕ → remove from favorites
+      row.querySelectorAll(".fav-remove").forEach(x => {
+        x.addEventListener("click", e => {
+          e.stopPropagation();
+          const z = x.dataset.zip;
+          saveFavs(getFavs().filter(f => f !== z));
+          updateFavBtn();
+          renderFavs();
+        });
+      });
+    }
+    function updateFavBtn() {
+      const zip = cleanZip($("zipInput").value);
+      const saved = getFavs().includes(zip);
+      const btn = $("favBtn");
+      btn.textContent = saved ? "★" : "☆";
+      btn.classList.toggle("saved", saved);
+      btn.title = saved ? "Remove from favorites" : "Save as favorite";
+    }
+    $("favBtn").addEventListener("click", () => {
+      const zip = cleanZip($("zipInput").value);
+      if (zip.length !== 5) return;
+      const favs = getFavs();
+      if (favs.includes(zip)) {
+        saveFavs(favs.filter(f => f !== zip));
+      } else {
+        saveFavs([...favs, zip]);
+      }
+      updateFavBtn();
+      renderFavs();
+    });
+    $("zipInput").addEventListener("input", updateFavBtn);
+    renderFavs();
+    updateFavBtn();
     let selectedConditions = [];
     let selectedPlantType = "both";
     let selectedSunlight = "";
