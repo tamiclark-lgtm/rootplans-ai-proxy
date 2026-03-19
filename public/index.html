@@ -1171,16 +1171,34 @@
             <button class="pill" type="button" data-planttype="decorative" aria-pressed="false">🌸 Decorative only</button>
           </div>
 
+          <p style="font-weight:700;margin-bottom:6px;font-size:15px;">Plant variety</p>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:10px;">How adventurous should your plant list be?</p>
+          <div class="pillRow" id="rarityRow" style="margin-bottom:20px;">
+            <button class="pill" type="button" data-rarity="common" aria-pressed="false">🌱 Common &amp; Reliable</button>
+            <button class="pill" type="button" data-rarity="mixed" aria-pressed="true">🌿 Mixed</button>
+            <button class="pill" type="button" data-rarity="unique" aria-pressed="false">✨ Unique &amp; Rare</button>
+          </div>
+
           <div id="staplesCard" style="display:none;margin-bottom:20px;padding:16px;background:#f7faf7;border:1px solid #dce8de;border-radius:14px;">
-            <p style="font-weight:700;font-size:14px;color:#274c38;margin-bottom:4px;">Must-Have Vegetables</p>
-            <p style="font-size:13px;color:#4a5e50;margin-bottom:12px;">Tap any to make sure it's included in your plan.</p>
-            <div class="pillRow" id="staplesRow" style="flex-wrap:wrap;gap:8px;"></div>
+            <p style="font-weight:700;font-size:14px;color:#274c38;margin-bottom:4px;">Must-Have Plants</p>
+            <p style="font-size:13px;color:#4a5e50;margin-bottom:12px;">Tap any to guarantee it's included — or type your own.</p>
+            <div class="pillRow" id="staplesRow" style="flex-wrap:wrap;gap:8px;margin-bottom:10px;"></div>
+            <div class="row" style="gap:8px;margin-top:6px;">
+              <input id="staplesInput" class="input" placeholder="Type a plant name…" style="font-size:13px;padding:9px 12px;" />
+              <button id="staplesAddBtn" class="btnSecondary" type="button" style="padding:9px 14px;font-size:13px;white-space:nowrap;">Add</button>
+            </div>
+            <div id="staplesCustomRow" class="pillRow" style="flex-wrap:wrap;gap:8px;margin-top:10px;"></div>
           </div>
 
           <div id="exclusionsCard" style="display:none;margin-bottom:20px;padding:16px;background:#fff5f5;border:1px solid #fcc;border-radius:14px;">
             <p style="font-weight:700;font-size:14px;color:#8b1a1a;margin-bottom:4px;">Exclude from My Plan</p>
-            <p style="font-size:13px;color:#a03030;margin-bottom:12px;">Tap anything you don't want in your plan.</p>
-            <div class="pillRow" id="exclusionsRow" style="flex-wrap:wrap;gap:8px;"></div>
+            <p style="font-size:13px;color:#a03030;margin-bottom:12px;">Tap anything you don't want — or type your own.</p>
+            <div class="pillRow" id="exclusionsRow" style="flex-wrap:wrap;gap:8px;margin-bottom:10px;"></div>
+            <div class="row" style="gap:8px;margin-top:6px;">
+              <input id="exclusionsInput" class="input" placeholder="Type a plant name…" style="font-size:13px;padding:9px 12px;" />
+              <button id="exclusionsAddBtn" class="btnSecondary" type="button" style="padding:9px 14px;font-size:13px;white-space:nowrap;">Add</button>
+            </div>
+            <div id="exclusionsCustomRow" class="pillRow" style="flex-wrap:wrap;gap:8px;margin-top:10px;"></div>
           </div>
 
           <div class="checkboxStack">
@@ -1414,6 +1432,7 @@
     let selectedSunlight = "";
     let selectedStaples = [];
     let selectedExclusions = [];
+    let selectedRarity = "mixed";
     let lastPlanText = "";
     let lastPlants = [];
 
@@ -1649,14 +1668,17 @@ Create a practical, beautiful, beginner-friendly garden plan for:
 - Include holistic healing powers: ${holisticHealing ? "Yes" : "No"}
 ${selectedTheme === "Ailment Support" ? `- Functional focus: ${conditionText}` : ""}
 
+VARIETY SEED: ${Math.floor(Math.random() * 9000) + 1000} — use this to randomize your plant selection so results differ each generation even with the same settings.
+
 PLANT SELECTION RULES:
 - ${selectedPlantType === "edible" ? "Include ONLY edible plants (vegetables, fruits, herbs). No purely ornamental plants." : selectedPlantType === "decorative" ? "Include ONLY decorative/ornamental plants. No edible plants." : "Include both edible and decorative plants. In section 2, use two subheadings: '🍓 Edible Plants' and '🌸 Decorative Plants'."}
-${selectedPlantType !== "decorative" ? "- Prioritize common vegetable garden crops: tomatoes, peppers, broccoli, beans, cucumbers, zucchini, lettuce, carrots, kale, peas, squash, chard, spinach, beets, onions. Herbs (basil, mint, chives) are supplements, not the main list." : ""}
+- VARIETY LEVEL — ${selectedRarity === "common" ? "Choose well-known, beginner-friendly plants that are widely available at garden centers. Prioritize reliability and familiarity (tomatoes, basil, marigolds, etc.)." : selectedRarity === "unique" ? "IMPORTANT: Avoid the most common garden staples. Instead choose unusual, heirloom, heritage, or zone-specific plants that most gardeners have never grown. Include specific variety names (e.g. 'Dragon Tongue Bean' not just 'Bean'). Draw from the full diversity of what thrives in Zone " + zone + " — rare natives, unusual edibles, heritage ornamentals, lesser-known medicinals. Be adventurous and specific." : "Blend familiar staples with 2–3 lesser-known or heirloom varieties to give the gardener something interesting to discover."}
+${selectedPlantType !== "decorative" && selectedRarity === "common" ? "- Prioritize common vegetable garden crops: tomatoes, peppers, broccoli, beans, cucumbers, zucchini, lettuce, carrots, kale, peas, squash, chard, spinach, beets, onions. Herbs are supplements." : ""}
 - ${nativeOnly ? "Use only native plants appropriate for the zone." : "Prefer native plants first; include well-adapted non-invasive plants as needed."}
 - Do not suggest invasive plants.
 - Include only plants realistic for USDA Zone ${zone}.
-${selectedStaples.length ? `- REQUIRED — these must appear in the plan no matter what: ${selectedStaples.join(", ")}. Note any zone-specific care adjustments if needed.` : ""}
-${selectedExclusions.length ? `9. EXCLUDED — the user does NOT want these in their plan under any circumstances. Do not suggest them or any variety of them: ${selectedExclusions.join(", ")}.` : ""}
+${(selectedStaples.length || customStaples.length) ? `- REQUIRED — these must appear in the plan no matter what: ${[...selectedStaples, ...customStaples].join(", ")}. Note any zone-specific care adjustments if needed.` : ""}
+${(selectedExclusions.length || customExclusions.length) ? `- EXCLUDED — do NOT include these under any circumstances: ${[...selectedExclusions, ...customExclusions].join(", ")}.` : ""}
 
 SUNLIGHT: ${selectedSunlight ? `Only recommend plants that thrive in "${selectedSunlight}" conditions.` : "Include a mix of sun tolerances."}
 
@@ -1776,6 +1798,8 @@ Complete ALL 7 sections. Do not stop early.
       document.querySelectorAll("#themeRow .pill").forEach(btn => btn.setAttribute("aria-pressed", "false"));
       document.querySelectorAll("#sunlightRow .pill").forEach(btn => btn.setAttribute("aria-pressed", "false"));
       document.querySelectorAll("#plantTypeRow .pill").forEach(btn => btn.setAttribute("aria-pressed", "false"));
+      document.querySelectorAll("#rarityRow .pill").forEach(btn => btn.setAttribute("aria-pressed", btn.dataset.rarity === "mixed" ? "true" : "false"));
+      selectedRarity = "mixed";
 
       $("conditionInput").value = "";
       $("suggestionsRow").innerHTML = "";
@@ -1783,8 +1807,14 @@ Complete ALL 7 sections. Do not stop early.
       $("preferenceSummary").innerHTML = "";
       selectedStaples = [];
       selectedExclusions = [];
+      customStaples = [];
+      customExclusions = [];
       $("staplesCard").style.display = "none";
       $("exclusionsCard").style.display = "none";
+      $("staplesCustomRow").innerHTML = "";
+      $("exclusionsCustomRow").innerHTML = "";
+      $("staplesInput").value = "";
+      $("exclusionsInput").value = "";
 
       $("aiStatus").textContent = "";
       $("zoneBadge").style.display = "none";
@@ -1810,6 +1840,15 @@ Complete ALL 7 sections. Do not stop early.
       btn.addEventListener("click", () => {
         selectedSunlight = btn.dataset.sun;
         document.querySelectorAll("#sunlightRow .pill").forEach(b => b.setAttribute("aria-pressed", "false"));
+        btn.setAttribute("aria-pressed", "true");
+        updatePreferenceSummary();
+      });
+    });
+
+    document.querySelectorAll("#rarityRow .pill").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedRarity = btn.dataset.rarity;
+        document.querySelectorAll("#rarityRow .pill").forEach(b => b.setAttribute("aria-pressed", "false"));
         btn.setAttribute("aria-pressed", "true");
         updatePreferenceSummary();
       });
@@ -1875,6 +1914,50 @@ Complete ALL 7 sections. Do not stop early.
         row.appendChild(btn);
       });
     }
+
+    // ── Custom staples (typed) ──────────────────────────────────────────
+    let customStaples = [];
+    let customExclusions = [];
+
+    function renderCustomChips(arr, containerId, onRemove, chipStyle) {
+      const row = $(containerId);
+      row.innerHTML = "";
+      arr.forEach((val, i) => {
+        const chip = document.createElement("span");
+        chip.className = "fav-chip";
+        chip.style.cssText = chipStyle;
+        chip.innerHTML = `${escapeHtml(val)} <span class="fav-remove" title="Remove">✕</span>`;
+        chip.querySelector(".fav-remove").addEventListener("click", () => { onRemove(i); });
+        row.appendChild(chip);
+      });
+    }
+
+    function addCustomStaple(val) {
+      val = val.trim();
+      if (!val) return;
+      customStaples.push(val);
+      $("staplesInput").value = "";
+      renderCustomChips(customStaples, "staplesCustomRow",
+        i => { customStaples.splice(i, 1); renderCustomChips(customStaples, "staplesCustomRow", arguments.callee, "background:#edf4ef;border-color:#a8d0b0;color:#274c38;"); updatePreferenceSummary(); },
+        "background:#edf4ef;border-color:#a8d0b0;color:#274c38;");
+      updatePreferenceSummary();
+    }
+
+    function addCustomExclusion(val) {
+      val = val.trim();
+      if (!val) return;
+      customExclusions.push(val);
+      $("exclusionsInput").value = "";
+      renderCustomChips(customExclusions, "exclusionsCustomRow",
+        i => { customExclusions.splice(i, 1); renderCustomChips(customExclusions, "exclusionsCustomRow", arguments.callee, "background:#ffeaea;border-color:#e05050;color:#8b1a1a;"); updatePreferenceSummary(); },
+        "background:#ffeaea;border-color:#e05050;color:#8b1a1a;");
+      updatePreferenceSummary();
+    }
+
+    $("staplesAddBtn").addEventListener("click", () => addCustomStaple($("staplesInput").value));
+    $("staplesInput").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); addCustomStaple($("staplesInput").value); } });
+    $("exclusionsAddBtn").addEventListener("click", () => addCustomExclusion($("exclusionsInput").value));
+    $("exclusionsInput").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); addCustomExclusion($("exclusionsInput").value); } });
 
     $("conditionInput").addEventListener("input", (e) => renderSuggestions(e.target.value));
 
