@@ -76,12 +76,10 @@
     .hero {
       max-width: var(--max);
       margin: 0 auto 32px;
-      padding: 54px 56px 50px;
+      padding: 40px 36px;
       border-radius: 32px;
       background:
-        radial-gradient(ellipse 60% 80% at 15% 60%,  rgba(20, 45, 28, 0.72) 0%, transparent 65%),
-        radial-gradient(ellipse 70% 100% at 50% 50%,  rgba(15, 35, 20, 0.78) 0%, transparent 100%),
-        url('https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;
+        linear-gradient(148deg, #1c3c28 0%, #2c5a3e 42%, #1a3222 100%);
       color: #fff;
       box-shadow:
         var(--shadow),
@@ -89,7 +87,48 @@
         0 1px 0 rgba(255,255,255,0.10) inset;
       position: relative;
       overflow: hidden;
+      display: grid;
+      grid-template-columns: 180px 1fr 180px;
+      gap: 28px;
+      align-items: center;
+      min-height: 320px;
     }
+
+    /* ── Hero collage side panels ── */
+    .hero-gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      height: 280px;
+    }
+
+    .hero-gallery-img {
+      width: 100%;
+      flex: 1;
+      min-height: 0;
+      object-fit: cover;
+      border-radius: 14px;
+      opacity: 0.90;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.08);
+      transition: opacity 0.3s ease, transform 0.4s ease;
+      display: block;
+    }
+
+    .hero-gallery-img:hover {
+      opacity: 1;
+      transform: scale(1.02);
+    }
+
+    /* slight rotation for collage feel */
+    .hero-gallery-left .hero-gallery-img:first-child  { transform: rotate(-1.5deg); }
+    .hero-gallery-left .hero-gallery-img:last-child   { transform: rotate(0.8deg); }
+    .hero-gallery-right .hero-gallery-img:first-child { transform: rotate(1.2deg); }
+    .hero-gallery-right .hero-gallery-img:last-child  { transform: rotate(-0.9deg); }
+
+    .hero-gallery-left .hero-gallery-img:first-child:hover,
+    .hero-gallery-left .hero-gallery-img:last-child:hover,
+    .hero-gallery-right .hero-gallery-img:first-child:hover,
+    .hero-gallery-right .hero-gallery-img:last-child:hover { transform: rotate(0) scale(1.03); }
 
     /* Animated ambient gold glow */
     .hero::before {
@@ -903,7 +942,8 @@
     @media (max-width: 720px) {
       /* Shell & hero */
       .shell { padding: 0 0 48px; }
-      .hero { margin: 0 0 0; border-radius: 0; padding: 24px 18px 20px; }
+      .hero { margin: 0 0 0; border-radius: 0; padding: 24px 18px 20px; grid-template-columns: 1fr; }
+      .hero-gallery { display: none; }
       .hero h1 { font-size: 26px; }
       .hero p { font-size: 14px; }
 
@@ -1157,6 +1197,14 @@
 
   <div class="shell">
     <section class="hero">
+
+      <!-- Left photo collage -->
+      <div class="hero-gallery hero-gallery-left">
+        <img class="hero-gallery-img" src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&w=400&q=82" alt="Raised garden beds" />
+        <img class="hero-gallery-img" src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=400&q=82" alt="Garden plants" />
+      </div>
+
+      <!-- Center text -->
       <div class="hero-inner">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:4px;">
           <div class="eyebrow"><span class="eyebrow-dot"></span>RootPlans &bull; Intelligent Garden Planning</div>
@@ -1168,6 +1216,13 @@
           native-plant preference, and optional holistic plant guidance.
         </p>
       </div>
+
+      <!-- Right photo collage -->
+      <div class="hero-gallery hero-gallery-right">
+        <img class="hero-gallery-img" src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=400&q=82" alt="Farm at golden hour" />
+        <img class="hero-gallery-img" src="https://images.unsplash.com/photo-1591857177580-dc82b9ac4e1e?auto=format&fit=crop&w=400&q=82" alt="Vegetable garden" />
+      </div>
+
     </section>
 
     <main class="app">
