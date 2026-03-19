@@ -1149,6 +1149,10 @@
 
   <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
   <script>
+    // Treat single newlines as <br> so each plant field appears on its own line
+    marked.use({ breaks: true });
+  </script>
+  <script>
     const AI_PROXY_URL = "/api/holistic";
     const AUTH_URL = "/api/auth";
 
