@@ -44,99 +44,58 @@
     body {
       margin: 0;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background:
-        radial-gradient(ellipse 70% 45% at 50% 0%,  rgba(201, 169, 110, 0.12) 0%, transparent 100%),
-        radial-gradient(ellipse 55% 40% at 95% 95%, rgba(91, 142, 107, 0.08)  0%, transparent 100%),
-        radial-gradient(ellipse 45% 35% at 5%  85%, rgba(139, 111, 88, 0.07)  0%, transparent 100%),
-        linear-gradient(180deg, rgba(245,241,228,0.97) 0%, rgba(237,232,216,0.97) 55%, rgba(240,236,224,0.97) 100%),
-        url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&w=1800&q=60') center/cover fixed no-repeat;
+      /* Full-bleed farm photo */
+      background: url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1920&q=88') center/cover fixed no-repeat;
       color: var(--text);
       -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
     }
 
-    /* ── Dreamlike background world: layer 1 — blurred garden photo ── */
+    /* ── Warm cinematic vignette overlay ── */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
       background:
-        url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1800&q=60') center/cover no-repeat;
-      opacity: 0.07;
-      filter: blur(6px) saturate(0.8);
-      transform: scale(1.06);
+        radial-gradient(ellipse 130% 130% at 50% 50%, transparent 25%, rgba(8, 22, 12, 0.78) 100%),
+        linear-gradient(180deg, rgba(8, 22, 12, 0.50) 0%, rgba(18, 40, 22, 0.15) 40%, rgba(8, 22, 12, 0.60) 100%);
       pointer-events: none;
       z-index: 0;
     }
 
-    /* ── Layer 2 — grain texture over everything ── */
+    /* ── Film grain ── */
     body::after {
       content: '';
       position: fixed;
       inset: 0;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.45'/%3E%3C/svg%3E");
-      opacity: 0.030;
+      opacity: 0.032;
       pointer-events: none;
       z-index: 0;
     }
 
     .shell {
       min-height: 100vh;
-      padding: 36px 20px 68px;
+      padding: 60px 20px 80px;
       position: relative;
       z-index: 1;
-    }
-
-    /* ── Side photo strips (outside the card, in page margins) ── */
-    .side-strip {
-      position: fixed;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 130px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      z-index: 0;
+      align-items: center;
     }
 
-    .side-strip-left  { left: 8px; }
-    .side-strip-right { right: 8px; }
-
-    .side-img {
-      width: 100%;
-      height: 140px;
-      object-fit: cover;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.12);
-      transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
-      display: block;
-    }
-
-    .side-img:hover {
-      transform: scale(1.03);
-      box-shadow: 0 14px 36px rgba(0,0,0,0.24);
-    }
-
-    /* Only show strips when there's room beside the content */
-    @media (max-width: 1200px) { .side-strip { display: none; } }
-
-    /* ── Hero ──────────────────────────────────── */
+    /* ── Hero — transparent, cinematic floating text ── */
     .hero {
+      width: 100%;
       max-width: var(--max);
-      margin: 0 auto 32px;
-      padding: 54px 56px 50px;
-      border-radius: 32px;
-      background:
-        radial-gradient(ellipse 70% 90% at 20% 60%, rgba(20, 50, 30, 0.65) 0%, transparent 70%),
-        radial-gradient(ellipse 60% 80% at 80% 30%, rgba(30, 60, 35, 0.55) 0%, transparent 65%),
-        linear-gradient(148deg, rgba(18, 38, 24, 0.88) 0%, rgba(32, 62, 42, 0.82) 50%, rgba(16, 36, 22, 0.90) 100%),
-        url('https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;
+      margin: 0 auto 40px;
+      padding: 64px 56px 52px;
+      border-radius: 0;
+      background: none;
+      box-shadow: none;
       color: #fff;
-      box-shadow:
-        var(--shadow),
-        0 0 0 1px rgba(255,255,255,0.06) inset,
-        0 1px 0 rgba(255,255,255,0.10) inset;
+      text-align: center;
       position: relative;
-      overflow: hidden;
     }
 
     /* Animated ambient gold glow */
@@ -145,12 +104,12 @@
       position: absolute;
       top: -30%; right: -8%;
       width: 52%; height: 115%;
-      background: radial-gradient(ellipse, rgba(201, 169, 110, 0.16) 0%, transparent 68%);
+      background: radial-gradient(ellipse, rgba(201, 169, 110, 0.10) 0%, transparent 68%);
       animation: heroGlow 12s ease-in-out infinite alternate;
       pointer-events: none;
     }
 
-    /* Grain texture */
+    /* Grain texture on hero — keep slot but empty */
     .hero::after {
       content: '';
       position: absolute;
@@ -167,7 +126,7 @@
       100% { opacity: 1.00; transform: translate(-4%, 6%) scale(1.10); }
     }
 
-    .hero-inner { position: relative; z-index: 1; }
+    .hero-inner { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; }
 
     .eyebrow {
       display: inline-flex;
@@ -200,12 +159,13 @@
     }
 
     .hero h1 {
-      margin: 24px 0 16px;
-      font-size: clamp(36px, 5vw, 60px);
-      line-height: 1.06;
+      margin: 24px 0 18px;
+      font-size: clamp(40px, 5.5vw, 72px);
+      line-height: 1.04;
       letter-spacing: -0.01em;
       font-weight: 600;
       color: #fff;
+      text-shadow: 0 2px 32px rgba(0,0,0,0.45);
     }
 
     .hero h1 em {
@@ -215,29 +175,33 @@
 
     .hero p {
       margin: 0;
-      font-size: 16.5px;
+      font-size: 17px;
       line-height: 1.72;
-      color: rgba(255,255,255,0.76);
-      max-width: 600px;
+      color: rgba(255,255,255,0.80);
+      max-width: 580px;
       font-weight: 400;
+      text-shadow: 0 1px 12px rgba(0,0,0,0.4);
     }
 
     .app {
+      width: 100%;
       max-width: var(--max);
       margin: 0 auto;
-      background: var(--surface);
-      border: 1px solid rgba(255,255,255,0.55);
+      background: rgba(252, 249, 240, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.32);
       border-radius: 28px;
-      box-shadow: var(--shadow);
+      box-shadow:
+        0 48px 120px rgba(0, 0, 0, 0.36),
+        0 0 0 1px rgba(255,255,255,0.14) inset;
       overflow: hidden;
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
     }
 
     .appHeader {
       padding: 28px 36px 22px;
       border-bottom: 1px solid var(--border);
-      background: rgba(255, 253, 246, 0.70);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(255, 253, 246, 0.60);
     }
     .appHeader h2 {
       margin: 0 0 6px;
@@ -941,18 +905,20 @@
 
     .footer {
       max-width: var(--max);
-      margin: 20px auto 0;
+      margin: 24px auto 0;
       padding: 0 8px;
       text-align: center;
-      color: var(--muted);
-      font-size: 13px;
+      color: rgba(255,255,255,0.50);
+      font-size: 12px;
+      letter-spacing: 0.04em;
     }
+    .footer a { color: rgba(255,255,255,0.65); }
 
     @media (max-width: 720px) {
       /* Shell & hero */
-      .shell { padding: 0 0 48px; }
-      .hero { margin: 0 0 0; border-radius: 0; padding: 24px 18px 20px; grid-template-columns: 1fr; }
-      .hero-gallery { display: none; }
+      .shell { padding: 32px 12px 48px; }
+      .hero { padding: 40px 20px 32px; }
+      .hero h1 { font-size: 36px; }
       .hero h1 { font-size: 26px; }
       .hero p { font-size: 14px; }
 
@@ -1205,20 +1171,6 @@
   </div>
 
   <div class="shell">
-
-    <!-- Left side photo strip -->
-    <div class="side-strip side-strip-left">
-      <img class="side-img" src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&w=320&q=85" alt="Raised garden beds" />
-      <img class="side-img" src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=320&q=85" alt="Garden plants" />
-      <img class="side-img" src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=320&q=85" alt="Farm golden hour" />
-    </div>
-
-    <!-- Right side photo strip -->
-    <div class="side-strip side-strip-right">
-      <img class="side-img" src="https://images.unsplash.com/photo-1591857177580-dc82b9ac4e1e?auto=format&fit=crop&w=320&q=85" alt="Vegetable garden" />
-      <img class="side-img" src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=320&h=200&q=85" alt="Herbs in sunlight" />
-      <img class="side-img" src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&w=320&h=160&q=85&crop=bottom" alt="Garden rows" />
-    </div>
 
     <section class="hero">
 
