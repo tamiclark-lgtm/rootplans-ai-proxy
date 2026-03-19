@@ -5,95 +5,65 @@
   <title>RootPlans | Intelligent Garden Planning</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Google Fonts: Cormorant Garamond (serif headings) + Inter (body) -->
+  <!-- Google Fonts: editorial serif + clean sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
-    /* =============================================
-       ROOTPLANS — FARM-TO-TABLE DESIGN SYSTEM
-       Nature luxury: sage, cream, gold, earth
-    ============================================= */
-
     :root {
-      /* --- Backgrounds & Surfaces --- */
-      --bg:              #f0ece0;
-      --cream:           #faf8f2;
-      --surface:         rgba(255, 253, 246, 0.94);
-      --surface-strong:  #fffdf8;
-
-      /* --- Sage Greens --- */
-      --primary:         #4a7a5a;
-      --primary-2:       #5b8e6b;
-      --primary-soft:    #eaf3eb;
-
-      /* --- Earthy Accents --- */
-      --gold:            #c9a96e;
-      --gold-glow:       rgba(201, 169, 110, 0.20);
-      --soil:            #8c6e58;
-      --peach:           rgba(232, 196, 162, 0.25);
-
-      /* --- Text --- */
-      --text:            #28362a;
-      --muted:           #6a7b6b;
-
-      /* --- Borders --- */
-      --border:          rgba(74, 122, 90, 0.10);
-      --border-strong:   rgba(74, 122, 90, 0.18);
-
-      /* --- Shadows --- */
-      --shadow:          0 22px 60px rgba(40, 54, 42, 0.10);
-      --shadow-card:     0 4px 18px rgba(40, 54, 42, 0.07);
-      --shadow-hover:    0 14px 44px rgba(40, 54, 42, 0.13);
-
-      --radius:          20px;
-      --max:             1120px;
-
-      /* --- Transitions --- */
-      --ease:            cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      --dur:             0.32s;
+      --bg:            #f0ece0;
+      --surface:       rgba(255, 253, 246, 0.94);
+      --surface-strong: #fffdf8;
+      --border:        rgba(74, 122, 90, 0.10);
+      --border-strong: rgba(74, 122, 90, 0.18);
+      --text:          #28362a;
+      --muted:         #6a7b6b;
+      --primary:       #4a7a5a;
+      --primary-2:     #5b8e6b;
+      --primary-soft:  #eaf3eb;
+      --gold:          #c9a96e;
+      --gold-glow:     rgba(201, 169, 110, 0.18);
+      --soil:          #8c6e58;
+      --shadow:        0 22px 60px rgba(40, 54, 42, 0.10);
+      --shadow-card:   0 4px 18px rgba(40, 54, 42, 0.07);
+      --shadow-hover:  0 14px 44px rgba(40, 54, 42, 0.13);
+      --radius:        20px;
+      --max:           1120px;
+      --ease:          cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --dur:           0.30s;
     }
 
-    /* =============================================
-       BASE RESET
-    ============================================= */
     * { box-sizing: border-box; }
+
+    /* Serif for all headings */
+    h1, h2, h3, h4 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+    }
 
     body {
       margin: 0;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background:
-        radial-gradient(ellipse 70% 45% at 50% 0%,   rgba(201, 169, 110, 0.10) 0%, transparent 100%),
-        radial-gradient(ellipse 55% 40% at 95% 95%,  rgba(91, 142, 107, 0.07)  0%, transparent 100%),
-        radial-gradient(ellipse 45% 35% at 5%  85%,  rgba(139, 111, 88, 0.06)  0%, transparent 100%),
+        radial-gradient(ellipse 70% 45% at 50% 0%,  rgba(201, 169, 110, 0.10) 0%, transparent 100%),
+        radial-gradient(ellipse 55% 40% at 95% 95%, rgba(91, 142, 107, 0.07)  0%, transparent 100%),
+        radial-gradient(ellipse 45% 35% at 5%  85%, rgba(139, 111, 88, 0.06)  0%, transparent 100%),
         linear-gradient(180deg, #f5f1e4 0%, #ede8d8 55%, var(--bg) 100%);
       color: var(--text);
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Subtle grain texture overlay */
+    /* Grain texture overlay */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.45'/%3E%3C/svg%3E");
-      opacity: 0.030;
+      opacity: 0.028;
       pointer-events: none;
       z-index: 0;
     }
 
-    /* =============================================
-       TYPOGRAPHY — serif headings
-    ============================================= */
-    h1, h2, h3, h4 {
-      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-    }
-
-    /* =============================================
-       SHELL WRAPPER
-    ============================================= */
     .shell {
       min-height: 100vh;
       padding: 36px 20px 68px;
@@ -101,9 +71,7 @@
       z-index: 1;
     }
 
-    /* =============================================
-       HERO SECTION
-    ============================================= */
+    /* ── Hero ──────────────────────────────────── */
     .hero {
       max-width: var(--max);
       margin: 0 auto 32px;
@@ -112,31 +80,28 @@
       background:
         radial-gradient(ellipse 60% 80% at 15% 60%,  rgba(201, 169, 110, 0.18) 0%, transparent 65%),
         radial-gradient(ellipse 50% 60% at 85% 20%,  rgba(110, 175, 140, 0.14) 0%, transparent 60%),
-        radial-gradient(ellipse 40% 50% at 50% 100%, rgba(30,  55,  38,  0.5)  0%, transparent 80%),
         linear-gradient(148deg, #1c3c28 0%, #2c5a3e 42%, #1a3222 100%);
       color: #fff;
       box-shadow:
         var(--shadow),
-        0 0 0 1px rgba(255, 255, 255, 0.06) inset,
-        0 1px 0   rgba(255, 255, 255, 0.10) inset;
+        0 0 0 1px rgba(255,255,255,0.06) inset,
+        0 1px 0 rgba(255,255,255,0.10) inset;
       position: relative;
       overflow: hidden;
     }
 
-    /* Animated ambient golden glow */
+    /* Animated ambient gold glow */
     .hero::before {
       content: '';
       position: absolute;
-      top: -30%;
-      right: -8%;
-      width: 52%;
-      height: 115%;
+      top: -30%; right: -8%;
+      width: 52%; height: 115%;
       background: radial-gradient(ellipse, rgba(201, 169, 110, 0.16) 0%, transparent 68%);
       animation: heroGlow 12s ease-in-out infinite alternate;
       pointer-events: none;
     }
 
-    /* Grain texture on hero */
+    /* Grain texture */
     .hero::after {
       content: '';
       position: absolute;
@@ -153,33 +118,27 @@
       100% { opacity: 1.00; transform: translate(-4%, 6%) scale(1.10); }
     }
 
-    /* Inner wrapper lifts content above pseudo-elements */
-    .hero-content {
-      position: relative;
-      z-index: 1;
-    }
+    .hero-inner { position: relative; z-index: 1; }
 
-    /* ---- Eyebrow badge ---- */
     .eyebrow {
       display: inline-flex;
       align-items: center;
       gap: 9px;
       padding: 8px 15px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255,255,255,0.14);
       border-radius: 999px;
       font-size: 11px;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.78);
-      background: rgba(255, 255, 255, 0.06);
+      color: rgba(255,255,255,0.78);
+      background: rgba(255,255,255,0.06);
       backdrop-filter: blur(10px);
       font-family: 'Inter', sans-serif;
       font-weight: 500;
     }
 
     .eyebrow-dot {
-      width: 5px;
-      height: 5px;
+      width: 5px; height: 5px;
       border-radius: 50%;
       background: var(--gold);
       flex-shrink: 0;
@@ -187,18 +146,16 @@
     }
 
     @keyframes dotPulse {
-      0%, 100% { opacity: 0.55; transform: scale(1);   }
+      0%, 100% { opacity: 0.55; transform: scale(1); }
       50%       { opacity: 1.00; transform: scale(1.35); }
     }
 
-    /* ---- Hero heading ---- */
     .hero h1 {
       margin: 24px 0 16px;
-      font-size: clamp(36px, 5.2vw, 62px);
+      font-size: clamp(36px, 5vw, 60px);
       line-height: 1.06;
       letter-spacing: -0.01em;
       font-weight: 600;
-      font-family: 'Cormorant Garamond', Georgia, serif;
       color: #fff;
     }
 
@@ -207,38 +164,34 @@
       color: rgba(220, 196, 148, 0.95);
     }
 
-    /* ---- Hero subtext ---- */
     .hero p {
       margin: 0;
       font-size: 16.5px;
       line-height: 1.72;
-      color: rgba(255, 255, 255, 0.76);
+      color: rgba(255,255,255,0.76);
       max-width: 600px;
       font-weight: 400;
     }
 
-    /* =============================================
-       APP CONTAINER
-    ============================================= */
     .app {
       max-width: var(--max);
       margin: 0 auto;
       background: var(--surface);
-      border: 1px solid rgba(255, 255, 255, 0.55);
+      border: 1px solid rgba(255,255,255,0.55);
       border-radius: 28px;
       box-shadow: var(--shadow);
       overflow: hidden;
     }
 
-    /* ---- App Header ---- */
     .appHeader {
       padding: 28px 36px 22px;
       border-bottom: 1px solid var(--border);
-      background: rgba(255, 253, 246, 0.65);
+      background: rgba(255, 253, 246, 0.70);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
-
     .appHeader h2 {
-      margin: 0 0 8px;
+      margin: 0 0 6px;
       font-size: 28px;
       font-weight: 600;
       letter-spacing: -0.01em;
@@ -249,40 +202,30 @@
       margin: 0;
       color: var(--muted);
       line-height: 1.65;
-      max-width: 720px;
+      max-width: 760px;
       font-size: 15px;
     }
 
-    /* =============================================
-       CONTENT GRID
-    ============================================= */
     .content {
-      padding: 18px 36px 36px;
+      padding: 16px 36px 36px;
       display: grid;
       gap: 16px;
     }
 
-    /* =============================================
-       SECTION CARDS
-    ============================================= */
     .section {
-      padding: 26px;
+      padding: 26px 26px 26px 28px;
       border: 1px solid var(--border);
+      border-left: 3px solid rgba(74, 122, 90, 0.22);
       border-radius: 22px;
       background: rgba(255, 253, 247, 0.88);
-      transition:
-        box-shadow var(--dur) var(--ease),
-        border-color var(--dur) var(--ease),
-        transform var(--dur) var(--ease);
+      transition: box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
     }
-
     .section:hover {
       box-shadow: var(--shadow-hover);
-      border-color: rgba(74, 122, 90, 0.17);
+      border-color: rgba(74, 122, 90, 0.18);
       transform: translateY(-1px);
     }
 
-    /* ---- Section header row ---- */
     .sectionHeader {
       display: flex;
       gap: 14px;
@@ -290,23 +233,18 @@
       margin-bottom: 20px;
     }
 
-    /* ---- Step badge ---- */
     .step {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 999px;
       display: grid;
       place-items: center;
-      background: linear-gradient(
-        135deg,
-        var(--primary-soft),
-        rgba(201, 169, 110, 0.10)
-      );
-      color: var(--primary);
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: #fff;
       font-weight: 700;
-      font-size: 14px;
-      border: 1px solid rgba(74, 122, 90, 0.15);
+      font-size: 15px;
       flex: 0 0 auto;
+      box-shadow: 0 4px 14px rgba(74, 122, 90, 0.28);
       font-family: 'Inter', sans-serif;
     }
 
@@ -324,9 +262,6 @@
       font-size: 14px;
     }
 
-    /* =============================================
-       LAYOUT ROW
-    ============================================= */
     .row {
       display: flex;
       gap: 12px;
@@ -334,9 +269,6 @@
       align-items: center;
     }
 
-    /* =============================================
-       INPUTS
-    ============================================= */
     .input {
       flex: 1;
       min-width: 220px;
@@ -349,57 +281,37 @@
       outline: none;
       background: rgba(255, 253, 248, 0.96);
       font-family: 'Inter', sans-serif;
-      transition:
-        border-color var(--dur) var(--ease),
-        box-shadow    var(--dur) var(--ease);
+      transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
     }
 
-    .input::placeholder {
-      color: var(--muted);
-      opacity: 0.65;
-    }
+    .input::placeholder { color: var(--muted); opacity: 0.65; }
 
     .input:focus {
       border-color: rgba(74, 122, 90, 0.42);
-      box-shadow:
-        0 0 0 4px rgba(74, 122, 90, 0.08),
-        0 2px 8px rgba(74, 122, 90, 0.06);
+      box-shadow: 0 0 0 4px rgba(74, 122, 90, 0.08), 0 2px 8px rgba(74, 122, 90, 0.06);
     }
 
-    /* =============================================
-       BUTTONS
-    ============================================= */
     .btn, .btnSecondary {
       border-radius: 14px;
-      padding: 14px 22px;
+      padding: 14px 20px;
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       border: 1px solid transparent;
       font-family: 'Inter', sans-serif;
       letter-spacing: 0.02em;
-      transition:
-        transform     var(--dur) var(--ease),
-        box-shadow    var(--dur) var(--ease),
-        background    var(--dur) var(--ease),
-        border-color  var(--dur) var(--ease),
-        opacity 0.20s var(--ease);
+      transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), opacity 0.2s var(--ease);
     }
 
-    /* ---- Primary (sage green) ---- */
     .btn {
       background: linear-gradient(148deg, var(--primary) 0%, var(--primary-2) 100%);
       color: #fff;
       box-shadow: 0 6px 22px rgba(74, 122, 90, 0.26);
     }
-
     .btn:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow:
-        0 12px 32px rgba(74, 122, 90, 0.32),
-        0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+      box-shadow: 0 12px 30px rgba(74, 122, 90, 0.32);
     }
-
     .btn:active:not(:disabled) {
       transform: translateY(0);
       box-shadow: 0 4px 12px rgba(74, 122, 90, 0.20);
@@ -411,77 +323,104 @@
       box-shadow: none;
     }
 
-    /* ---- Secondary (soft cream) ---- */
     .btnSecondary {
       background: rgba(255, 253, 248, 0.97);
       color: var(--text);
       border-color: var(--border-strong);
     }
-
     .btnSecondary:hover {
       background: #fff;
       transform: translateY(-1px);
-      box-shadow: 0 4px 16px rgba(40, 54, 42, 0.09);
+      box-shadow: 0 4px 14px rgba(40, 54, 42, 0.09);
     }
 
-    /* =============================================
-       STATUS LINE
-    ============================================= */
+    .favBtn { padding: 14px 16px; font-size: 18px; line-height: 1; }
+    .favBtn.saved { background: #fffbeb; border-color: #f0c040; color: #c08000; }
+
+    .fav-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #fffbeb;
+      border: 1px solid #f0d060;
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #5a3f00;
+      cursor: pointer;
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+    .fav-chip:hover { background: #fef3b0; }
+    .fav-chip .fav-remove {
+      font-size: 14px;
+      color: #b08000;
+      margin-left: 2px;
+      line-height: 1;
+    }
+    .fav-chip .fav-remove:hover { color: #c00; }
+
+    .typeahead-wrap { position: relative; flex: 1; min-width: 0; }
+    .typeahead-drop {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0; right: 0;
+      background: #fff;
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      z-index: 100;
+      overflow: hidden;
+      display: none;
+    }
+    .typeahead-drop.open { display: block; }
+    .typeahead-item {
+      padding: 10px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      color: var(--text);
+    }
+    .typeahead-item:hover, .typeahead-item.active { background: var(--primary-soft); color: var(--primary); }
+
     .statusLine {
       margin-top: 14px;
-      font-size: 13px;
-      font-weight: 500;
+      font-size: 14px;
+      font-weight: 700;
       color: var(--primary);
-      letter-spacing: 0.01em;
     }
 
-    /* =============================================
-       RESULT CARDS
-    ============================================= */
     .resultCard {
       margin-top: 16px;
-      padding: 20px;
-      border-radius: 16px;
+      padding: 18px;
+      border-radius: 18px;
       border: 1px solid var(--border);
-      background: linear-gradient(
-        160deg,
-        rgba(255, 253, 248, 0.98),
-        rgba(240, 248, 242, 0.96)
-      );
-      box-shadow: var(--shadow-card);
+      background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(248,251,248,0.94));
     }
 
     .resultTitle {
-      margin: 0 0 6px;
-      font-size: 20px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      color: var(--text);
+      margin: 0 0 8px;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
     }
 
     .resultLine {
       margin: 0;
       color: var(--muted);
-      line-height: 1.60;
-      font-size: 15px;
-    }
-
-    /* =============================================
-       TINY NOTE
-    ============================================= */
-    .tinyNote {
-      margin-top: 10px;
-      font-size: 12px;
-      color: var(--muted);
       line-height: 1.55;
     }
 
-    /* =============================================
-       PILL ROW + PILLS
-    ============================================= */
+    .tinyNote {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
     .pillRow {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
@@ -495,180 +434,734 @@
       font-size: 14px;
       color: var(--text);
       font-family: 'Inter', sans-serif;
-      transition:
-        background      var(--dur) var(--ease),
-        border-color    var(--dur) var(--ease),
-        color           var(--dur) var(--ease),
-        transform  0.20s var(--ease),
-        box-shadow 0.20s var(--ease);
+      transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease), color var(--dur) var(--ease), transform 0.20s var(--ease), box-shadow 0.20s var(--ease);
     }
-
     .pill:hover {
-      background: rgba(74, 122, 90, 0.06);
-      border-color: rgba(74, 122, 90, 0.26);
+      border-color: rgba(74, 122, 90, 0.28);
+      background: rgba(74, 122, 90, 0.05);
       transform: translateY(-1px);
       box-shadow: 0 3px 10px rgba(74, 122, 90, 0.08);
     }
-
     .pill[aria-pressed="true"] {
-      background: var(--primary-soft);
-      border-color: rgba(74, 122, 90, 0.32);
-      color: var(--primary);
-      box-shadow: 0 2px 8px rgba(74, 122, 90, 0.10);
+      background: linear-gradient(148deg, var(--primary), var(--primary-2));
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(74, 122, 90, 0.28);
     }
 
-    /* =============================================
-       CHIPS (removable conditions)
-    ============================================= */
     .chip {
-      border: 1px solid var(--border-strong);
-      background: rgba(255, 251, 243, 0.97);
-      padding: 9px 14px;
+      border: 1px solid #2563eb;
+      background: #eff6ff;
+      padding: 10px 12px;
       border-radius: 999px;
       cursor: pointer;
-      font-weight: 500;
-      font-size: 13px;
-      color: var(--soil);
-      font-family: 'Inter', sans-serif;
-      transition:
-        background  0.20s var(--ease),
-        transform   0.20s var(--ease),
-        opacity     0.20s var(--ease);
+      font-weight: 700;
+      color: #1d4ed8;
     }
 
-    .chip:hover {
-      background: rgba(140, 110, 88, 0.08);
-      transform: translateY(-1px);
+    .pill.selected {
+      background: #eff6ff;
+      border-color: #2563eb;
+      color: #1d4ed8;
     }
 
-    /* =============================================
-       DIVIDER
-    ============================================= */
     .divider {
       height: 1px;
       background: var(--border);
-      margin: 20px 0;
+      margin: 18px 0;
       border: 0;
     }
 
-    /* =============================================
-       CHECKBOX STACK + CARDS
-    ============================================= */
     .checkboxStack {
       display: grid;
-      gap: 12px;
+      gap: 14px;
     }
 
     .checkboxCard {
       display: flex;
       align-items: flex-start;
       gap: 14px;
-      padding: 18px;
+      padding: 16px;
       border: 1px solid var(--border);
-      border-radius: 16px;
-      background: rgba(255, 253, 248, 0.92);
-      cursor: pointer;
-      transition:
-        background    var(--dur) var(--ease),
-        border-color  var(--dur) var(--ease),
-        box-shadow    var(--dur) var(--ease);
-    }
-
-    .checkboxCard:hover {
-      background: rgba(255, 253, 248, 1);
-      border-color: rgba(74, 122, 90, 0.20);
-      box-shadow: 0 3px 12px rgba(74, 122, 90, 0.06);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.9);
     }
 
     .checkboxCard input[type="checkbox"] {
       margin-top: 3px;
       transform: scale(1.15);
       accent-color: var(--primary);
-      cursor: pointer;
     }
 
     .checkboxLabel {
       margin: 0;
-      font-weight: 600;
-      font-size: 15px;
+      font-weight: 800;
     }
 
     .checkboxHelp {
-      margin: 5px 0 0;
+      margin: 6px 0 0;
       color: var(--muted);
       font-size: 13px;
-      line-height: 1.55;
+      line-height: 1.5;
     }
 
-    /* =============================================
-       SUMMARY LIST
-    ============================================= */
     .summaryList {
-      margin: 10px 0 0;
+      margin: 12px 0 0;
       padding-left: 18px;
       color: var(--muted);
-      line-height: 1.72;
-      font-size: 14px;
+      line-height: 1.65;
     }
 
-    /* =============================================
-       PRE / AI OUTPUT BLOCK
-    ============================================= */
-    pre {
-      margin-top: 16px;
-      padding: 24px;
+    .plantPhotoGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .plantPhotoCard {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #f7faf7;
+      text-align: center;
+    }
+
+    .plantPhotoCard img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .plantPhotoCard .plantPhotoPlaceholder {
+      width: 100%;
+      height: 100px;
+      background: linear-gradient(135deg, #d8e8d8, #c0d8c0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+
+    .plantPhotoCard .plantPhotoName {
+      padding: 6px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #1f2b22;
+      line-height: 1.3;
+    }
+
+    .plantPhotoCard .plantPhotoName em {
+      display: block;
+      font-weight: 400;
+      font-style: italic;
+      color: #7a8f7e;
+      font-size: 10px;
+    }
+
+    .planOutput {
+      margin-top: 14px;
+      padding: 24px 28px;
       border-radius: 18px;
       border: 1px solid var(--border);
-      background: rgba(255, 253, 248, 0.98);
-      white-space: pre-wrap;
-      word-break: break-word;
-      max-height: 640px;
-      overflow: auto;
-      line-height: 1.70;
-      font-size: 14.5px;
+      background: #fff;
+      line-height: 1.75;
+      font-size: 15px;
       color: var(--text);
-      font-family: 'Inter', -apple-system, sans-serif;
-      box-shadow: var(--shadow-card);
     }
 
-    /* =============================================
-       FOOTER
-    ============================================= */
+    .planOutput h1, .planOutput h2, .planOutput h3 {
+      margin: 22px 0 8px;
+      color: var(--primary);
+      letter-spacing: -0.01em;
+    }
+
+    .planOutput h1 { font-size: 20px; }
+    .planOutput h2 { font-size: 18px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+    .planOutput h3 { font-size: 16px; }
+
+    .planOutput p { margin: 0 0 10px; }
+
+    /* Faint divider between plant entries */
+    .planOutput hr {
+      border: none;
+      border-top: 1px solid #e0ebe2;
+      margin: 12px 0;
+    }
+
+    .planOutput ul, .planOutput ol {
+      margin: 0 0 12px;
+      padding-left: 22px;
+    }
+
+    .planOutput li { margin-bottom: 6px; }
+
+    .planOutput strong { color: var(--primary); }
+
+    .planOutput hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 18px 0;
+    }
+
+    /* ── Zone info panel ───────────────────── */
+    .zoneInfoBtn {
+      background: var(--primary-soft);
+      border: 1px solid rgba(39,76,56,0.18);
+      color: var(--primary);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .zoneInfoBtn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .zoneInfoPanel {
+      margin-top: 16px;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .zoneInfoCard {
+      background: #f7faf7;
+      border: 1px solid #dce8de;
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+
+    .zoneInfoCard h4 {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .zoneInfoCard ul {
+      margin: 0;
+      padding-left: 16px;
+      list-style: disc;
+    }
+
+    .zoneInfoCard li {
+      font-size: 13px;
+      color: #4a5e50;
+      line-height: 1.65;
+      margin-bottom: 4px;
+    }
+
+    .zoneInfoCard li strong {
+      color: var(--text);
+    }
+
+    @media (max-width: 600px) {
+      .zoneInfoPanel { grid-template-columns: 1fr; }
+    }
+
+    /* ── PDF print layout ───────────────────── */
+    #pdfDoc {
+      display: none;
+      font-family: Georgia, serif;
+      color: #1f2b22;
+      padding: 32px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .pdf-header {
+      border-bottom: 3px solid #274c38;
+      padding-bottom: 16px;
+      margin-bottom: 28px;
+    }
+
+    .pdf-header h1 {
+      margin: 0 0 4px;
+      font-size: 32px;
+      color: #274c38;
+      letter-spacing: -0.02em;
+    }
+
+    .pdf-header p {
+      margin: 0;
+      font-size: 14px;
+      color: #5e6d62;
+    }
+
+    .pdf-plant-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 32px;
+    }
+
+    .pdf-plant-card {
+      border: 1px solid #d8e4db;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #f7faf7;
+    }
+
+    .pdf-plant-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .pdf-plant-card .pdf-plant-img-placeholder {
+      width: 100%;
+      height: 140px;
+      background: linear-gradient(135deg, #d8e8d8, #c0d8c0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+    }
+
+    .pdf-plant-card .pdf-plant-name {
+      padding: 10px 12px;
+    }
+
+    .pdf-plant-card .pdf-plant-name strong {
+      display: block;
+      font-size: 14px;
+      color: #1f2b22;
+    }
+
+    .pdf-plant-card .pdf-plant-name em {
+      font-size: 12px;
+      color: #5e6d62;
+    }
+
+    .pdf-plan-text {
+      font-size: 13px;
+      line-height: 1.75;
+      color: #2c3a2e;
+      border-top: 2px solid #d8e4db;
+      padding-top: 24px;
+    }
+
+    .pdf-plan-text h1, .pdf-plan-text h2, .pdf-plan-text h3 {
+      color: #274c38;
+      margin: 18px 0 6px;
+    }
+
+    .pdf-plan-text h2 { font-size: 15px; border-bottom: 1px solid #d8e4db; padding-bottom: 4px; }
+    .pdf-plan-text h3 { font-size: 14px; }
+    .pdf-plan-text p { margin: 0 0 8px; }
+    .pdf-plan-text ul, .pdf-plan-text ol { padding-left: 20px; margin: 0 0 10px; }
+    .pdf-plan-text li { margin-bottom: 4px; }
+    .pdf-plan-text strong { color: #274c38; }
+
+    /* ── Garden Map ── */
+    .garden-map-wrap {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 2px solid #e0e8e2;
+    }
+    .garden-map-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: #274c38;
+      margin-bottom: 14px;
+    }
+    .garden-bed {
+      position: relative;
+      width: 100%;
+      min-height: 320px;
+      border-radius: 18px;
+      background:
+        radial-gradient(ellipse at 30% 40%, #a0714f 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 60%, #8b5e3c 0%, transparent 55%),
+        #7a4f2d;
+      border: 8px solid #5c3a1e;
+      box-shadow: inset 0 4px 18px rgba(0,0,0,0.35), 0 6px 20px rgba(0,0,0,0.18);
+      overflow: visible;
+      padding: 20px 16px 40px;
+      box-sizing: border-box;
+    }
+    /* compass / label */
+    .garden-bed::before {
+      content: "☀️ South (Sun)";
+      position: absolute;
+      bottom: -28px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      color: #7a8f7e;
+      white-space: nowrap;
+    }
+    .garden-row {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .garden-plant {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      cursor: default;
+    }
+    .garden-plant-circle {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid rgba(255,255,255,0.55);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.4), inset 0 1px 3px rgba(255,255,255,0.2);
+      background: radial-gradient(circle, #4a8c5c, #2d5a3a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      transition: transform 0.15s;
+    }
+    .garden-plant-circle:hover { transform: scale(1.08); }
+    .garden-plant-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .garden-plant-name {
+      font-size: 10px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      max-width: 80px;
+      line-height: 1.2;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+      background: rgba(0,0,0,0.32);
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+
+    @media print {
+      * {
+        background: white !important;
+        color: black !important;
+        border-color: #ccc !important;
+        box-shadow: none !important;
+      }
+      body > * { display: none !important; }
+      #pdfDoc {
+        display: block !important;
+        padding: 0;
+        font-family: Georgia, serif;
+        font-size: 12px;
+        color: black;
+      }
+      .pdf-header {
+        border-bottom: 1px solid #ccc !important;
+        padding-bottom: 8px;
+        margin-bottom: 16px;
+      }
+      .pdf-header h1 { font-size: 20px; }
+      .pdf-header p { font-size: 11px; }
+      /* Hide plant photo grid and garden map — saves ink */
+      .pdf-plant-grid, .garden-map-wrap { display: none !important; }
+      .pdf-plan-text {
+        border-top: none !important;
+        padding-top: 0;
+        font-size: 11px;
+        line-height: 1.6;
+      }
+      .pdf-plan-text h2 {
+        font-size: 13px;
+        border-bottom: 1px solid #ccc !important;
+        padding-bottom: 2px;
+      }
+      .pdf-plan-text h3 { font-size: 12px; }
+      .pdf-plan-text strong { font-weight: bold; }
+    }
+
     .footer {
       max-width: var(--max);
-      margin: 26px auto 0;
+      margin: 20px auto 0;
       padding: 0 8px;
       text-align: center;
       color: var(--muted);
-      font-size: 12px;
-      opacity: 0.65;
-      letter-spacing: 0.04em;
+      font-size: 13px;
     }
 
-    /* =============================================
-       RESPONSIVE
-    ============================================= */
     @media (max-width: 720px) {
-      .shell   { padding: 16px 14px 44px; }
-      .hero    { padding: 32px 24px 28px; border-radius: 24px; }
-      .appHeader, .content { padding-left: 20px; padding-right: 20px; }
-      .section { padding: 20px; }
-      .hero h1 { font-size: 36px; }
-      .content { padding-top: 14px; padding-bottom: 28px; }
+      /* Shell & hero */
+      .shell { padding: 0 0 48px; }
+      .hero { margin: 0 0 0; border-radius: 0; padding: 24px 18px 20px; }
+      .hero h1 { font-size: 26px; }
+      .hero p { font-size: 14px; }
+
+      /* Strip the outer app card — let sections be the cards */
+      .app {
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+        background: transparent;
+      }
+      .appHeader { display: none; }
+      .content {
+        padding: 14px 12px 24px;
+        gap: 12px;
+      }
+
+      /* Each section becomes a strong stand-alone card */
+      .section {
+        border-radius: 18px;
+        border: none;
+        padding: 0;
+        background: #fff;
+        box-shadow: 0 2px 12px rgba(22,34,26,0.08);
+        overflow: hidden;
+      }
+
+      /* Green accent bar + step label at top of each section */
+      .sectionHeader {
+        background: linear-gradient(135deg, #1f3b2b, #3a6647);
+        padding: 14px 18px;
+        margin-bottom: 0;
+        border-radius: 0;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .step {
+        background: rgba(255,255,255,0.18);
+        color: #fff;
+        border-color: rgba(255,255,255,0.25);
+        width: 30px;
+        height: 30px;
+        font-size: 13px;
+      }
+
+      .sectionHeaderText h3 {
+        font-size: 16px;
+        color: #fff;
+        margin-bottom: 2px;
+      }
+
+      .sectionHeaderText p {
+        font-size: 12px;
+        color: rgba(255,255,255,0.78);
+      }
+
+      /* Section body padding */
+      .section > *:not(.sectionHeader) {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .section > .checkboxStack { padding-top: 16px; padding-bottom: 4px; }
+      .section > .pillRow { padding-top: 16px; padding-bottom: 4px; }
+      .section > .row:first-of-type { padding-top: 16px; }
+      .section > p[style] { padding-top: 16px; }
+      .section > .resultCard { margin: 12px 16px 0; padding: 14px; }
+      .section > .statusLine { padding-bottom: 16px; }
+      .section > #conditionsCard { margin: 0 16px 16px; }
+      .section > #preferenceCard { margin: 0 16px 16px; }
+      .section > #zoneCard { margin: 12px 16px 0; }
+      .section > .tinyNote { padding-top: 10px; padding-bottom: 4px; }
+      .section > .planOutput { margin: 12px 0 0; border-radius: 0 0 18px 18px; }
+
+      /* Inputs & buttons */
+      .row { flex-direction: column; align-items: stretch; padding-top: 14px; padding-bottom: 14px; }
+      .row .btn, .row .btnSecondary { width: 100%; text-align: center; }
+      .input { min-width: unset; }
+      .pillRow { gap: 8px; }
+      .pill { font-size: 14px; padding: 10px 13px; }
+      .checkboxCard { padding: 12px; border-radius: 14px; }
+      .planOutput { font-size: 14px; padding: 18px 16px; border-radius: 0; }
+      .planOutput h2 { font-size: 16px; }
+      .planOutput h3 { font-size: 15px; }
+    }
+
+    /* ── Access gate ───────────────────────── */
+    #accessGate {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(31,59,43,0.97), rgba(54,92,69,0.95));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .gateBox {
+      background: #fff;
+      border-radius: 24px;
+      padding: 48px 40px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.25);
+    }
+
+    .gateBox h2 {
+      margin: 16px 0 8px;
+      font-size: 26px;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .gateBox p {
+      margin: 0 0 28px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .gateError {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #c0392b;
+      font-weight: 700;
+      min-height: 20px;
+    }
+
+    /* ── Disclaimer modal ───────────────────── */
+    #disclaimerModal {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 20, 14, 0.75);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 999;
+      padding: 0;
+    }
+
+    .disclaimerBox {
+      background: #fff;
+      border-radius: 24px 24px 0 0;
+      padding: 28px 22px 32px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 92vh;
+      overflow-y: auto;
+      box-shadow: 0 -12px 48px rgba(0,0,0,0.22);
+    }
+
+    .disclaimerBox .disc-icon {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    .disclaimerBox h2 {
+      font-size: 20px;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .disclaimerBox .disc-body {
+      font-size: 13px;
+      color: #4a5e50;
+      line-height: 1.7;
+      background: #f7faf7;
+      border: 1px solid #dce8de;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+    }
+
+    .disclaimerBox .disc-body strong {
+      color: #1f2b22;
+    }
+
+    .disc-checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .disc-checkbox-row input[type="checkbox"] {
+      margin-top: 3px;
+      transform: scale(1.3);
+      accent-color: var(--primary);
+      flex: 0 0 auto;
+    }
+
+    .disc-checkbox-row label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.55;
+      cursor: pointer;
+    }
+
+    #discAgreeBtn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    @media (min-width: 560px) {
+      #disclaimerModal {
+        align-items: center;
+        padding: 20px;
+      }
+      .disclaimerBox {
+        border-radius: 24px;
+        padding: 36px 36px 28px;
+        max-height: 90vh;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="shell">
 
-    <!-- ====== HERO ====== -->
+  <!-- Access gate -->
+  <div id="accessGate">
+    <div class="gateBox">
+      <div style="font-size:48px;">🌱</div>
+      <h2>RootPlans</h2>
+      <p>Enter your access code to continue.</p>
+      <input id="accessInput" class="input" type="password" placeholder="Access code" maxlength="20" style="text-align:center;letter-spacing:0.2em;" />
+      <button id="accessBtn" class="btn" type="button" style="width:100%;margin-top:12px;">Enter</button>
+      <div class="gateError" id="gateError"></div>
+    </div>
+  </div>
+
+  <!-- Disclaimer modal -->
+  <div id="disclaimerModal" style="display:none;">
+    <div class="disclaimerBox">
+      <div class="disc-icon">⚕️</div>
+      <h2>Important Disclaimer</h2>
+      <div class="disc-body">
+        <strong>I am not a medical professional.</strong> The plant information provided on RootPlans — including any references to traditional uses, holistic properties, or health-related topics — is for <strong>educational and informational purposes only</strong>.<br><br>
+        Nothing on this site constitutes medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider before making any decisions related to your health, diet, or use of plants for medicinal purposes.<br><br>
+        RootPlans is a <strong>garden planning tool</strong>. Any wellness-related plant notes use cautious, traditional-use language and are not intended to replace professional medical guidance.
+      </div>
+      <div class="disc-checkbox-row">
+        <input type="checkbox" id="discCheck" />
+        <label for="discCheck">I understand that RootPlans is not a medical resource and that the information provided is not medical advice. I agree to use this tool for garden planning purposes only.</label>
+      </div>
+      <button id="discAgreeBtn" class="btn" type="button" style="width:100%;" disabled>I Understand &amp; Agree</button>
+    </div>
+  </div>
+
+  <div class="shell">
     <section class="hero">
-      <div class="hero-content">
-        <div class="eyebrow">
-          <span class="eyebrow-dot"></span>
-          RootPlans &bull; Intelligent Garden Planning
+      <div class="hero-inner">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:4px;">
+          <div class="eyebrow"><span class="eyebrow-dot"></span>RootPlans &bull; Intelligent Garden Planning</div>
+          <a href="/guide.html" target="_blank" style="color:#fff;font-size:13px;font-weight:600;text-decoration:none;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:999px;padding:7px 16px;white-space:nowrap;letter-spacing:0.03em;font-family:'Inter',sans-serif;">📖 User Guide</a>
         </div>
-        <h1>Grow something <em>beautiful</em> —<br>a garden shaped to your zone, your goals, and your table.</h1>
+        <h1>Grow something <em>beautiful</em> — a garden shaped to your zone, your goals, and your table.</h1>
         <p>
           Generate a polished planting plan from your ZIP code, garden theme,
           native-plant preference, and optional holistic plant guidance.
@@ -676,56 +1169,63 @@
       </div>
     </section>
 
-    <!-- ====== MAIN APP ====== -->
     <main class="app">
       <div class="appHeader">
         <h2>Build your plan</h2>
         <p>
           Start with your ZIP, choose the kind of garden you want, set your preferences,
-          and generate a custom plan powered by your secure AI proxy.
+          and generate a custom planting plan tailored to you.
         </p>
       </div>
 
       <div class="content">
-
-        <!-- Step 1 -->
         <section class="section">
           <div class="sectionHeader">
             <div class="step">1</div>
             <div class="sectionHeaderText">
               <h3>Find your USDA zone</h3>
-              <p>We'll use your ZIP code to detect the growing zone and tailor the plan.</p>
+              <p>We’ll use your ZIP code to detect the growing zone and tailor the plan.</p>
             </div>
           </div>
 
           <div class="row">
             <input id="zipInput" class="input" inputmode="numeric" maxlength="5" placeholder="Enter 5-digit ZIP code" />
-            <button id="detectBtn" class="btn" type="button">Detect Zone</button>
+            <button id="detectBtn" class="btn" type="button">Enter</button>
+            <button id="favBtn" class="btnSecondary favBtn" type="button" title="Save as favorite">☆</button>
             <button id="resetBtn" class="btnSecondary" type="button">Reset</button>
           </div>
 
+          <div id="favRow" style="display:none;margin-top:10px;"></div>
+
           <div id="zoneCard" class="resultCard" style="display:none;">
-            <p class="resultTitle" id="zoneTitle">Detected USDA Zone</p>
-            <p class="resultLine" id="zoneDetails"></p>
-            <p class="tinyNote" id="zoneNote"></p>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+              <div>
+                <p class="resultTitle" id="zoneTitle">Detected USDA Zone</p>
+                <p class="resultLine" id="zoneDetails"></p>
+                <p class="tinyNote" id="zoneNote"></p>
+              </div>
+              <button id="zoneInfoBtn" class="zoneInfoBtn" type="button" title="Soil &amp; Planting Info">
+                🌍 Soil &amp; Schedule
+              </button>
+            </div>
+            <div id="zoneInfoPanel" class="zoneInfoPanel" style="display:none;"></div>
           </div>
 
-          <div class="statusLine" id="statusText">Status: Enter a ZIP and click Detect Zone.</div>
+          <div class="statusLine" id="statusText"></div>
         </section>
 
-        <!-- Step 2 -->
         <section class="section">
           <div class="sectionHeader">
             <div class="step">2</div>
             <div class="sectionHeaderText">
               <h3>Select your garden direction</h3>
-              <p>Choose the plan type you want the AI to build around.</p>
+              <p>Choose the type of garden you want to create.</p>
             </div>
           </div>
 
           <div class="pillRow" id="themeRow">
-            <button class="pill" type="button" data-theme="Functional Food"       aria-pressed="false">Functional Food</button>
-            <button class="pill" type="button" data-theme="Pollinator Paradise"   aria-pressed="false">Pollinator Paradise</button>
+            <button class="pill" type="button" data-theme="Ailment Support" aria-pressed="false">Ailment Support</button>
+            <button class="pill" type="button" data-theme="Pollinator Paradise" aria-pressed="false">Pollinator Paradise</button>
             <button class="pill" type="button" data-theme="Low-Maintenance Beauty" aria-pressed="false">Low-Maintenance Beauty</button>
           </div>
 
@@ -735,7 +1235,7 @@
           </div>
 
           <div id="conditionsCard" class="resultCard" style="display:none;">
-            <p class="resultTitle">Functional Food focus</p>
+            <p class="resultTitle">Ailment Support focus</p>
             <p class="resultLine">Type a condition and pick a suggestion, or add your own.</p>
 
             <div class="row" style="margin-top:14px;">
@@ -756,14 +1256,63 @@
           </div>
         </section>
 
-        <!-- Step 3 -->
         <section class="section">
           <div class="sectionHeader">
             <div class="step">3</div>
             <div class="sectionHeaderText">
               <h3>Set your plan preferences</h3>
-              <p>These options change the prompt sent to your AI proxy.</p>
+              <p>These options customize what goes into your plan.</p>
             </div>
+          </div>
+
+          <p style="font-weight:700;margin-bottom:10px;font-size:15px;">Sunlight available</p>
+          <div class="pillRow" id="sunlightRow" style="margin-bottom:20px;">
+            <button class="pill" type="button" data-sun="full sun" aria-pressed="false">☀️ Full Sun</button>
+            <button class="pill" type="button" data-sun="partial shade" aria-pressed="false">⛅ Partial Shade</button>
+            <button class="pill" type="button" data-sun="full shade" aria-pressed="false">🌑 Full Shade</button>
+          </div>
+
+          <p style="font-weight:700;margin-bottom:10px;font-size:15px;">Plant type</p>
+          <div class="pillRow" id="plantTypeRow" style="margin-bottom:20px;">
+            <button class="pill" type="button" data-planttype="both" aria-pressed="false">🌿 Both</button>
+            <button class="pill" type="button" data-planttype="edible" aria-pressed="false">🍓 Edible only</button>
+            <button class="pill" type="button" data-planttype="decorative" aria-pressed="false">🌸 Decorative only</button>
+          </div>
+
+          <p style="font-weight:700;margin-bottom:6px;font-size:15px;">Plant variety</p>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:10px;">How adventurous should your plant list be?</p>
+          <div class="pillRow" id="rarityRow" style="margin-bottom:20px;">
+            <button class="pill" type="button" data-rarity="common" aria-pressed="false">🌱 Common &amp; Reliable</button>
+            <button class="pill" type="button" data-rarity="mixed" aria-pressed="true">🌿 Mixed</button>
+            <button class="pill" type="button" data-rarity="unique" aria-pressed="false">✨ Unique &amp; Rare</button>
+          </div>
+
+          <div id="staplesCard" style="display:none;margin-bottom:20px;padding:16px;background:#f7faf7;border:1px solid #dce8de;border-radius:14px;">
+            <p style="font-weight:700;font-size:14px;color:#274c38;margin-bottom:4px;">Must-Have Plants</p>
+            <p style="font-size:13px;color:#4a5e50;margin-bottom:12px;">Tap any to guarantee it's included — or type your own.</p>
+            <div class="pillRow" id="staplesRow" style="flex-wrap:wrap;gap:8px;margin-bottom:10px;"></div>
+            <div class="row" style="gap:8px;margin-top:6px;">
+              <div class="typeahead-wrap">
+                <input id="staplesInput" class="input" placeholder="Type a plant name…" style="font-size:13px;padding:9px 12px;width:100%;" autocomplete="off" />
+                <div id="staplesDrop" class="typeahead-drop"></div>
+              </div>
+              <button id="staplesAddBtn" class="btnSecondary" type="button" style="padding:9px 14px;font-size:13px;white-space:nowrap;">Add</button>
+            </div>
+            <div id="staplesCustomRow" class="pillRow" style="flex-wrap:wrap;gap:8px;margin-top:10px;"></div>
+          </div>
+
+          <div id="exclusionsCard" style="display:none;margin-bottom:20px;padding:16px;background:#fff5f5;border:1px solid #fcc;border-radius:14px;">
+            <p style="font-weight:700;font-size:14px;color:#8b1a1a;margin-bottom:4px;">Exclude from My Plan</p>
+            <p style="font-size:13px;color:#a03030;margin-bottom:12px;">Tap anything you don't want — or type your own.</p>
+            <div class="pillRow" id="exclusionsRow" style="flex-wrap:wrap;gap:8px;margin-bottom:10px;"></div>
+            <div class="row" style="gap:8px;margin-top:6px;">
+              <div class="typeahead-wrap">
+                <input id="exclusionsInput" class="input" placeholder="Type a plant name…" style="font-size:13px;padding:9px 12px;width:100%;" autocomplete="off" />
+                <div id="exclusionsDrop" class="typeahead-drop"></div>
+              </div>
+              <button id="exclusionsAddBtn" class="btnSecondary" type="button" style="padding:9px 14px;font-size:13px;white-space:nowrap;">Add</button>
+            </div>
+            <div id="exclusionsCustomRow" class="pillRow" style="flex-wrap:wrap;gap:8px;margin-top:10px;"></div>
           </div>
 
           <div class="checkboxStack">
@@ -771,7 +1320,7 @@
               <input type="checkbox" id="nativeOnlyCheckbox" />
               <div>
                 <p class="checkboxLabel">Only native plants for my zone</p>
-                <p class="checkboxHelp">Restricts the plan to native plants suitable for the user's USDA zone whenever possible.</p>
+                <p class="checkboxHelp">Restricts the plan to native plants suitable for the user’s USDA zone whenever possible.</p>
               </div>
             </label>
 
@@ -779,7 +1328,7 @@
               <input type="checkbox" id="holisticHealingCheckbox" />
               <div>
                 <p class="checkboxLabel">Include holistic healing powers</p>
-                <p class="checkboxHelp">Adds traditional uses and "power" notes for each plant using cautious, non-medical language.</p>
+                <p class="checkboxHelp">Adds traditional uses and “power” notes for each plant using cautious, non-medical language.</p>
               </div>
             </label>
           </div>
@@ -790,33 +1339,109 @@
           </div>
         </section>
 
-        <!-- Step 4 -->
         <section class="section">
           <div class="sectionHeader">
             <div class="step">4</div>
             <div class="sectionHeaderText">
               <h3>Generate your plan</h3>
-              <p>This sends the prompt to your secure Vercel proxy, not directly from the browser.</p>
+              <p>Generate a personalized planting plan based on your selections above.</p>
             </div>
           </div>
 
           <div class="row">
             <button id="generateBtn" class="btn" type="button">Generate Plan</button>
             <button id="copyBtn" class="btnSecondary" type="button" style="display:none;">Copy</button>
+            <button id="pdfBtn" class="btnSecondary" type="button" style="display:none;">Download PDF</button>
           </div>
 
           <div class="tinyNote" id="aiStatus" style="margin-top:12px;"></div>
-          <pre id="aiOutput" style="display:none;"></pre>
+          <div id="zoneBadge" style="display:none;margin-top:12px;padding:10px 14px;background:#edf4ef;border:1px solid #c6dcc9;border-radius:10px;font-size:13px;color:#274c38;font-weight:600;"></div>
+          <div id="aiOutput" class="planOutput" style="display:none;"></div>
+          <div id="gardenMap" class="garden-map-wrap" style="display:none;"></div>
+          <div id="planEnd" style="display:none;margin-top:28px;padding-top:16px;border-top:2px solid var(--border);text-align:center;font-size:13px;color:#7a8f7e;letter-spacing:0.08em;">— End of Plan —</div>
         </section>
-
       </div>
     </main>
 
-    <div class="footer">&copy; RootPlans &bull; Hosted on GitHub Pages</div>
+    <div class="footer">© RootPlans &nbsp;·&nbsp; <a href="/guide.html" target="_blank" style="color:var(--primary);font-weight:700;text-decoration:none;">User Guide</a></div>
   </div>
 
+  <!-- Hidden PDF document -->
+  <div id="pdfDoc">
+    <div class="pdf-header">
+      <h1>🌱 RootPlans</h1>
+      <p id="pdfMeta"></p>
+    </div>
+    <div class="pdf-plant-grid" id="pdfPlantGrid"></div>
+    <div class="pdf-plan-text" id="pdfPlanText"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
   <script>
-    const AI_PROXY_URL = "https://rootplans-proxy.vercel.app/api/holistic";
+    // Treat single newlines as <br> so each plant field appears on its own line
+    marked.use({ breaks: true });
+  </script>
+  <script>
+    const AI_PROXY_URL = "/api/holistic";
+    const AUTH_URL = "/api/auth";
+
+    // Check session — both auth and disclaimer must be accepted
+    if (sessionStorage.getItem("rp_auth") === "1") {
+      $("accessGate").style.display = "none";
+      if (sessionStorage.getItem("rp_disc") !== "1") {
+        $("disclaimerModal").style.display = "flex";
+      }
+    }
+
+    async function submitAccessCode() {
+      const code = $("accessInput").value.trim();
+      if (!code) return;
+      $("accessBtn").disabled = true;
+      $("accessBtn").textContent = "Checking...";
+      $("gateError").textContent = "";
+
+      try {
+        const res = await fetch(AUTH_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          sessionStorage.setItem("rp_auth", "1");
+          if (data.token) sessionStorage.setItem("rp_token", data.token);
+          $("accessGate").style.display = "none";
+          // Show disclaimer if not yet acknowledged this session
+          if (sessionStorage.getItem("rp_disc") !== "1") {
+            $("disclaimerModal").style.display = "flex";
+          }
+        } else {
+          $("gateError").textContent = "Incorrect code. Try again.";
+          $("accessInput").value = "";
+          $("accessInput").focus();
+        }
+      } catch {
+        $("gateError").textContent = "Connection error. Please try again.";
+      } finally {
+        $("accessBtn").disabled = false;
+        $("accessBtn").textContent = "Enter";
+      }
+    }
+
+    $("accessBtn").addEventListener("click", submitAccessCode);
+    $("accessInput").addEventListener("keydown", e => {
+      if (e.key === "Enter") submitAccessCode();
+    });
+
+    // Disclaimer logic
+    $("discCheck").addEventListener("change", () => {
+      $("discAgreeBtn").disabled = !$("discCheck").checked;
+    });
+
+    $("discAgreeBtn").addEventListener("click", () => {
+      sessionStorage.setItem("rp_disc", "1");
+      $("disclaimerModal").style.display = "none";
+    });
 
     function $(id) {
       return document.getElementById(id);
@@ -840,6 +1465,7 @@
     };
 
     const CONDITION_SUGGESTIONS = [
+      "liver health",
       "inflammation",
       "high blood pressure",
       "cholesterol",
@@ -857,7 +1483,120 @@
 
     let detected = { zip: "", zone: "", location: "" };
     let selectedTheme = "";
+
+    // ── Favorite ZIPs (persisted in localStorage) ───────────────────────
+    function getFavs() {
+      try { return JSON.parse(localStorage.getItem("rp_favZips") || "[]"); } catch { return []; }
+    }
+    function saveFavs(arr) {
+      localStorage.setItem("rp_favZips", JSON.stringify(arr));
+    }
+    function renderFavs() {
+      const favs = getFavs();
+      const row = $("favRow");
+      if (!favs.length) { row.style.display = "none"; return; }
+      row.style.display = "block";
+      row.innerHTML = favs.map(zip =>
+        `<span class="fav-chip" data-zip="${zip}">⭐ ${zip}<span class="fav-remove" data-zip="${zip}" title="Remove">✕</span></span>`
+      ).join("");
+      // Click chip body → load that ZIP
+      row.querySelectorAll(".fav-chip").forEach(chip => {
+        chip.addEventListener("click", e => {
+          if (e.target.classList.contains("fav-remove")) return;
+          const z = chip.dataset.zip;
+          $("zipInput").value = z;
+          $("detectBtn").click();
+        });
+      });
+      // Click ✕ → remove from favorites
+      row.querySelectorAll(".fav-remove").forEach(x => {
+        x.addEventListener("click", e => {
+          e.stopPropagation();
+          const z = x.dataset.zip;
+          saveFavs(getFavs().filter(f => f !== z));
+          updateFavBtn();
+          renderFavs();
+        });
+      });
+    }
+    function updateFavBtn() {
+      const zip = cleanZip($("zipInput").value);
+      const saved = getFavs().includes(zip);
+      const btn = $("favBtn");
+      btn.textContent = saved ? "★" : "☆";
+      btn.classList.toggle("saved", saved);
+      btn.title = saved ? "Remove from favorites" : "Save as favorite";
+    }
+    $("favBtn").addEventListener("click", () => {
+      const zip = cleanZip($("zipInput").value);
+      if (zip.length !== 5) return;
+      const favs = getFavs();
+      if (favs.includes(zip)) {
+        saveFavs(favs.filter(f => f !== zip));
+      } else {
+        saveFavs([...favs, zip]);
+      }
+      updateFavBtn();
+      renderFavs();
+    });
+    $("zipInput").addEventListener("input", updateFavBtn);
+    renderFavs();
+    updateFavBtn();
     let selectedConditions = [];
+    let selectedPlantType = "both";
+    let selectedSunlight = "";
+    let selectedStaples = [];
+    let selectedExclusions = [];
+    let selectedRarity = "mixed";
+    let lastPlanText = "";
+    let lastPlants = [];
+
+    const EXCLUSION_ITEMS = [
+      { label: "🍅 Tomatoes",     value: "Tomatoes",     type: "edible" },
+      { label: "🫑 Peppers",      value: "Peppers",      type: "edible" },
+      { label: "🥦 Broccoli",     value: "Broccoli",     type: "edible" },
+      { label: "🥕 Carrots",      value: "Carrots",      type: "edible" },
+      { label: "🥒 Cucumbers",    value: "Cucumbers",    type: "edible" },
+      { label: "🫛 Peas",         value: "Peas",         type: "edible" },
+      { label: "🫘 Beans",        value: "Beans",        type: "edible" },
+      { label: "🥬 Lettuce",      value: "Lettuce",      type: "edible" },
+      { label: "🍃 Kale",         value: "Kale",         type: "edible" },
+      { label: "🌿 Spinach",      value: "Spinach",      type: "edible" },
+      { label: "🎃 Zucchini",     value: "Zucchini",     type: "edible" },
+      { label: "🧅 Onions",       value: "Onions",       type: "edible" },
+      { label: "🧄 Garlic",       value: "Garlic",       type: "edible" },
+      { label: "🌱 Cilantro",     value: "Cilantro",     type: "edible" },
+      { label: "🌼 Fennel",       value: "Fennel",       type: "edible" },
+      { label: "🌾 Corn",         value: "Corn",         type: "edible" },
+      { label: "🍓 Strawberries", value: "Strawberries", type: "edible" },
+      { label: "🌸 Roses",        value: "Roses",        type: "decorative" },
+      { label: "💜 Lavender",     value: "Lavender",     type: "decorative" },
+      { label: "🌻 Sunflowers",   value: "Sunflowers",   type: "decorative" },
+      { label: "🌺 Hibiscus",     value: "Hibiscus",     type: "decorative" },
+      { label: "🌷 Tulips",       value: "Tulips",       type: "decorative" },
+      { label: "🌼 Daisies",      value: "Daisies",      type: "decorative" },
+      { label: "🪷 Peonies",      value: "Peonies",      type: "decorative" },
+      { label: "🌿 Hostas",       value: "Hostas",       type: "decorative" },
+    ];
+
+    const STAPLE_VEGGIES = [
+      { label: "🍅 Tomatoes",  value: "Tomatoes" },
+      { label: "🫑 Peppers",   value: "Peppers" },
+      { label: "🥦 Broccoli",  value: "Broccoli" },
+      { label: "🥕 Carrots",   value: "Carrots" },
+      { label: "🥒 Cucumbers", value: "Cucumbers" },
+      { label: "🫛 Peas",      value: "Peas" },
+      { label: "🫘 Beans",     value: "Beans" },
+      { label: "🥬 Lettuce",   value: "Lettuce" },
+      { label: "🍃 Kale",      value: "Kale" },
+      { label: "🌿 Spinach",   value: "Spinach" },
+      { label: "🎃 Zucchini",  value: "Zucchini" },
+      { label: "🧅 Onions",    value: "Onions" },
+      { label: "🧄 Garlic",    value: "Garlic" },
+      { label: "🫚 Beets",     value: "Beets" },
+      { label: "🌽 Sweet Corn", value: "Sweet Corn" },
+      { label: "🍠 Sweet Potato", value: "Sweet Potato" },
+    ];
 
     async function fetchZoneByZip(zip) {
       if (ZONE_OVERRIDES[zip]) {
@@ -893,7 +1632,7 @@
       $("zoneTitle").textContent = `Detected USDA Zone ${result.zone}`;
       $("zoneDetails").textContent = loc ? `${loc} • ZIP ${zip}` : `ZIP ${zip}`;
       $("zoneNote").textContent = result.note || "";
-      $("statusText").textContent = `Status: Zone found (${result.zone}). Pick a theme.`;
+      $("statusText").textContent = `✅ Zone ${result.zone} detected — see your soil and planting details below.`;
     }
 
     function renderZoneError(message) {
@@ -914,7 +1653,7 @@
       $("themeCard").style.display = "block";
       $("themeText").textContent = theme;
 
-      const showConditions = theme === "Functional Food";
+      const showConditions = theme === "Ailment Support";
       $("conditionsCard").style.display = showConditions ? "block" : "none";
 
       if (!showConditions) {
@@ -936,9 +1675,10 @@
 
       matches.forEach(item => {
         const btn = document.createElement("button");
-        btn.className = "pill";
+        const isSelected = selectedConditions.includes(item);
+        btn.className = isSelected ? "pill selected" : "pill";
         btn.type = "button";
-        btn.textContent = item;
+        btn.textContent = isSelected ? `✓ ${item}` : item;
         btn.addEventListener("click", () => addCondition(item));
         row.appendChild(btn);
       });
@@ -964,6 +1704,7 @@
         chip.textContent = `✕ ${c}`;
         chip.addEventListener("click", () => {
           selectedConditions = selectedConditions.filter(x => x !== c);
+          renderSuggestions($("conditionInput").value);
           renderSelectedConditions();
           updatePreferenceSummary();
         });
@@ -975,12 +1716,15 @@
       const c = (text || "").trim();
       if (!c) return;
 
-      if (!selectedConditions.includes(c)) {
+      if (selectedConditions.includes(c)) {
+        // Toggle off — remove it
+        selectedConditions = selectedConditions.filter(x => x !== c);
+      } else {
         selectedConditions.push(c);
       }
 
       $("conditionInput").value = "";
-      renderSuggestions("");
+      renderSuggestions($("conditionInput").value);
       renderSelectedConditions();
       updatePreferenceSummary();
     }
@@ -998,11 +1742,21 @@
       const items = [];
 
       if (selectedTheme) items.push(`Theme: ${selectedTheme}`);
+      if (selectedSunlight) items.push(`Sunlight: ${selectedSunlight}`);
+      const ptLabel = { both: "Edible & decorative plants (grouped)", edible: "Edible plants only", decorative: "Decorative plants only" };
+      items.push(ptLabel[selectedPlantType] || "Edible & decorative plants");
       items.push(nativeOnly ? "Only native plants for this zone" : "Native plants preferred when practical, but not required");
       items.push(holisticHealing ? "Include holistic healing powers / traditional uses" : "Focus on planting plan without healing-power details");
 
-      if (selectedTheme === "Functional Food") {
+      if (selectedTheme === "Ailment Support") {
         items.push(selectedConditions.length ? `Functional focus: ${selectedConditions.join(", ")}` : "Functional focus: general wellness");
+      }
+
+      if (selectedStaples.length) {
+        items.push(`Must include: ${selectedStaples.join(", ")}`);
+      }
+      if (selectedExclusions.length) {
+        items.push(`Excluded: ${selectedExclusions.join(", ")}`);
       }
 
       summary.innerHTML = items.map(item => `<li>${escapeHtml(item)}</li>`).join("");
@@ -1016,7 +1770,7 @@
       const { nativeOnly, holisticHealing } = getPreferenceState();
 
       const conditionText =
-        selectedTheme === "Functional Food"
+        selectedTheme === "Ailment Support"
           ? (selectedConditions.length ? selectedConditions.join(", ") : "general wellness")
           : "";
 
@@ -1028,41 +1782,76 @@ Create a practical, beautiful, beginner-friendly garden plan for:
 - USDA Zone: ${zone}
 - ${locationLine}
 - Theme: ${selectedTheme}
+- Sunlight available: ${selectedSunlight || "Not specified — include a mix"}
+- Plant type preference: ${selectedPlantType === "edible" ? "Edible plants only" : selectedPlantType === "decorative" ? "Decorative/ornamental plants only" : "Both edible and decorative (group them separately in section 2)"}
 - Native plants only: ${nativeOnly ? "Yes" : "No"}
 - Include holistic healing powers: ${holisticHealing ? "Yes" : "No"}
-${selectedTheme === "Functional Food" ? `- Functional focus: ${conditionText}` : ""}
+${selectedTheme === "Ailment Support" ? `- Functional focus: ${conditionText}` : ""}
 
-Follow these rules carefully:
-1. Make the plan realistic for a homeowner with a small yard, raised beds, or containers.
-2. If native plants only = Yes, use only native plants appropriate for the zone when possible.
-3. If native plants only = No, prefer native plants first, then include well-adapted plants if needed.
-4. If holistic healing powers = Yes, include a short cautious note for each plant using language like:
-   - "traditionally used for..."
-   - "commonly valued for..."
-   - "often associated with..."
-   Do NOT make medical claims and do NOT present medical advice.
-5. Keep the recommendations beginner-friendly and practical.
-6. Do not suggest invasive plants.
-7. Include only plants that are realistic for the stated zone.
+VARIETY SEED: ${Math.floor(Math.random() * 9000) + 1000} — use this to randomize your plant selection so results differ each generation even with the same settings.
 
-Return the answer in this exact structure:
+PLANT SELECTION RULES:
+- ${selectedPlantType === "edible" ? "Include ONLY edible plants (vegetables, fruits, herbs). No purely ornamental plants." : selectedPlantType === "decorative" ? "Include ONLY decorative/ornamental plants. No edible plants." : "Include both edible and decorative plants. In section 2, use two subheadings: '🍓 Edible Plants' and '🌸 Decorative Plants'."}
+- VARIETY LEVEL — ${selectedRarity === "common" ? "Choose well-known, beginner-friendly plants that are widely available at garden centers. Prioritize reliability and familiarity (tomatoes, basil, marigolds, etc.)." : selectedRarity === "unique" ? "IMPORTANT: Avoid the most common garden staples. Instead choose unusual, heirloom, heritage, or zone-specific plants that most gardeners have never grown. Include specific variety names (e.g. 'Dragon Tongue Bean' not just 'Bean'). Draw from the full diversity of what thrives in Zone " + zone + " — rare natives, unusual edibles, heritage ornamentals, lesser-known medicinals. Be adventurous and specific." : "Blend familiar staples with 2–3 lesser-known or heirloom varieties to give the gardener something interesting to discover."}
+${selectedPlantType !== "decorative" && selectedRarity === "common" ? "- Prioritize common vegetable garden crops: tomatoes, peppers, broccoli, beans, cucumbers, zucchini, lettuce, carrots, kale, peas, squash, chard, spinach, beets, onions. Herbs are supplements." : ""}
+- ${nativeOnly ? "Use only native plants appropriate for the zone." : "Prefer native plants first; include well-adapted non-invasive plants as needed."}
+- Do not suggest invasive plants.
+- Include only plants realistic for USDA Zone ${zone}.
+${(selectedStaples.length || customStaples.length) ? `- REQUIRED — these must appear in the plan no matter what: ${[...selectedStaples, ...customStaples].join(", ")}. Note any zone-specific care adjustments if needed.` : ""}
+${(selectedExclusions.length || customExclusions.length) ? `- EXCLUDED — do NOT include these under any circumstances: ${[...selectedExclusions, ...customExclusions].join(", ")}.` : ""}
 
-1. GARDEN CONCEPT
-2. RECOMMENDED PLANTS
-3. SIMPLE LAYOUT
-4. SEASONAL CARE PLAN
-5. HARVEST / USE IDEAS
-6. BEGINNER TIPS
-7. SAFETY NOTE
+SUNLIGHT: ${selectedSunlight ? `Only recommend plants that thrive in "${selectedSunlight}" conditions.` : "Include a mix of sun tolerances."}
 
-Make it polished, easy to read, and helpful for a real customer.
+USE THIS EXACT FORMAT — every plant entry must follow this template with no deviations:
+
+**[Plant Name]** [sunlight emoji: ☀️ Full Sun | ⛅ Partial Shade | 🌑 Full Shade]
+[One sentence description — what it is and why it fits this garden.]
+**Good companions:** [2–3 plants that grow well next to it]${selectedPlantType !== "decorative" ? `
+**Nutrition:** [2–3 key nutritional highlights, comma-separated]
+**Best consumed:** [One sentence on best way to eat/use it]` : ""}${holisticHealing ? `
+**Traditionally used for:** [One cautious sentence using phrases like "traditionally associated with" or "commonly used in folk practice for" — no medical claims]` : ""}
+
+For every plant also add one line:
+**Where to buy:** [a search URL in this exact format: https://www.google.com/search?q=buy+[plant+name]+seeds+or+plants — replace spaces with + in the plant name]
+
+Repeat that exact block for every plant. Separate each plant entry with a blank line and then --- on its own line. Do not add extra fields, headers, or sub-bullets within plant entries.
+
+RESPONSE STRUCTURE — use these exact headings:
+
+## 1. Garden Concept
+[3–4 sentences describing the garden's design direction, what makes it suited to this zone and theme.]
+
+## 2. Recommended Plants
+First list 6–7 plants under the subheading ### Easy to Find, then list 2–3 plants under the subheading ### Adventure Picks (unusual, heirloom, or lesser-known varieties worth trying). Use the same plant entry template for both groups.
+
+## 3. Simple Layout
+[4–5 bullets describing where to position plants in the garden bed — front/back/sides/center.]
+
+## 4. Seasonal Care Plan
+[One bullet per season: Spring, Summer, Fall, Winter — what to plant, water, harvest, or protect.]
+
+## 5. Harvest & Use Ideas
+[4–5 bullets on how to harvest and use what grows.]
+
+## 6. Beginner Tips
+[4–5 practical tips for a first-time gardener.]
+
+## 7. Safety Note
+[2–3 sentences: note any plants to handle carefully, remind that holistic notes are not medical advice.]
+
+Complete ALL 7 sections. Do not stop early.
       `.trim();
+    }
+
+    function authHeaders() {
+      const token = sessionStorage.getItem("rp_token") || "";
+      return { "Content-Type": "application/json", "X-Session-Token": token };
     }
 
     async function callAIProxy(payload) {
       const resp = await fetch(AI_PROXY_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: authHeaders(),
         body: JSON.stringify(payload)
       });
 
@@ -1107,7 +1896,7 @@ Make it polished, easy to read, and helpful for a real customer.
         renderZoneError("Zone lookup failed. Please try again.");
       } finally {
         $("detectBtn").disabled = false;
-        $("detectBtn").textContent = "Detect Zone";
+        $("detectBtn").textContent = "Enter";
       }
     });
 
@@ -1118,29 +1907,54 @@ Make it polished, easy to read, and helpful for a real customer.
     $("resetBtn").addEventListener("click", () => {
       $("zipInput").value = "";
       $("zoneCard").style.display = "none";
+      $("zoneInfoPanel").style.display = "none";
+      $("zoneInfoBtn").classList.remove("active");
       $("themeCard").style.display = "none";
       $("conditionsCard").style.display = "none";
       $("preferenceCard").style.display = "none";
-      $("statusText").textContent = "Status: Enter a ZIP and click Detect Zone.";
+      $("statusText").textContent = "";
 
       detected = { zip: "", zone: "", location: "" };
       selectedTheme = "";
       selectedConditions = [];
+      selectedPlantType = "both";
+      selectedSunlight = "";
 
       $("nativeOnlyCheckbox").checked = false;
       $("holisticHealingCheckbox").checked = false;
 
       document.querySelectorAll("#themeRow .pill").forEach(btn => btn.setAttribute("aria-pressed", "false"));
+      document.querySelectorAll("#sunlightRow .pill").forEach(btn => btn.setAttribute("aria-pressed", "false"));
+      document.querySelectorAll("#plantTypeRow .pill").forEach(btn => btn.setAttribute("aria-pressed", "false"));
+      document.querySelectorAll("#rarityRow .pill").forEach(btn => btn.setAttribute("aria-pressed", btn.dataset.rarity === "mixed" ? "true" : "false"));
+      selectedRarity = "mixed";
 
       $("conditionInput").value = "";
       $("suggestionsRow").innerHTML = "";
       $("selectedConditionsRow").innerHTML = "";
       $("preferenceSummary").innerHTML = "";
+      selectedStaples = [];
+      selectedExclusions = [];
+      customStaples = [];
+      customExclusions = [];
+      $("staplesCard").style.display = "none";
+      $("exclusionsCard").style.display = "none";
+      $("staplesCustomRow").innerHTML = "";
+      $("exclusionsCustomRow").innerHTML = "";
+      $("staplesInput").value = "";
+      $("exclusionsInput").value = "";
 
       $("aiStatus").textContent = "";
+      $("zoneBadge").style.display = "none";
       $("aiOutput").style.display = "none";
-      $("aiOutput").textContent = "";
+      $("aiOutput").innerHTML = "";
+      $("gardenMap").style.display = "none";
+      $("gardenMap").innerHTML = "";
+      $("planEnd").style.display = "none";
       $("copyBtn").style.display = "none";
+      $("pdfBtn").style.display = "none";
+      lastPlanText = "";
+      lastPlants = [];
 
       renderSuggestions("");
       renderSelectedConditions();
@@ -1149,6 +1963,185 @@ Make it polished, easy to read, and helpful for a real customer.
     document.querySelectorAll("#themeRow .pill").forEach(btn => {
       btn.addEventListener("click", () => setTheme(btn.dataset.theme));
     });
+
+    document.querySelectorAll("#sunlightRow .pill").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedSunlight = btn.dataset.sun;
+        document.querySelectorAll("#sunlightRow .pill").forEach(b => b.setAttribute("aria-pressed", "false"));
+        btn.setAttribute("aria-pressed", "true");
+        updatePreferenceSummary();
+      });
+    });
+
+    document.querySelectorAll("#rarityRow .pill").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedRarity = btn.dataset.rarity;
+        document.querySelectorAll("#rarityRow .pill").forEach(b => b.setAttribute("aria-pressed", "false"));
+        btn.setAttribute("aria-pressed", "true");
+        updatePreferenceSummary();
+      });
+    });
+
+    document.querySelectorAll("#plantTypeRow .pill").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedPlantType = btn.dataset.planttype;
+        document.querySelectorAll("#plantTypeRow .pill").forEach(b => b.setAttribute("aria-pressed", "false"));
+        btn.setAttribute("aria-pressed", "true");
+        renderStaples();
+        renderExclusions();
+        updatePreferenceSummary();
+      });
+    });
+
+    function renderStaples() {
+      const show = selectedPlantType !== "decorative";
+      $("staplesCard").style.display = show ? "block" : "none";
+      const row = $("staplesRow");
+      row.innerHTML = "";
+      STAPLE_VEGGIES.forEach(veg => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "pill";
+        btn.textContent = veg.label;
+        const active = selectedStaples.includes(veg.value);
+        btn.setAttribute("aria-pressed", active ? "true" : "false");
+        btn.addEventListener("click", () => {
+          if (selectedStaples.includes(veg.value)) {
+            selectedStaples = selectedStaples.filter(s => s !== veg.value);
+          } else {
+            selectedStaples.push(veg.value);
+          }
+          renderStaples();
+          updatePreferenceSummary();
+        });
+        row.appendChild(btn);
+      });
+    }
+    function renderExclusions() {
+      $("exclusionsCard").style.display = "block";
+      const row = $("exclusionsRow");
+      row.innerHTML = "";
+      const filtered = EXCLUSION_ITEMS.filter(item =>
+        selectedPlantType === "both" ||
+        item.type === selectedPlantType
+      );
+      filtered.forEach(item => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "pill";
+        btn.textContent = item.label;
+        btn.style.cssText = selectedExclusions.includes(item.value)
+          ? "background:#ffeaea;border-color:#e05050;color:#8b1a1a;"
+          : "";
+        btn.setAttribute("aria-pressed", selectedExclusions.includes(item.value) ? "true" : "false");
+        btn.addEventListener("click", () => {
+          if (selectedExclusions.includes(item.value)) {
+            selectedExclusions = selectedExclusions.filter(s => s !== item.value);
+          } else {
+            selectedExclusions.push(item.value);
+          }
+          renderExclusions();
+          updatePreferenceSummary();
+        });
+        row.appendChild(btn);
+      });
+    }
+
+    // ── Custom staples (typed) ──────────────────────────────────────────
+    let customStaples = [];
+    let customExclusions = [];
+
+    function renderCustomChips(arr, containerId, onRemove, chipStyle) {
+      const row = $(containerId);
+      row.innerHTML = "";
+      arr.forEach((val, i) => {
+        const chip = document.createElement("span");
+        chip.className = "fav-chip";
+        chip.style.cssText = chipStyle;
+        chip.innerHTML = `${escapeHtml(val)} <span class="fav-remove" title="Remove">✕</span>`;
+        chip.querySelector(".fav-remove").addEventListener("click", () => { onRemove(i); });
+        row.appendChild(chip);
+      });
+    }
+
+    function addCustomStaple(val) {
+      val = val.trim();
+      if (!val) return;
+      customStaples.push(val);
+      $("staplesInput").value = "";
+      renderCustomChips(customStaples, "staplesCustomRow",
+        i => { customStaples.splice(i, 1); renderCustomChips(customStaples, "staplesCustomRow", arguments.callee, "background:#edf4ef;border-color:#a8d0b0;color:#274c38;"); updatePreferenceSummary(); },
+        "background:#edf4ef;border-color:#a8d0b0;color:#274c38;");
+      updatePreferenceSummary();
+    }
+
+    function addCustomExclusion(val) {
+      val = val.trim();
+      if (!val) return;
+      customExclusions.push(val);
+      $("exclusionsInput").value = "";
+      renderCustomChips(customExclusions, "exclusionsCustomRow",
+        i => { customExclusions.splice(i, 1); renderCustomChips(customExclusions, "exclusionsCustomRow", arguments.callee, "background:#ffeaea;border-color:#e05050;color:#8b1a1a;"); updatePreferenceSummary(); },
+        "background:#ffeaea;border-color:#e05050;color:#8b1a1a;");
+      updatePreferenceSummary();
+    }
+
+    // Common plant names for typeahead suggestions
+    const PLANT_SUGGESTIONS = [
+      "Tomato","Cherry Tomato","Heirloom Tomato","Pepper","Bell Pepper","Jalapeño","Habanero",
+      "Broccoli","Cauliflower","Cabbage","Brussels Sprouts","Kale","Collard Greens","Swiss Chard",
+      "Spinach","Lettuce","Arugula","Mâche","Radicchio","Endive","Bok Choy","Napa Cabbage",
+      "Carrot","Beet","Radish","Turnip","Parsnip","Rutabaga","Celeriac",
+      "Cucumber","Zucchini","Summer Squash","Winter Squash","Pumpkin","Butternut Squash","Spaghetti Squash",
+      "Peas","Snow Peas","Sugar Snap Peas","Beans","Green Beans","Lima Beans","Edamame",
+      "Corn","Sweet Corn","Popcorn","Okra","Eggplant","Tomatillo","Ground Cherry",
+      "Onion","Green Onion","Shallot","Leek","Garlic","Chives","Ramps",
+      "Potato","Sweet Potato","Yam","Ginger","Turmeric",
+      "Basil","Parsley","Cilantro","Dill","Fennel","Mint","Spearmint","Peppermint",
+      "Rosemary","Thyme","Sage","Oregano","Marjoram","Lavender","Lemon Verbena",
+      "Strawberry","Blueberry","Raspberry","Blackberry","Currant","Gooseberry",
+      "Apple","Pear","Peach","Plum","Cherry","Fig","Persimmon","Pawpaw","Elderberry",
+      "Sunflower","Rose","Marigold","Zinnia","Cosmos","Dahlia","Peony","Lilac",
+      "Hydrangea","Coneflower","Black-Eyed Susan","Coreopsis","Salvia","Agastache",
+      "Butterfly Bush","Bee Balm","Joe Pye Weed","Milkweed","Wild Bergamot",
+      "Hosta","Fern","Astilbe","Bleeding Heart","Columbine","Foxglove","Daylily",
+      "Iris","Tulip","Daffodil","Crocus","Allium","Camassia",
+      "Lemon","Lime","Orange","Kumquat","Meyer Lemon","Satsuma",
+    ];
+
+    function makeTypeahead(inputId, dropId, onSelect) {
+      const input = $(inputId);
+      const drop = $(dropId);
+      let activeIdx = -1;
+
+      input.addEventListener("input", () => {
+        const q = input.value.trim().toLowerCase();
+        activeIdx = -1;
+        if (!q) { drop.classList.remove("open"); drop.innerHTML = ""; return; }
+        const matches = PLANT_SUGGESTIONS.filter(p => p.toLowerCase().includes(q)).slice(0, 8);
+        if (!matches.length) { drop.classList.remove("open"); drop.innerHTML = ""; return; }
+        drop.innerHTML = matches.map((m, i) => `<div class="typeahead-item" data-idx="${i}">${escapeHtml(m)}</div>`).join("");
+        drop.classList.add("open");
+        drop.querySelectorAll(".typeahead-item").forEach(el => {
+          el.addEventListener("mousedown", e => { e.preventDefault(); onSelect(matches[+el.dataset.idx]); drop.classList.remove("open"); });
+        });
+      });
+
+      input.addEventListener("keydown", e => {
+        const items = drop.querySelectorAll(".typeahead-item");
+        if (e.key === "ArrowDown") { e.preventDefault(); activeIdx = Math.min(activeIdx + 1, items.length - 1); items.forEach((el, i) => el.classList.toggle("active", i === activeIdx)); }
+        else if (e.key === "ArrowUp") { e.preventDefault(); activeIdx = Math.max(activeIdx - 1, 0); items.forEach((el, i) => el.classList.toggle("active", i === activeIdx)); }
+        else if (e.key === "Enter") { e.preventDefault(); if (activeIdx >= 0 && items[activeIdx]) { onSelect(items[activeIdx].textContent); drop.classList.remove("open"); } else { onSelect(input.value); } }
+        else if (e.key === "Escape") { drop.classList.remove("open"); }
+      });
+
+      document.addEventListener("click", e => { if (!input.contains(e.target) && !drop.contains(e.target)) drop.classList.remove("open"); });
+    }
+
+    makeTypeahead("staplesInput", "staplesDrop", val => { addCustomStaple(val); });
+    makeTypeahead("exclusionsInput", "exclusionsDrop", val => { addCustomExclusion(val); });
+    $("staplesAddBtn").addEventListener("click", () => addCustomStaple($("staplesInput").value));
+    $("exclusionsAddBtn").addEventListener("click", () => addCustomExclusion($("exclusionsInput").value));
 
     $("conditionInput").addEventListener("input", (e) => renderSuggestions(e.target.value));
 
@@ -1165,17 +2158,20 @@ Make it polished, easy to read, and helpful for a real customer.
 
     $("generateBtn").addEventListener("click", async () => {
       $("aiOutput").style.display = "none";
-      $("aiOutput").textContent = "";
+      $("aiOutput").innerHTML = "";
+      $("gardenMap").style.display = "none";
+      $("gardenMap").innerHTML = "";
+      $("planEnd").style.display = "none";
       $("copyBtn").style.display = "none";
 
       const zip = cleanZip($("zipInput").value);
       if (zip.length !== 5) {
-        $("aiStatus").textContent = "Enter a valid ZIP first, then Detect Zone.";
+        $("aiStatus").textContent = "Please enter a valid ZIP code first.";
         return;
       }
 
       if (!detected.zone) {
-        $("aiStatus").textContent = "Click Detect Zone first.";
+        $("aiStatus").textContent = "Please enter your ZIP code in Step 1 first.";
         return;
       }
 
@@ -1192,25 +2188,123 @@ Make it polished, easy to read, and helpful for a real customer.
       $("generateBtn").textContent = "Working...";
 
       try {
-        const data = await callAIProxy({
-          zip: detected.zip,
-          zone: detected.zone,
-          location: detected.location,
-          theme: selectedTheme,
-          nativeOnly,
-          holisticHealing,
-          conditions: selectedTheme === "Functional Food" ? selectedConditions : [],
-          prompt
+        const resp = await fetch(AI_PROXY_URL, {
+          method: "POST",
+          headers: authHeaders(),
+          body: JSON.stringify({
+            zip: detected.zip,
+            zone: detected.zone,
+            location: detected.location,
+            theme: selectedTheme,
+            nativeOnly,
+            holisticHealing,
+            conditions: selectedTheme === "Ailment Support" ? selectedConditions : [],
+            prompt
+          })
         });
 
-        const text = data.text || data.output || JSON.stringify(data, null, 2);
+        if (!resp.ok) {
+          throw new Error((await resp.text()) || `Request failed (${resp.status})`);
+        }
+
+        const reader = resp.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        let fullText = "";
+
         $("aiOutput").style.display = "block";
-        $("aiOutput").textContent = String(text).trim();
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (!done) buffer += decoder.decode(value, { stream: true });
+
+          const lines = buffer.split("\n");
+          // On done, process ALL lines; otherwise hold the last incomplete line
+          buffer = done ? "" : lines.pop();
+
+          for (const line of lines) {
+            if (!line.startsWith("data: ")) continue;
+            const payload = line.slice(6).trim();
+            if (payload === "[DONE]") continue;
+            try {
+              const parsed = JSON.parse(payload);
+              if (parsed.error) throw new Error(parsed.error);
+              if (parsed.text) {
+                fullText += parsed.text;
+                $("aiOutput").innerHTML = marked.parse(fullText);
+              }
+            } catch (parseErr) {
+              if (parseErr.message !== "Unexpected token") throw parseErr;
+            }
+          }
+
+          if (done) break;
+        }
+
+        lastPlanText = fullText;
+
+        // ── Extract plant names from Recommended Plants section ─────────
+        lastPlants = [];
+        const NOT_PLANT = /consult|contains|provider|always|never|avoid|caution|warning|important|harvest|holistic|traditional|safety|note|tip:|section|step|your|this|these|when|before|after|during|health|medical|advice|remember|consider|each|every|good companions|nutrition|best consumed|full sun|partial shade|full shade/i;
+        const LOOKS_LIKE_PLANT = /^[A-Z][a-zA-Z'-]+(?: [A-Za-z'-]+){0,3}$/;
+
+        // Find the Recommended Plants section
+        const secMatch = fullText.match(/(?:^|\n)(?:#+\s*)?(?:\d+\.\s+)?recommended plants?([\s\S]*?)(?=\n(?:#+\s*)?(?:\d+\.\s+)[A-Z]|\n(?:#+\s*)(?:Simple|Seasonal|Harvest|Beginner|Safety)|$)/im);
+        const searchText = secMatch ? secMatch[1] : fullText;
+
+        // Match **Plant Name** — the dash is the separator Claude uses per the prompt
+        const boldDash = [...searchText.matchAll(/\*\*([^*\n]{2,45}?)\*\*\s*(?:—|-)/g)]
+          .map(m => m[1].trim())
+          .filter(n => LOOKS_LIKE_PLANT.test(n) && !NOT_PLANT.test(n));
+
+        if (boldDash.length) {
+          lastPlants = [...new Set(boldDash)].slice(0, 12).map(n => ({ common: n, botanical: n }));
+        } else {
+          // Fallback: any bold phrase that looks like a plant name in that section
+          const allBold = [...searchText.matchAll(/\*\*([^*\n]{2,45})\*\*/g)]
+            .map(m => m[1].trim())
+            .filter(n => LOOKS_LIKE_PLANT.test(n) && !NOT_PLANT.test(n));
+          lastPlants = [...new Set(allBold)].slice(0, 12).map(n => ({ common: n, botanical: n }));
+        }
+
+        // ── Garden Map (uses static #gardenMap div, no innerHTML +=) ────
+        const gardenEl = $("gardenMap");
+        gardenEl.innerHTML = "";
+
+        if (lastPlants.length) {
+          const ROW_SIZE = 4;
+          let html = `<p class="garden-map-title">🗺 Your Garden Layout</p><div class="garden-bed">`;
+          for (let i = 0; i < lastPlants.length; i += ROW_SIZE) {
+            html += `<div class="garden-row">`;
+            lastPlants.slice(i, i + ROW_SIZE).forEach((plant, ci) => {
+              const idx = i + ci;
+              html += `<div class="garden-plant"><div class="garden-plant-circle" id="gcirc_${idx}">🌿</div><div class="garden-plant-name">${escapeHtml(plant.common)}</div></div>`;
+            });
+            html += `</div>`;
+          }
+          html += `</div>`;
+          gardenEl.innerHTML = html;
+          gardenEl.style.display = "block";
+
+          // Load Wikipedia photos into circles (DOM is stable — no more innerHTML changes)
+          lastPlants.forEach((plant, i) => {
+            fetchPlantImage(plant).then(url => {
+              const el = document.getElementById(`gcirc_${i}`);
+              if (url && el) el.innerHTML = `<img src="${url}" alt="${escapeHtml(plant.common)}">`;
+            });
+          });
+        }
+
+        $("planEnd").style.display = "block";
+
         $("aiStatus").textContent = "Done.";
         $("copyBtn").style.display = "inline-block";
+        $("pdfBtn").style.display = "inline-block";
+        $("zoneBadge").textContent = `🌿 All plants in this plan are selected specifically for USDA Zone ${detected.zone}${detected.location ? " · " + detected.location : ""}.`;
+        $("zoneBadge").style.display = "block";
       } catch (e) {
         console.error(e);
-        $("aiStatus").textContent = `AI failed: ${e.message || "Unknown error"}`;
+        $("aiStatus").textContent = `Something went wrong: ${e.message || "Unknown error"}`;
       } finally {
         $("generateBtn").disabled = false;
         $("generateBtn").textContent = "Generate Plan";
@@ -1218,7 +2312,7 @@ Make it polished, easy to read, and helpful for a real customer.
     });
 
     $("copyBtn").addEventListener("click", async () => {
-      const text = $("aiOutput").textContent || "";
+      const text = lastPlanText || "";
       try {
         await navigator.clipboard.writeText(text);
         $("aiStatus").textContent = "Copied.";
@@ -1232,6 +2326,118 @@ Make it polished, easy to read, and helpful for a real customer.
 
     renderSuggestions("");
     renderSelectedConditions();
+
+    // ── Zone soil & planting data ──────────────
+    const ZONE_DATA = {
+      "3":  { soil: ["Cold, often clay-heavy or sandy loam","Amend heavily with compost to improve drainage and warmth","Mulch deeply (4–6 in) to protect roots over winter","Slightly acidic to neutral pH (6.0–7.0)"], schedule: ["Start seeds indoors: Feb–Mar","Last frost: late May","Safe outdoor planting: early June","First fall frost: mid-Sept","Growing season: ~90 days"] },
+      "4":  { soil: ["Loamy to clay soils, often nutrient-rich","Add compost and perlite for drainage","Mulch well to extend the season","pH: 6.0–7.0"], schedule: ["Start seeds indoors: Feb–Mar","Last frost: mid-May","Safe outdoor planting: late May","First fall frost: late Sept","Growing season: ~120 days"] },
+      "5":  { soil: ["Mixed loam and clay, good base fertility","Work in compost each spring","Good drainage important for root crops","pH: 6.0–7.0"], schedule: ["Start seeds indoors: Mar","Last frost: mid-Apr","Safe outdoor planting: early May","First fall frost: mid-Oct","Growing season: ~150 days"] },
+      "6":  { soil: ["Fertile loam in many regions; clay in others","Amend with compost and aged manure annually","Watch for compaction in clay-heavy areas","pH: 6.0–7.0"], schedule: ["Start seeds indoors: Feb–Mar","Last frost: mid-Apr","Safe outdoor planting: late Apr","First fall frost: late Oct","Growing season: ~165 days"] },
+      "7":  { soil: ["Varied — red clay in SE, sandy loam in west","Clay soils benefit from gypsum and compost","Excellent for a wide range of edibles","pH: 6.0–7.5"], schedule: ["Start cool-season crops: Feb–Mar","Last frost: late Mar–mid-Apr","Plant warm-season crops: late Apr","Fall garden: plant Aug–Sept","Growing season: ~200 days"] },
+      "8":  { soil: ["Often clay-heavy in South; sandy on coasts","Amend clay with compost and coarse sand","Raised beds recommended to improve drainage","pH: 6.0–7.5"], schedule: ["Cool crops (lettuce, kale): Feb & Sept–Oct","Last frost: mid-Feb–Mar","Warm crops: mid-Mar–Apr","Fall planting: Sept–Oct","Growing season: ~240 days"] },
+      "9":  { soil: ["Sandy to loamy, often alkaline in arid areas","Amend with organic matter and sulfur if pH is high","Drip irrigation highly recommended","pH: 6.5–8.0"], schedule: ["Cool crops: Jan–Feb & Oct–Nov","Last frost: Jan–Feb","Warm crops: Mar–Apr","Summer heat rest recommended","Fall garden: Oct–Nov","Growing season: ~280 days"] },
+      "10": { soil: ["Sandy, well-draining soils common","Add compost generously — nutrients leach fast","Raised beds with enriched mix work best","pH: 6.5–7.5"], schedule: ["Year-round gardening possible","Cool crops: Oct–Mar","Warm crops: Feb–Apr & Sept","Avoid planting in peak summer heat","Growing season: ~365 days"] },
+      "11": { soil: ["Tropical soils — often highly weathered and leached","Needs consistent compost and fertilization","Excellent drainage critical","pH: 5.5–7.0"], schedule: ["Year-round planting possible","Avoid dry-season planting without irrigation","Rainy season: best for most crops","Growing season: 365 days"] }
+    };
+
+    function getZoneData(zone) {
+      const key = String(zone || "").replace(/[ab]/i, "").trim();
+      return ZONE_DATA[key] || null;
+    }
+
+    function renderZoneInfoPanel(zone) {
+      const data = getZoneData(zone);
+      const panel = $("zoneInfoPanel");
+      if (!data) { panel.style.display = "none"; return; }
+
+      panel.innerHTML = `
+        <div class="zoneInfoCard">
+          <h4>🪴 Soil Profile</h4>
+          <ul>${data.soil.map(s => `<li>${s}</li>`).join("")}</ul>
+        </div>
+        <div class="zoneInfoCard">
+          <h4>📅 Planting Schedule</h4>
+          <ul>${data.schedule.map(s => `<li>${s}</li>`).join("")}</ul>
+        </div>`;
+    }
+
+    $("zoneInfoBtn").addEventListener("click", () => {
+      const panel = $("zoneInfoPanel");
+      const btn = $("zoneInfoBtn");
+      const isOpen = panel.style.display !== "none";
+      if (isOpen) {
+        panel.style.display = "none";
+        btn.classList.remove("active");
+      } else {
+        renderZoneInfoPanel(detected.zone);
+        panel.style.display = "grid";
+        btn.classList.add("active");
+      }
+    });
+
+    async function fetchPlantImage(plant) {
+      // Try multiple name variations in order: botanical, common, first-word only
+      const candidates = [...new Set([
+        plant.botanical,
+        plant.common,
+        plant.common.split(" ")[0]  // e.g. "Mint" from "Mint (Spearmint)"
+      ].filter(Boolean))];
+
+      for (const name of candidates) {
+        try {
+          const res = await fetch(
+            `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name)}`,
+            { headers: { "Accept": "application/json" } }
+          );
+          if (!res.ok) continue;
+          const data = await res.json();
+          const thumb = data.thumbnail?.source;
+          if (thumb) return thumb;
+        } catch { /* try next */ }
+      }
+      return null;
+    }
+
+    $("pdfBtn").addEventListener("click", async () => {
+      $("pdfBtn").disabled = true;
+      $("pdfBtn").textContent = "Building PDF...";
+
+      // Fetch images for all plants in parallel
+      const images = await Promise.all(lastPlants.map(fetchPlantImage));
+
+      // Build plant grid
+      const grid = $("pdfPlantGrid");
+      grid.innerHTML = "";
+      lastPlants.forEach((plant, i) => {
+        const card = document.createElement("div");
+        card.className = "pdf-plant-card";
+        const imgHtml = images[i]
+          ? `<img src="${images[i]}" alt="${escapeHtml(plant.common)}" />`
+          : `<div class="pdf-plant-img-placeholder">🌿</div>`;
+        card.innerHTML = `
+          ${imgHtml}
+          <div class="pdf-plant-name">
+            <strong>${escapeHtml(plant.common)}</strong>
+            <em>${escapeHtml(plant.botanical)}</em>
+          </div>`;
+        grid.appendChild(card);
+      });
+
+      // Set meta and plan text
+      const loc = detected.location ? ` · ${detected.location}` : "";
+      $("pdfMeta").textContent =
+        `Zone ${detected.zone}${loc} · ${selectedTheme} · Generated ${new Date().toLocaleDateString()}`;
+      $("pdfPlanText").innerHTML = marked.parse(lastPlanText);
+
+      // Show PDF div, print, hide
+      $("pdfDoc").style.display = "block";
+      await new Promise(r => setTimeout(r, 200)); // let images render
+      window.print();
+      $("pdfDoc").style.display = "none";
+
+      $("pdfBtn").disabled = false;
+      $("pdfBtn").textContent = "Download PDF";
+    });
   </script>
 </body>
 </html>
