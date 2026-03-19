@@ -1462,36 +1462,51 @@ Create a practical, beautiful, beginner-friendly garden plan for:
 - Include holistic healing powers: ${holisticHealing ? "Yes" : "No"}
 ${selectedTheme === "Ailment Support" ? `- Functional focus: ${conditionText}` : ""}
 
-Follow these rules carefully:
-1. Make the plan realistic for a homeowner with a typical backyard or raised beds.
-2. Plant type rule: ${selectedPlantType === "edible" ? "Include ONLY edible plants. Do not include purely ornamental plants." : selectedPlantType === "decorative" ? "Include ONLY decorative/ornamental plants. Do not include edible plants." : "Include both edible AND decorative plants. In section 2, group them under two clear subheadings: '🍓 Edible Plants' and '🌸 Decorative Plants'."}
-2b. IMPORTANT — when the plan includes edible plants, prioritize COMMON VEGETABLE GARDEN CROPS that everyday people actually grow: tomatoes, peppers, broccoli, beans, cucumbers, zucchini, lettuce, carrots, kale, peas, squash, Swiss chard, spinach, radishes, beets, etc. You may include herbs (basil, parsley, mint, chives) but they should supplement vegetables, not replace them. Do not fill an edible plan with only obscure herbs or medicinal plants.
-3. If native plants only = Yes, use only native plants appropriate for the zone when possible.
-4. If native plants only = No, prefer native plants first, then include well-adapted plants if needed.
-5. If holistic healing powers = Yes, include a short cautious note for each plant using language like:
-   - "traditionally used for..."
-   - "commonly valued for..."
-   - "often associated with..."
-   Do NOT make medical claims and do NOT present medical advice.
-6. Sunlight rule: ${selectedSunlight ? `Only recommend plants that thrive in "${selectedSunlight}" conditions. Label each plant with a sunlight icon: ☀️ Full Sun, ⛅ Partial Shade, or 🌑 Full Shade.` : "Include a variety of sun tolerances and label each plant with ☀️ Full Sun, ⛅ Partial Shade, or 🌑 Full Shade."}
-7. Keep the recommendations beginner-friendly and practical.
-${selectedStaples.length ? `8. REQUIRED VEGETABLES — the user specifically requested these and they MUST appear in the plan: ${selectedStaples.join(", ")}. Do not skip any of them. If one isn't ideal for the zone, include it anyway and note any care adjustments.` : ""}
-9. Do not suggest invasive plants.
-10. Include only plants that are realistic for the stated zone (except any required vegetables from rule 8).
-11. For every edible plant in section 2, include a brief **Nutrition:** line (2–3 highlights) and a **Best consumed:** line (1 sentence). Keep these concise.
+PLANT SELECTION RULES:
+- ${selectedPlantType === "edible" ? "Include ONLY edible plants (vegetables, fruits, herbs). No purely ornamental plants." : selectedPlantType === "decorative" ? "Include ONLY decorative/ornamental plants. No edible plants." : "Include both edible and decorative plants. In section 2, use two subheadings: '🍓 Edible Plants' and '🌸 Decorative Plants'."}
+${selectedPlantType !== "decorative" ? "- Prioritize common vegetable garden crops: tomatoes, peppers, broccoli, beans, cucumbers, zucchini, lettuce, carrots, kale, peas, squash, chard, spinach, beets, onions. Herbs (basil, mint, chives) are supplements, not the main list." : ""}
+- ${nativeOnly ? "Use only native plants appropriate for the zone." : "Prefer native plants first; include well-adapted non-invasive plants as needed."}
+- Do not suggest invasive plants.
+- Include only plants realistic for USDA Zone ${zone}.
+${selectedStaples.length ? `- REQUIRED — these must appear in the plan no matter what: ${selectedStaples.join(", ")}. Note any zone-specific care adjustments if needed.` : ""}
 
-Return the answer in this exact structure:
+SUNLIGHT: ${selectedSunlight ? `Only recommend plants that thrive in "${selectedSunlight}" conditions.` : "Include a mix of sun tolerances."}
 
-1. GARDEN CONCEPT
-2. RECOMMENDED PLANTS
-   (List each plant as: **Plant Name** — description. Include a **Good companions:** line. For edible plants also include **Nutrition:** and **Best consumed:** lines.)
-3. SIMPLE LAYOUT
-4. SEASONAL CARE PLAN
-5. HARVEST / USE IDEAS
-6. BEGINNER TIPS
-7. SAFETY NOTE
+USE THIS EXACT FORMAT — every plant entry must follow this template with no deviations:
 
-Be concise in each section — 3 to 5 bullet points max. Complete ALL 7 sections. Do not stop early.
+**[Plant Name]** [sunlight emoji: ☀️ Full Sun | ⛅ Partial Shade | 🌑 Full Shade]
+[One sentence description — what it is and why it fits this garden.]
+**Good companions:** [2–3 plants that grow well next to it]${selectedPlantType !== "decorative" ? `
+**Nutrition:** [2–3 key nutritional highlights, comma-separated]
+**Best consumed:** [One sentence on best way to eat/use it]` : ""}${holisticHealing ? `
+**Traditionally used for:** [One cautious sentence using phrases like "traditionally associated with" or "commonly used in folk practice for" — no medical claims]` : ""}
+
+Repeat that exact block for every plant. Do not add extra fields, headers, or sub-bullets within plant entries.
+
+RESPONSE STRUCTURE — use these exact headings:
+
+## 1. Garden Concept
+[3–4 sentences describing the garden's design direction, what makes it suited to this zone and theme.]
+
+## 2. Recommended Plants
+[List 6–10 plants using the template above.]
+
+## 3. Simple Layout
+[4–5 bullets describing where to position plants in the garden bed — front/back/sides/center.]
+
+## 4. Seasonal Care Plan
+[One bullet per season: Spring, Summer, Fall, Winter — what to plant, water, harvest, or protect.]
+
+## 5. Harvest & Use Ideas
+[4–5 bullets on how to harvest and use what grows.]
+
+## 6. Beginner Tips
+[4–5 practical tips for a first-time gardener.]
+
+## 7. Safety Note
+[2–3 sentences: note any plants to handle carefully, remind that holistic notes are not medical advice.]
+
+Complete ALL 7 sections. Do not stop early.
       `.trim();
     }
 
