@@ -5,33 +5,55 @@
   <title>RootPlans | Intelligent Garden Planning</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --bg: #f4f6f2;
-      --surface: rgba(255, 255, 255, 0.9);
-      --surface-strong: #ffffff;
-      --border: rgba(36, 62, 42, 0.1);
-      --border-strong: rgba(36, 62, 42, 0.16);
-      --text: #1f2b22;
-      --muted: #5e6d62;
-      --primary: #274c38;
-      --primary-2: #3e6a50;
-      --primary-soft: #edf4ef;
-      --shadow: 0 18px 48px rgba(22, 34, 26, 0.08);
-      --radius: 20px;
-      --max: 1120px;
+      /* Brand palette — farm-to-table / natural */
+      --cream:        #F6F1E9;
+      --cream-deep:   #EDE7DA;
+      --sage:         #A3B18A;
+      --sage-deep:    #3A5A40;
+      --sage-mid:     #5C7A52;
+      --terracotta:   #D08C60;
+      --terra-deep:   #A6623A;
+      --clay:         #EAD2AC;
+      --clay-light:   #F4EAD8;
+      --mustard:      #D4A373;
+      --olive:        #2A3520;
+      --charcoal:     #2B2B2B;
+      --warm-gray:    #6B6B6B;
+
+      /* Semantic tokens */
+      --bg:            var(--cream);
+      --surface:       rgba(253,250,246,0.95);
+      --surface-strong:#FDFAF6;
+      --border:        rgba(163,177,138,0.26);
+      --border-strong: rgba(163,177,138,0.44);
+      --text:          var(--charcoal);
+      --muted:         var(--warm-gray);
+      --primary:       var(--sage-deep);
+      --primary-2:     var(--sage-mid);
+      --primary-soft:  #EEF1E8;
+      --shadow:        0 18px 48px rgba(42,53,32,0.09);
+      --radius:        20px;
+      --max:           1120px;
+      --font-head:     'Lora', Georgia, 'Times New Roman', serif;
+      --font-body:     'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background:
-        radial-gradient(circle at 20% 20%, rgba(100,160,108,0.13), transparent 30%),
-        radial-gradient(circle at 80% 10%, rgba(63,113,85,0.09), transparent 25%),
-        radial-gradient(circle at 60% 80%, rgba(80,130,90,0.07), transparent 28%),
-        linear-gradient(180deg, #f2f6f1 0%, #eef2ec 100%);
+      font-family: var(--font-body);
+      background-color: var(--cream);
+      background-image:
+        radial-gradient(ellipse 65% 45% at 5% 15%, rgba(163,177,138,0.17) 0%, transparent 100%),
+        radial-gradient(ellipse 50% 40% at 96% 8%, rgba(208,140,96,0.10) 0%, transparent 100%),
+        radial-gradient(ellipse 55% 50% at 55% 94%, rgba(212,163,115,0.08) 0%, transparent 100%);
       color: var(--text);
     }
 
@@ -43,11 +65,13 @@
     .hero {
       max-width: var(--max);
       margin: 0 auto 28px;
-      padding: 44px 44px 40px;
+      padding: 48px 48px 44px;
       border-radius: 28px;
-      background: linear-gradient(140deg, #0d2318 0%, #1b3d2a 45%, #2d5e42 100%);
+      background:
+        radial-gradient(ellipse at 85% 95%, rgba(208,140,96,0.20) 0%, transparent 50%),
+        linear-gradient(140deg, #1F2F15 0%, #2A3F20 50%, #3A5A40 100%);
       color: #fff;
-      box-shadow: 0 24px 64px rgba(13,35,24,0.28);
+      box-shadow: 0 24px 64px rgba(26,42,18,0.30);
       position: relative;
       overflow: hidden;
     }
@@ -89,12 +113,13 @@
     }
 
     .hero h1 {
-      margin: 18px 0 12px;
-      font-size: clamp(32px, 4.5vw, 52px);
-      line-height: 1.06;
-      letter-spacing: -0.03em;
-      font-weight: 800;
-      background: linear-gradient(135deg, #fff 30%, rgba(160,220,170,0.95) 100%);
+      margin: 20px 0 14px;
+      font-family: var(--font-head);
+      font-size: clamp(28px, 4.0vw, 48px);
+      line-height: 1.10;
+      letter-spacing: -0.01em;
+      font-weight: 700;
+      background: linear-gradient(135deg, #F6F1E9 25%, #EAD2AC 65%, #D4A373 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -103,16 +128,16 @@
     .hero p {
       margin: 0;
       font-size: 17px;
-      line-height: 1.65;
-      color: rgba(255,255,255,0.9);
-      max-width: 700px;
+      line-height: 1.70;
+      color: rgba(255,255,255,0.80);
+      max-width: 680px;
     }
 
     .app {
       max-width: var(--max);
       margin: 0 auto;
       background: var(--surface);
-      border: 1px solid rgba(255,255,255,0.5);
+      border: 1px solid rgba(255,255,255,0.6);
       border-radius: 28px;
       box-shadow: var(--shadow);
       overflow: hidden;
@@ -121,21 +146,23 @@
     .appHeader {
       padding: 28px 32px 20px;
       border-bottom: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(255,255,255,0.72), rgba(247,252,248,0.72));
+      background: linear-gradient(180deg, rgba(253,250,246,0.90), rgba(246,241,233,0.88));
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }
     .appHeader h2 {
       margin: 0 0 6px;
-      font-size: 26px;
-      letter-spacing: -0.02em;
+      font-family: var(--font-head);
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
       color: var(--primary);
     }
 
     .appHeader p {
       margin: 0;
       color: var(--muted);
-      line-height: 1.6;
+      line-height: 1.65;
       max-width: 760px;
     }
 
@@ -148,13 +175,13 @@
     .section {
       padding: 26px 26px 26px 28px;
       border: 1px solid var(--border);
-      border-left: 3px solid rgba(39,76,56,0.22);
+      border-left: 3px solid var(--sage);
       border-radius: 22px;
-      background: rgba(255,255,255,0.82);
+      background: rgba(253,250,246,0.90);
       transition: box-shadow 0.18s, transform 0.18s;
     }
     .section:hover {
-      box-shadow: 0 8px 28px rgba(39,76,56,0.09);
+      box-shadow: 0 8px 28px rgba(58,90,64,0.08);
       transform: translateY(-1px);
     }
 
@@ -171,18 +198,22 @@
       border-radius: 999px;
       display: grid;
       place-items: center;
-      background: linear-gradient(135deg, #274c38, #4a8c5c);
+      background: linear-gradient(135deg, var(--terracotta), var(--mustard));
       color: #fff;
-      font-weight: 800;
+      font-weight: 700;
       font-size: 16px;
+      font-family: var(--font-head);
       flex: 0 0 auto;
-      box-shadow: 0 4px 12px rgba(39,76,56,0.28);
+      box-shadow: 0 4px 12px rgba(208,140,96,0.34);
     }
 
     .sectionHeaderText h3 {
       margin: 0 0 4px;
-      font-size: 22px;
-      letter-spacing: -0.02em;
+      font-family: var(--font-head);
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--charcoal);
     }
 
     .sectionHeaderText p {
@@ -204,36 +235,42 @@
       width: 100%;
       padding: 14px 16px;
       border-radius: 14px;
-      border: 1px solid var(--border-strong);
+      border: 1.5px solid var(--border-strong);
       font-size: 16px;
+      font-family: var(--font-body);
       color: var(--text);
       outline: none;
-      background: rgba(255,255,255,0.92);
+      background: rgba(253,250,246,0.96);
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
 
     .input:focus {
-      border-color: rgba(39, 76, 56, 0.38);
-      box-shadow: 0 0 0 5px rgba(39, 76, 56, 0.08);
+      border-color: var(--sage);
+      box-shadow: 0 0 0 4px rgba(163,177,138,0.16);
     }
+
+    .input::placeholder { color: #b0a898; }
 
     .btn, .btnSecondary {
       border-radius: 14px;
-      padding: 14px 16px;
+      padding: 14px 20px;
       font-size: 15px;
       font-weight: 700;
+      font-family: var(--font-body);
       cursor: pointer;
-      border: 1px solid transparent;
+      border: 1.5px solid transparent;
+      transition: box-shadow 0.2s, transform 0.15s, background 0.15s;
     }
 
     .btn {
-      background: linear-gradient(135deg, #1f3b2b, #3e6a50);
+      background: linear-gradient(135deg, var(--terracotta), #C47844);
       color: #fff;
-      box-shadow: 0 8px 24px rgba(39,76,56,0.28);
-      transition: box-shadow 0.2s, transform 0.15s;
+      box-shadow: 0 6px 20px rgba(208,140,96,0.34);
       letter-spacing: 0.01em;
     }
     .btn:hover:not(:disabled) {
-      box-shadow: 0 12px 32px rgba(39,76,56,0.38);
+      background: linear-gradient(135deg, #C47844, var(--terra-deep));
+      box-shadow: 0 10px 28px rgba(208,140,96,0.44);
       transform: translateY(-1px);
     }
     .btn:active:not(:disabled) {
@@ -241,53 +278,57 @@
     }
 
     .btn:disabled {
-      opacity: 0.66;
+      opacity: 0.55;
       cursor: not-allowed;
       box-shadow: none;
     }
 
     .btnSecondary {
-      background: rgba(255,255,255,0.9);
-      color: var(--text);
+      background: rgba(253,250,246,0.96);
+      color: var(--sage-deep);
       border-color: var(--border-strong);
+    }
+    .btnSecondary:hover:not(:disabled) {
+      background: var(--clay-light);
+      border-color: var(--sage);
     }
 
     .favBtn { padding: 14px 16px; font-size: 18px; line-height: 1; }
-    .favBtn.saved { background: #fffbeb; border-color: #f0c040; color: #c08000; }
+    .favBtn.saved { background: #FFF8EC; border-color: var(--mustard); color: #7A5010; }
 
     .fav-chip {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      background: #fffbeb;
-      border: 1px solid #f0d060;
+      background: #FFF8EC;
+      border: 1px solid var(--mustard);
       border-radius: 999px;
       padding: 5px 12px;
       font-size: 13px;
-      font-weight: 700;
-      color: #5a3f00;
+      font-weight: 600;
+      color: #7A5010;
       cursor: pointer;
       margin-right: 6px;
       margin-bottom: 6px;
     }
-    .fav-chip:hover { background: #fef3b0; }
+    .fav-chip:hover { background: var(--clay); }
     .fav-chip .fav-remove {
       font-size: 14px;
-      color: #b08000;
+      color: var(--terracotta);
       margin-left: 2px;
       line-height: 1;
     }
-    .fav-chip .fav-remove:hover { color: #c00; }
+    .fav-chip .fav-remove:hover { color: var(--terra-deep); }
 
     .typeahead-wrap { position: relative; flex: 1; min-width: 0; }
     .typeahead-drop {
       position: absolute;
       top: calc(100% + 4px);
       left: 0; right: 0;
-      background: #fff;
-      border: 1px solid var(--border-strong);
+      background: var(--surface-strong);
+      border: 1.5px solid var(--border-strong);
       border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      box-shadow: 0 8px 24px rgba(42,53,32,0.10);
       z-index: 100;
       overflow: hidden;
       display: none;
@@ -304,7 +345,7 @@
     .statusLine {
       margin-top: 14px;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 600;
       color: var(--primary);
     }
 
@@ -313,14 +354,16 @@
       padding: 18px;
       border-radius: 18px;
       border: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(248,251,248,0.94));
+      background: linear-gradient(180deg, var(--surface-strong), var(--cream-deep));
     }
 
     .resultTitle {
       margin: 0 0 8px;
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
+      font-family: var(--font-head);
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--charcoal);
     }
 
     .resultLine {
@@ -344,41 +387,43 @@
 
     .pill {
       border: 1.5px solid var(--border-strong);
-      background: rgba(255,255,255,0.94);
+      background: rgba(253,250,246,0.96);
       padding: 11px 18px;
       border-radius: 999px;
       cursor: pointer;
-      font-weight: 700;
+      font-weight: 600;
       font-size: 14px;
-      color: var(--text);
+      font-family: var(--font-body);
+      color: var(--charcoal);
       transition: all 0.15s ease;
     }
     .pill:hover {
-      border-color: rgba(39,76,56,0.4);
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(39,76,56,0.1);
+      border-color: var(--sage);
+      background: var(--primary-soft);
+      box-shadow: 0 2px 8px rgba(163,177,138,0.18);
     }
     .pill[aria-pressed="true"] {
-      background: linear-gradient(135deg, #274c38, #3e6a50);
+      background: var(--sage-deep);
       border-color: transparent;
       color: #fff;
-      box-shadow: 0 4px 12px rgba(39,76,56,0.25);
+      box-shadow: 0 4px 12px rgba(58,90,64,0.28);
     }
 
     .chip {
-      border: 1px solid #2563eb;
-      background: #eff6ff;
+      border: 1.5px solid var(--sage);
+      background: var(--primary-soft);
       padding: 10px 12px;
       border-radius: 999px;
       cursor: pointer;
-      font-weight: 700;
-      color: #1d4ed8;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--sage-deep);
     }
 
     .pill.selected {
-      background: #eff6ff;
-      border-color: #2563eb;
-      color: #1d4ed8;
+      background: var(--primary-soft);
+      border-color: var(--sage);
+      color: var(--sage-deep);
     }
 
     .divider {
@@ -398,20 +443,24 @@
       align-items: flex-start;
       gap: 14px;
       padding: 16px;
-      border: 1px solid var(--border);
+      border: 1.5px solid var(--border);
       border-radius: 18px;
-      background: rgba(255,255,255,0.9);
+      background: rgba(253,250,246,0.92);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
     }
+    .checkboxCard:hover { border-color: var(--sage); background: var(--primary-soft); }
 
     .checkboxCard input[type="checkbox"] {
       margin-top: 3px;
       transform: scale(1.15);
-      accent-color: var(--primary);
+      accent-color: var(--sage-deep);
     }
 
     .checkboxLabel {
       margin: 0;
-      font-weight: 800;
+      font-weight: 700;
+      color: var(--charcoal);
     }
 
     .checkboxHelp {
@@ -436,11 +485,12 @@
     }
 
     .plantPhotoCard {
-      border-radius: 12px;
+      border-radius: 14px;
       overflow: hidden;
       border: 1px solid var(--border);
-      background: #f7faf7;
+      background: var(--surface-strong);
       text-align: center;
+      box-shadow: 0 2px 8px rgba(42,53,32,0.06);
     }
 
     .plantPhotoCard img {
@@ -453,7 +503,7 @@
     .plantPhotoCard .plantPhotoPlaceholder {
       width: 100%;
       height: 100px;
-      background: linear-gradient(135deg, #d8e8d8, #c0d8c0);
+      background: linear-gradient(135deg, var(--clay), var(--primary-soft));
       display: flex;
       align-items: center;
       justify-content: center;
@@ -463,8 +513,8 @@
     .plantPhotoCard .plantPhotoName {
       padding: 6px 8px;
       font-size: 11px;
-      font-weight: 700;
-      color: #1f2b22;
+      font-weight: 600;
+      color: var(--charcoal);
       line-height: 1.3;
     }
 
@@ -472,38 +522,38 @@
       display: block;
       font-weight: 400;
       font-style: italic;
-      color: #7a8f7e;
+      color: var(--warm-gray);
       font-size: 10px;
     }
 
     .planOutput {
       margin-top: 14px;
-      padding: 24px 28px;
+      padding: 28px 32px;
       border-radius: 18px;
       border: 1px solid var(--border);
-      background: #fff;
-      line-height: 1.75;
+      background: var(--surface-strong);
+      line-height: 1.80;
       font-size: 15px;
       color: var(--text);
     }
 
     .planOutput h1, .planOutput h2, .planOutput h3 {
-      margin: 22px 0 8px;
-      color: var(--primary);
+      font-family: var(--font-head);
+      margin: 24px 0 10px;
+      color: var(--sage-deep);
       letter-spacing: -0.01em;
     }
 
-    .planOutput h1 { font-size: 20px; }
-    .planOutput h2 { font-size: 18px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
-    .planOutput h3 { font-size: 16px; }
+    .planOutput h1 { font-size: 20px; font-weight: 700; }
+    .planOutput h2 { font-size: 18px; font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    .planOutput h3 { font-size: 16px; font-weight: 600; }
 
     .planOutput p { margin: 0 0 10px; }
 
-    /* Faint divider between plant entries */
     .planOutput hr {
       border: none;
-      border-top: 1px solid #e0ebe2;
-      margin: 12px 0;
+      border-top: 1px solid var(--border);
+      margin: 16px 0;
     }
 
     .planOutput ul, .planOutput ol {
@@ -513,25 +563,20 @@
 
     .planOutput li { margin-bottom: 6px; }
 
-    .planOutput strong { color: var(--primary); }
-
-    .planOutput hr {
-      border: 0;
-      border-top: 1px solid var(--border);
-      margin: 18px 0;
-    }
+    .planOutput strong { color: var(--sage-deep); }
 
     /* ── Zone info panel ───────────────────── */
     .zoneInfoBtn {
       background: var(--primary-soft);
-      border: 1px solid rgba(39,76,56,0.18);
+      border: 1.5px solid rgba(163,177,138,0.44);
       color: var(--primary);
       border-radius: 12px;
       padding: 10px 14px;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
+      transition: background 0.15s;
     }
 
     .zoneInfoBtn.active {
@@ -550,16 +595,16 @@
     }
 
     .zoneInfoCard {
-      background: #f7faf7;
-      border: 1px solid #dce8de;
+      background: var(--surface-strong);
+      border: 1px solid var(--border);
       border-radius: 14px;
       padding: 14px 16px;
     }
 
     .zoneInfoCard h4 {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.09em;
       text-transform: uppercase;
       color: var(--primary);
       margin-bottom: 10px;
@@ -573,7 +618,7 @@
 
     .zoneInfoCard li {
       font-size: 13px;
-      color: #4a5e50;
+      color: var(--muted);
       line-height: 1.65;
       margin-bottom: 4px;
     }
@@ -590,14 +635,14 @@
     #pdfDoc {
       display: none;
       font-family: Georgia, serif;
-      color: #1f2b22;
+      color: var(--charcoal);
       padding: 32px;
       max-width: 900px;
       margin: 0 auto;
     }
 
     .pdf-header {
-      border-bottom: 3px solid #274c38;
+      border-bottom: 3px solid var(--sage-deep);
       padding-bottom: 16px;
       margin-bottom: 28px;
     }
@@ -605,14 +650,14 @@
     .pdf-header h1 {
       margin: 0 0 4px;
       font-size: 32px;
-      color: #274c38;
+      color: var(--sage-deep);
       letter-spacing: -0.02em;
     }
 
     .pdf-header p {
       margin: 0;
       font-size: 14px;
-      color: #5e6d62;
+      color: var(--warm-gray);
     }
 
     .pdf-plant-grid {
@@ -623,10 +668,10 @@
     }
 
     .pdf-plant-card {
-      border: 1px solid #d8e4db;
+      border: 1px solid var(--border);
       border-radius: 12px;
       overflow: hidden;
-      background: #f7faf7;
+      background: var(--surface-strong);
     }
 
     .pdf-plant-card img {
@@ -639,7 +684,7 @@
     .pdf-plant-card .pdf-plant-img-placeholder {
       width: 100%;
       height: 140px;
-      background: linear-gradient(135deg, #d8e8d8, #c0d8c0);
+      background: linear-gradient(135deg, var(--clay), var(--primary-soft));
       display: flex;
       align-items: center;
       justify-content: center;
@@ -653,44 +698,45 @@
     .pdf-plant-card .pdf-plant-name strong {
       display: block;
       font-size: 14px;
-      color: #1f2b22;
+      color: var(--charcoal);
     }
 
     .pdf-plant-card .pdf-plant-name em {
       font-size: 12px;
-      color: #5e6d62;
+      color: var(--warm-gray);
     }
 
     .pdf-plan-text {
       font-size: 13px;
       line-height: 1.75;
-      color: #2c3a2e;
-      border-top: 2px solid #d8e4db;
+      color: var(--charcoal);
+      border-top: 2px solid var(--border);
       padding-top: 24px;
     }
 
     .pdf-plan-text h1, .pdf-plan-text h2, .pdf-plan-text h3 {
-      color: #274c38;
+      color: var(--sage-deep);
       margin: 18px 0 6px;
     }
 
-    .pdf-plan-text h2 { font-size: 15px; border-bottom: 1px solid #d8e4db; padding-bottom: 4px; }
+    .pdf-plan-text h2 { font-size: 15px; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
     .pdf-plan-text h3 { font-size: 14px; }
     .pdf-plan-text p { margin: 0 0 8px; }
     .pdf-plan-text ul, .pdf-plan-text ol { padding-left: 20px; margin: 0 0 10px; }
     .pdf-plan-text li { margin-bottom: 4px; }
-    .pdf-plan-text strong { color: #274c38; }
+    .pdf-plan-text strong { color: var(--sage-deep); }
 
     /* ── Garden Map ── */
     .garden-map-wrap {
       margin-top: 28px;
       padding-top: 18px;
-      border-top: 2px solid #e0e8e2;
+      border-top: 2px solid var(--border);
     }
     .garden-map-title {
-      font-weight: 700;
+      font-family: var(--font-head);
+      font-weight: 600;
       font-size: 14px;
-      color: #274c38;
+      color: var(--sage-deep);
       margin-bottom: 14px;
     }
     .garden-bed {
@@ -699,11 +745,11 @@
       min-height: 320px;
       border-radius: 18px;
       background:
-        radial-gradient(ellipse at 30% 40%, #a0714f 0%, transparent 60%),
-        radial-gradient(ellipse at 70% 60%, #8b5e3c 0%, transparent 55%),
-        #7a4f2d;
-      border: 8px solid #5c3a1e;
-      box-shadow: inset 0 4px 18px rgba(0,0,0,0.35), 0 6px 20px rgba(0,0,0,0.18);
+        radial-gradient(ellipse at 30% 40%, #9A6B40 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 60%, #7D5130 0%, transparent 55%),
+        #6B4422;
+      border: 8px solid #4A2E10;
+      box-shadow: inset 0 4px 18px rgba(0,0,0,0.30), 0 6px 20px rgba(0,0,0,0.14);
       overflow: visible;
       padding: 20px 16px 40px;
       box-sizing: border-box;
@@ -716,7 +762,7 @@
       left: 50%;
       transform: translateX(-50%);
       font-size: 11px;
-      color: #7a8f7e;
+      color: var(--warm-gray);
       white-space: nowrap;
     }
     .garden-row {
@@ -738,9 +784,9 @@
       height: 76px;
       border-radius: 50%;
       overflow: hidden;
-      border: 3px solid rgba(255,255,255,0.55);
-      box-shadow: 0 3px 10px rgba(0,0,0,0.4), inset 0 1px 3px rgba(255,255,255,0.2);
-      background: radial-gradient(circle, #4a8c5c, #2d5a3a);
+      border: 3px solid rgba(255,255,255,0.50);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.35), inset 0 1px 3px rgba(255,255,255,0.15);
+      background: radial-gradient(circle, var(--sage-mid), var(--sage-deep));
       display: flex;
       align-items: center;
       justify-content: center;
@@ -762,7 +808,7 @@
       max-width: 80px;
       line-height: 1.2;
       text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-      background: rgba(0,0,0,0.32);
+      background: rgba(0,0,0,0.28);
       padding: 2px 5px;
       border-radius: 4px;
     }
@@ -840,14 +886,14 @@
         border-radius: 18px;
         border: none;
         padding: 0;
-        background: #fff;
-        box-shadow: 0 2px 12px rgba(22,34,26,0.08);
+        background: var(--surface-strong);
+        box-shadow: 0 2px 12px rgba(42,53,32,0.08);
         overflow: hidden;
       }
 
-      /* Green accent bar + step label at top of each section */
+      /* Earthy accent bar + step label at top of each section */
       .sectionHeader {
-        background: linear-gradient(135deg, #1f3b2b, #3a6647);
+        background: linear-gradient(135deg, #2A3520, #3A5A40);
         padding: 14px 18px;
         margin-bottom: 0;
         border-radius: 0;
@@ -856,9 +902,9 @@
       }
 
       .step {
-        background: rgba(255,255,255,0.18);
+        background: rgba(255,255,255,0.16);
         color: #fff;
-        border-color: rgba(255,255,255,0.25);
+        box-shadow: none;
         width: 30px;
         height: 30px;
         font-size: 13px;
@@ -872,7 +918,7 @@
 
       .sectionHeaderText p {
         font-size: 12px;
-        color: rgba(255,255,255,0.78);
+        color: rgba(255,255,255,0.75);
       }
 
       /* Section body padding */
@@ -909,7 +955,9 @@
     #accessGate {
       position: fixed;
       inset: 0;
-      background: linear-gradient(135deg, rgba(31,59,43,0.97), rgba(54,92,69,0.95));
+      background:
+        radial-gradient(ellipse at 20% 85%, rgba(208,140,96,0.22) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(42,53,32,0.97), rgba(58,90,64,0.95));
       display: flex;
       align-items: center;
       justify-content: center;
@@ -917,20 +965,23 @@
     }
 
     .gateBox {
-      background: #fff;
+      background: var(--cream);
       border-radius: 24px;
       padding: 48px 40px;
       max-width: 400px;
       width: 90%;
       text-align: center;
-      box-shadow: 0 32px 80px rgba(0,0,0,0.25);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.20);
+      border: 1px solid rgba(163,177,138,0.28);
     }
 
     .gateBox h2 {
       margin: 16px 0 8px;
-      font-size: 26px;
-      letter-spacing: -0.02em;
-      color: var(--text);
+      font-family: var(--font-head);
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--charcoal);
     }
 
     .gateBox p {
@@ -942,8 +993,8 @@
     .gateError {
       margin-top: 12px;
       font-size: 14px;
-      color: #c0392b;
-      font-weight: 700;
+      color: var(--terra-deep);
+      font-weight: 600;
       min-height: 20px;
     }
 
@@ -951,7 +1002,7 @@
     #disclaimerModal {
       position: fixed;
       inset: 0;
-      background: rgba(10, 20, 14, 0.75);
+      background: rgba(26,36,18,0.72);
       display: flex;
       align-items: flex-end;
       justify-content: center;
@@ -960,14 +1011,14 @@
     }
 
     .disclaimerBox {
-      background: #fff;
+      background: var(--cream);
       border-radius: 24px 24px 0 0;
       padding: 28px 22px 32px;
       width: 100%;
       max-width: 560px;
       max-height: 92vh;
       overflow-y: auto;
-      box-shadow: 0 -12px 48px rgba(0,0,0,0.22);
+      box-shadow: 0 -12px 48px rgba(0,0,0,0.18);
     }
 
     .disclaimerBox .disc-icon {
@@ -976,25 +1027,27 @@
     }
 
     .disclaimerBox h2 {
+      font-family: var(--font-head);
       font-size: 20px;
-      letter-spacing: -0.02em;
+      font-weight: 600;
+      letter-spacing: -0.01em;
       margin-bottom: 10px;
-      color: var(--text);
+      color: var(--charcoal);
     }
 
     .disclaimerBox .disc-body {
       font-size: 13px;
-      color: #4a5e50;
+      color: var(--muted);
       line-height: 1.7;
-      background: #f7faf7;
-      border: 1px solid #dce8de;
+      background: var(--surface-strong);
+      border: 1px solid var(--border);
       border-radius: 14px;
       padding: 14px 16px;
       margin-bottom: 18px;
     }
 
     .disclaimerBox .disc-body strong {
-      color: #1f2b22;
+      color: var(--charcoal);
     }
 
     .disc-checkbox-row {
@@ -1007,13 +1060,13 @@
     .disc-checkbox-row input[type="checkbox"] {
       margin-top: 3px;
       transform: scale(1.3);
-      accent-color: var(--primary);
+      accent-color: var(--sage-deep);
       flex: 0 0 auto;
     }
 
     .disc-checkbox-row label {
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 500;
       color: var(--text);
       line-height: 1.55;
       cursor: pointer;
@@ -1074,7 +1127,7 @@
     <section class="hero">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:4px;">
         <div class="eyebrow">RootPlans • Intelligent Garden Planning</div>
-        <a href="/guide.html" target="_blank" style="color:#fff;font-size:13px;font-weight:700;text-decoration:none;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.22);border-radius:999px;padding:6px 14px;white-space:nowrap;">📖 User Guide</a>
+        <a href="/guide.html" target="_blank" style="color:rgba(255,255,255,0.90);font-size:13px;font-weight:600;text-decoration:none;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:999px;padding:6px 14px;white-space:nowrap;">📖 User Guide</a>
       </div>
       <h1>Design a garden that fits your zone, goals, and style.</h1>
       <p>
@@ -1085,10 +1138,10 @@
 
     <main class="app">
       <div class="appHeader">
-        <h2>Build your plan</h2>
+        <h2>Your garden begins here 🌿</h2>
         <p>
-          Start with your ZIP, choose the kind of garden you want, set your preferences,
-          and generate a custom planting plan tailored to you.
+          Start with your ZIP code, choose your garden style, set your preferences,
+          and grow a custom planting plan made just for you.
         </p>
       </div>
 
@@ -1201,9 +1254,9 @@
             <button class="pill" type="button" data-rarity="unique" aria-pressed="false">✨ Unique &amp; Rare</button>
           </div>
 
-          <div id="staplesCard" style="display:none;margin-bottom:20px;padding:16px;background:#f7faf7;border:1px solid #dce8de;border-radius:14px;">
-            <p style="font-weight:700;font-size:14px;color:#274c38;margin-bottom:4px;">Must-Have Plants</p>
-            <p style="font-size:13px;color:#4a5e50;margin-bottom:12px;">Tap any to guarantee it's included — or type your own.</p>
+          <div id="staplesCard" style="display:none;margin-bottom:20px;padding:16px;background:#EEF1E8;border:1px solid rgba(163,177,138,0.44);border-radius:14px;">
+            <p style="font-weight:700;font-size:14px;color:#3A5A40;margin-bottom:4px;">Must-Have Plants</p>
+            <p style="font-size:13px;color:#6B6B6B;margin-bottom:12px;">Tap any to guarantee it's included — or type your own.</p>
             <div class="pillRow" id="staplesRow" style="flex-wrap:wrap;gap:8px;margin-bottom:10px;"></div>
             <div class="row" style="gap:8px;margin-top:6px;">
               <div class="typeahead-wrap">
@@ -1215,9 +1268,9 @@
             <div id="staplesCustomRow" class="pillRow" style="flex-wrap:wrap;gap:8px;margin-top:10px;"></div>
           </div>
 
-          <div id="exclusionsCard" style="display:none;margin-bottom:20px;padding:16px;background:#fff5f5;border:1px solid #fcc;border-radius:14px;">
-            <p style="font-weight:700;font-size:14px;color:#8b1a1a;margin-bottom:4px;">Exclude from My Plan</p>
-            <p style="font-size:13px;color:#a03030;margin-bottom:12px;">Tap anything you don't want — or type your own.</p>
+          <div id="exclusionsCard" style="display:none;margin-bottom:20px;padding:16px;background:#F4EAD8;border:1px solid rgba(208,140,96,0.38);border-radius:14px;">
+            <p style="font-weight:700;font-size:14px;color:#A6623A;margin-bottom:4px;">Exclude from My Plan</p>
+            <p style="font-size:13px;color:#6B6B6B;margin-bottom:12px;">Tap anything you don't want — or type your own.</p>
             <div class="pillRow" id="exclusionsRow" style="flex-wrap:wrap;gap:8px;margin-bottom:10px;"></div>
             <div class="row" style="gap:8px;margin-top:6px;">
               <div class="typeahead-wrap">
@@ -1269,10 +1322,10 @@
           </div>
 
           <div class="tinyNote" id="aiStatus" style="margin-top:12px;"></div>
-          <div id="zoneBadge" style="display:none;margin-top:12px;padding:10px 14px;background:#edf4ef;border:1px solid #c6dcc9;border-radius:10px;font-size:13px;color:#274c38;font-weight:600;"></div>
+          <div id="zoneBadge" style="display:none;margin-top:12px;padding:10px 14px;background:#EEF1E8;border:1px solid rgba(163,177,138,0.44);border-radius:10px;font-size:13px;color:#3A5A40;font-weight:600;"></div>
           <div id="aiOutput" class="planOutput" style="display:none;"></div>
           <div id="gardenMap" class="garden-map-wrap" style="display:none;"></div>
-          <div id="planEnd" style="display:none;margin-top:28px;padding-top:16px;border-top:2px solid var(--border);text-align:center;font-size:13px;color:#7a8f7e;letter-spacing:0.08em;">— End of Plan —</div>
+          <div id="planEnd" style="display:none;margin-top:28px;padding-top:16px;border-top:2px solid var(--border);text-align:center;font-size:13px;color:var(--warm-gray);letter-spacing:0.08em;font-style:italic;">— Your plan is ready to grow 🌿 —</div>
         </section>
       </div>
     </main>
@@ -1945,7 +1998,7 @@ Complete ALL 7 sections. Do not stop early.
         btn.className = "pill";
         btn.textContent = item.label;
         btn.style.cssText = selectedExclusions.includes(item.value)
-          ? "background:#ffeaea;border-color:#e05050;color:#8b1a1a;"
+          ? "background:#F4EAD8;border-color:#D08C60;color:#A6623A;"
           : "";
         btn.setAttribute("aria-pressed", selectedExclusions.includes(item.value) ? "true" : "false");
         btn.addEventListener("click", () => {
@@ -1984,8 +2037,8 @@ Complete ALL 7 sections. Do not stop early.
       customStaples.push(val);
       $("staplesInput").value = "";
       renderCustomChips(customStaples, "staplesCustomRow",
-        i => { customStaples.splice(i, 1); renderCustomChips(customStaples, "staplesCustomRow", arguments.callee, "background:#edf4ef;border-color:#a8d0b0;color:#274c38;"); updatePreferenceSummary(); },
-        "background:#edf4ef;border-color:#a8d0b0;color:#274c38;");
+        i => { customStaples.splice(i, 1); renderCustomChips(customStaples, "staplesCustomRow", arguments.callee, "background:#EEF1E8;border-color:#A3B18A;color:#3A5A40;"); updatePreferenceSummary(); },
+        "background:#EEF1E8;border-color:#A3B18A;color:#3A5A40;");
       updatePreferenceSummary();
     }
 
@@ -1995,8 +2048,8 @@ Complete ALL 7 sections. Do not stop early.
       customExclusions.push(val);
       $("exclusionsInput").value = "";
       renderCustomChips(customExclusions, "exclusionsCustomRow",
-        i => { customExclusions.splice(i, 1); renderCustomChips(customExclusions, "exclusionsCustomRow", arguments.callee, "background:#ffeaea;border-color:#e05050;color:#8b1a1a;"); updatePreferenceSummary(); },
-        "background:#ffeaea;border-color:#e05050;color:#8b1a1a;");
+        i => { customExclusions.splice(i, 1); renderCustomChips(customExclusions, "exclusionsCustomRow", arguments.callee, "background:#F4EAD8;border-color:#D08C60;color:#A6623A;"); updatePreferenceSummary(); },
+        "background:#F4EAD8;border-color:#D08C60;color:#A6623A;");
       updatePreferenceSummary();
     }
 
