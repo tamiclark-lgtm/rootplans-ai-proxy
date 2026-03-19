@@ -54,13 +54,27 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Grain texture overlay */
+    /* ── Dreamlike background world: layer 1 — blurred garden photo ── */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
+      background:
+        url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1800&q=60') center/cover no-repeat;
+      opacity: 0.07;
+      filter: blur(6px) saturate(0.8);
+      transform: scale(1.06);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Layer 2 — grain texture over everything ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.45'/%3E%3C/svg%3E");
-      opacity: 0.028;
+      opacity: 0.030;
       pointer-events: none;
       z-index: 0;
     }
@@ -112,7 +126,10 @@
       padding: 54px 56px 50px;
       border-radius: 32px;
       background:
-        linear-gradient(148deg, #1c3c28 0%, #2c5a3e 42%, #1a3222 100%);
+        radial-gradient(ellipse 70% 90% at 20% 60%, rgba(20, 50, 30, 0.65) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 80% at 80% 30%, rgba(30, 60, 35, 0.55) 0%, transparent 65%),
+        linear-gradient(148deg, rgba(18, 38, 24, 0.88) 0%, rgba(32, 62, 42, 0.82) 50%, rgba(16, 36, 22, 0.90) 100%),
+        url('https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;
       color: #fff;
       box-shadow:
         var(--shadow),
