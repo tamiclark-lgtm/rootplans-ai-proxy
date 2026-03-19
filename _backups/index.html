@@ -1323,6 +1323,7 @@
         const data = await res.json();
         if (data.ok) {
           sessionStorage.setItem("rp_auth", "1");
+          if (data.token) sessionStorage.setItem("rp_token", data.token);
           $("accessGate").style.display = "none";
           // Show disclaimer if not yet acknowledged this session
           if (sessionStorage.getItem("rp_disc") !== "1") {
@@ -1756,10 +1757,15 @@ Complete ALL 7 sections. Do not stop early.
       `.trim();
     }
 
+    function authHeaders() {
+      const token = sessionStorage.getItem("rp_token") || "";
+      return { "Content-Type": "application/json", "X-Session-Token": token };
+    }
+
     async function callAIProxy(payload) {
       const resp = await fetch(AI_PROXY_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: authHeaders(),
         body: JSON.stringify(payload)
       });
 
@@ -2098,7 +2104,7 @@ Complete ALL 7 sections. Do not stop early.
       try {
         const resp = await fetch(AI_PROXY_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: authHeaders(),
           body: JSON.stringify({
             zip: detected.zip,
             zone: detected.zone,
