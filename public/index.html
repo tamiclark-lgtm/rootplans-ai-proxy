@@ -131,7 +131,7 @@
       100% { opacity: 1.00; transform: translate(-4%, 6%) scale(1.10); }
     }
 
-    .hero-inner { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; }
+    .hero-inner { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); padding: 40px 48px; }
 
     .eyebrow {
       display: inline-flex;
@@ -1847,7 +1847,7 @@ RESPONSE STRUCTURE — use these exact headings:
 [3–4 sentences describing the garden's design direction, what makes it suited to this zone and theme.]
 
 ## 2. Recommended Plants
-First list 6–7 plants under the subheading ### Easy to Find, then list 2–3 plants under the subheading ### Adventure Picks (unusual, heirloom, or lesser-known varieties worth trying). Use the same plant entry template for both groups.
+${selectedRarity === "unique" ? "List ALL 8–10 plants as rare, heirloom, or heritage varieties — specific named cultivars most gardeners have never grown. Do NOT include common garden staples like standard tomatoes, basil, or marigolds. Use subheadings ### Heritage Varieties (4–5 plants: old-world cultivars, heirlooms, or regionally rare species) and ### Rare & Unusual (4–5 plants: exotic natives, unusual edibles, forgotten ornamentals, or cutting-edge cultivars). Every single plant must feel like a discovery." : selectedRarity === "common" ? "List all 8–9 plants under the subheading ### Common & Reliable — well-known, widely available varieties that any beginner can find at a local garden center. No unusual or hard-to-source plants." : "First list 6–7 plants under the subheading ### Easy to Find, then list 2–3 plants under the subheading ### Adventure Picks (unusual, heirloom, or lesser-known varieties worth trying)."} Use the same plant entry template for both groups.
 
 ## 3. Simple Layout
 [4–5 bullets describing where to position plants in the garden bed — front/back/sides/center.]
