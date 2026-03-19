@@ -77,21 +77,21 @@
       position: fixed;
       top: 50%;
       transform: translateY(-50%);
-      width: 148px;
+      width: 130px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       z-index: 0;
     }
 
-    .side-strip-left  { left: 12px; }
-    .side-strip-right { right: 12px; }
+    .side-strip-left  { left: 8px; }
+    .side-strip-right { right: 8px; }
 
     .side-img {
       width: 100%;
-      height: 160px;
+      height: 140px;
       object-fit: cover;
-      border-radius: 14px;
+      border-radius: 12px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.12);
       transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
       display: block;
@@ -103,7 +103,7 @@
     }
 
     /* Only show strips when there's room beside the content */
-    @media (max-width: 1440px) { .side-strip { display: none; } }
+    @media (max-width: 1200px) { .side-strip { display: none; } }
 
     /* ── Hero ──────────────────────────────────── */
     .hero {
