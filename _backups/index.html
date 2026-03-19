@@ -1128,6 +1128,8 @@
           <div class="tinyNote" id="aiStatus" style="margin-top:12px;"></div>
           <div id="zoneBadge" style="display:none;margin-top:12px;padding:10px 14px;background:#edf4ef;border:1px solid #c6dcc9;border-radius:10px;font-size:13px;color:#274c38;font-weight:600;"></div>
           <div id="aiOutput" class="planOutput" style="display:none;"></div>
+          <div id="gardenMap" class="garden-map-wrap" style="display:none;"></div>
+          <div id="planEnd" style="display:none;margin-top:28px;padding-top:16px;border-top:2px solid var(--border);text-align:center;font-size:13px;color:#7a8f7e;letter-spacing:0.08em;">— End of Plan —</div>
         </section>
       </div>
     </main>
@@ -1482,19 +1484,14 @@ Return the answer in this exact structure:
 
 1. GARDEN CONCEPT
 2. RECOMMENDED PLANTS
-   (For each plant include: name, description, and a **Good companions:** line listing 2–3 plants that grow well next to it. For edible plants also include: **Nutrition:** highlights and **Best consumed:** line.)
+   (List each plant as: **Plant Name** — description. Include a **Good companions:** line. For edible plants also include **Nutrition:** and **Best consumed:** lines.)
 3. SIMPLE LAYOUT
 4. SEASONAL CARE PLAN
 5. HARVEST / USE IDEAS
 6. BEGINNER TIPS
 7. SAFETY NOTE
 
-IMPORTANT — you MUST end your response with this exact line (no exceptions):
-PLANT_LIST: Common Name|Botanical Name; Common Name|Botanical Name; ...
-
-Replace with the actual plants from section 2. Use full botanical (Latin) names. This line is required for the plant photo feature to work.
-
-Be concise in each section — 3 to 5 bullet points max per section. Complete ALL 7 sections before the PLANT_LIST line. Do not stop early.
+Be concise in each section — 3 to 5 bullet points max. Complete ALL 7 sections. Do not stop early.
       `.trim();
     }
 
@@ -1588,6 +1585,9 @@ Be concise in each section — 3 to 5 bullet points max per section. Complete AL
       $("zoneBadge").style.display = "none";
       $("aiOutput").style.display = "none";
       $("aiOutput").innerHTML = "";
+      $("gardenMap").style.display = "none";
+      $("gardenMap").innerHTML = "";
+      $("planEnd").style.display = "none";
       $("copyBtn").style.display = "none";
       $("pdfBtn").style.display = "none";
       lastPlanText = "";
@@ -1661,6 +1661,9 @@ Be concise in each section — 3 to 5 bullet points max per section. Complete AL
     $("generateBtn").addEventListener("click", async () => {
       $("aiOutput").style.display = "none";
       $("aiOutput").innerHTML = "";
+      $("gardenMap").style.display = "none";
+      $("gardenMap").innerHTML = "";
+      $("planEnd").style.display = "none";
       $("copyBtn").style.display = "none";
 
       const zip = cleanZip($("zipInput").value);
@@ -1740,84 +1743,61 @@ Be concise in each section — 3 to 5 bullet points max per section. Complete AL
           if (done) break;
         }
 
-        // Strip PLANT_LIST from display and store plants
-        const plantMatch = fullText.match(/PLANT_LIST:\s*([^\n]+)/i);
-        lastPlants = [];
-        if (plantMatch) {
-          lastPlants = plantMatch[1].split(";").map(p => {
-            const [common, botanical] = p.split("|").map(s => s.trim());
-            return { common: common || "", botanical: botanical || common || "" };
-          }).filter(p => p.common);
-          fullText = fullText.replace(/\n?PLANT_LIST:[^\n]+/i, "").trim();
-          $("aiOutput").innerHTML = marked.parse(fullText);
-        }
-
-        // Fallback: extract bold names from Recommended Plants section
-        if (!lastPlants.length) {
-          // Words that disqualify a bold phrase from being a plant name
-          const NOT_PLANT = /consult|contains|provider|always|never|avoid|caution|warning|important|companion|harvest|holistic|traditional|safety|note:|tip:|section|step|your|this|these|when|before|after|during|health|medical|advice|remember|consider|each|every/i;
-          // Must look like a plant name: 1–4 words, first word capitalized, no sentence-ending punctuation
-          const LOOKS_LIKE_PLANT = /^[A-Z][a-z]+(?: [A-Za-z'-]+){0,3}$/;
-
-          const secMatch = fullText.match(/recommended plants?([\s\S]*?)(?=\n#{1,3}\s|\n\*{0,3}#{1,3}\s|\n\d+\.\s+[A-Z][A-Z]|$)/i);
-          if (secMatch) {
-            const boldNames = [...secMatch[1].matchAll(/\*\*([^*\n]{2,40})\*\*/g)]
-              .map(m => m[1].trim())
-              .filter(n => LOOKS_LIKE_PLANT.test(n) && !NOT_PLANT.test(n));
-            if (boldNames.length) {
-              lastPlants = [...new Set(boldNames)].slice(0, 12).map(name => ({ common: name, botanical: name }));
-            }
-          }
-          // Last resort: bold proper-cased 1–3 word phrases anywhere in the doc
-          if (!lastPlants.length) {
-            const allBold = [...fullText.matchAll(/\*\*([A-Z][a-z]+(?: [A-Za-z'-]+){0,2})\*\*/g)]
-              .map(m => m[1].trim())
-              .filter(n => LOOKS_LIKE_PLANT.test(n) && !NOT_PLANT.test(n));
-            if (allBold.length) {
-              lastPlants = [...new Set(allBold)].slice(0, 12).map(name => ({ common: name, botanical: name }));
-            }
-          }
-        }
-
         lastPlanText = fullText;
 
-        // ── Garden Map ──────────────────────────────────────────────────
-        // Split plants into rows of ~4 so the bed fills naturally
-        const ROW_SIZE = 4;
-        const rows = [];
-        for (let i = 0; i < lastPlants.length; i += ROW_SIZE) {
-          rows.push(lastPlants.slice(i, i + ROW_SIZE));
+        // ── Extract plant names from Recommended Plants section ─────────
+        lastPlants = [];
+        const NOT_PLANT = /consult|contains|provider|always|never|avoid|caution|warning|important|harvest|holistic|traditional|safety|note|tip:|section|step|your|this|these|when|before|after|during|health|medical|advice|remember|consider|each|every|good companions|nutrition|best consumed|full sun|partial shade|full shade/i;
+        const LOOKS_LIKE_PLANT = /^[A-Z][a-zA-Z'-]+(?: [A-Za-z'-]+){0,3}$/;
+
+        // Find the Recommended Plants section
+        const secMatch = fullText.match(/(?:^|\n)(?:#+\s*)?(?:\d+\.\s+)?recommended plants?([\s\S]*?)(?=\n(?:#+\s*)?(?:\d+\.\s+)[A-Z]|\n(?:#+\s*)(?:Simple|Seasonal|Harvest|Beginner|Safety)|$)/im);
+        const searchText = secMatch ? secMatch[1] : fullText;
+
+        // Match **Plant Name** — the dash is the separator Claude uses per the prompt
+        const boldDash = [...searchText.matchAll(/\*\*([^*\n]{2,45}?)\*\*\s*(?:—|-)/g)]
+          .map(m => m[1].trim())
+          .filter(n => LOOKS_LIKE_PLANT.test(n) && !NOT_PLANT.test(n));
+
+        if (boldDash.length) {
+          lastPlants = [...new Set(boldDash)].slice(0, 12).map(n => ({ common: n, botanical: n }));
+        } else {
+          // Fallback: any bold phrase that looks like a plant name in that section
+          const allBold = [...searchText.matchAll(/\*\*([^*\n]{2,45})\*\*/g)]
+            .map(m => m[1].trim())
+            .filter(n => LOOKS_LIKE_PLANT.test(n) && !NOT_PLANT.test(n));
+          lastPlants = [...new Set(allBold)].slice(0, 12).map(n => ({ common: n, botanical: n }));
         }
 
-        let mapHtml = `<div class="garden-map-wrap">`;
-        mapHtml += `<p class="garden-map-title">🗺 Your Garden Layout</p>`;
-        mapHtml += `<div class="garden-bed">`;
-        rows.forEach((row, ri) => {
-          mapHtml += `<div class="garden-row">`;
-          row.forEach((plant, ci) => {
-            const idx = ri * ROW_SIZE + ci;
-            mapHtml += `<div class="garden-plant">`;
-            mapHtml += `<div class="garden-plant-circle" id="gcirc_${idx}">🌿</div>`;
-            mapHtml += `<div class="garden-plant-name">${escapeHtml(plant.common)}</div>`;
-            mapHtml += `</div>`;
-          });
-          mapHtml += `</div>`;
-        });
-        mapHtml += `</div>`; // .garden-bed
-        mapHtml += `</div>`; // .garden-map-wrap
-        mapHtml += `<div style="margin-top:28px;padding-top:16px;border-top:2px solid var(--border);text-align:center;font-size:13px;color:#7a8f7e;letter-spacing:0.08em;">— End of Plan —</div>`;
+        // ── Garden Map (uses static #gardenMap div, no innerHTML +=) ────
+        const gardenEl = $("gardenMap");
+        gardenEl.innerHTML = "";
 
-        $("aiOutput").innerHTML += mapHtml;
+        if (lastPlants.length) {
+          const ROW_SIZE = 4;
+          let html = `<p class="garden-map-title">🗺 Your Garden Layout</p><div class="garden-bed">`;
+          for (let i = 0; i < lastPlants.length; i += ROW_SIZE) {
+            html += `<div class="garden-row">`;
+            lastPlants.slice(i, i + ROW_SIZE).forEach((plant, ci) => {
+              const idx = i + ci;
+              html += `<div class="garden-plant"><div class="garden-plant-circle" id="gcirc_${idx}">🌿</div><div class="garden-plant-name">${escapeHtml(plant.common)}</div></div>`;
+            });
+            html += `</div>`;
+          }
+          html += `</div>`;
+          gardenEl.innerHTML = html;
+          gardenEl.style.display = "block";
 
-        // Load Wikipedia photos into garden circles
-        lastPlants.forEach((plant, i) => {
-          fetchPlantImage(plant).then(url => {
-            const el = document.getElementById(`gcirc_${i}`);
-            if (url && el) {
-              el.innerHTML = `<img src="${url}" alt="${escapeHtml(plant.common)}">`;
-            }
+          // Load Wikipedia photos into circles (DOM is stable — no more innerHTML changes)
+          lastPlants.forEach((plant, i) => {
+            fetchPlantImage(plant).then(url => {
+              const el = document.getElementById(`gcirc_${i}`);
+              if (url && el) el.innerHTML = `<img src="${url}" alt="${escapeHtml(plant.common)}">`;
+            });
           });
-        });
+        }
+
+        $("planEnd").style.display = "block";
 
         $("aiStatus").textContent = "Done.";
         $("copyBtn").style.display = "inline-block";
