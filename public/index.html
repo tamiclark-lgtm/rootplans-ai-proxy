@@ -2208,11 +2208,9 @@ Complete ALL 8 sections. Do not stop early.
 
     function addPollinatorTooltips(el) {
       const map = { "🐝": "Loved by bees", "🦋": "Loved by butterflies", "🐦": "Loved by hummingbirds" };
-      el.querySelectorAll("strong").forEach(node => {
-        node.innerHTML = node.innerHTML.replace(/🐝|🦋|🐦/g, m =>
-          `<span class="pollinator-badge" title="${map[m]}">${m}</span>`
-        );
-      });
+      el.innerHTML = el.innerHTML.replace(/🐝|🦋|🐦/g, m =>
+        `<span class="pollinator-badge" title="${map[m]}">${m}</span>`
+      );
     }
 
     $("generateBtn").addEventListener("click", async () => {
