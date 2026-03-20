@@ -1036,6 +1036,23 @@
       .planOutput { font-size: 14px; padding: 18px 16px; border-radius: 0; }
       .planOutput h2 { font-size: 16px; }
       .planOutput h3 { font-size: 15px; }
+
+      /* Must-have & exclude cards — stack input + button vertically */
+      #staplesCard .row,
+      #exclusionsCard .row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+      #staplesCard .row .btnSecondary,
+      #exclusionsCard .row .btnSecondary { width: 100%; }
+
+      /* Fix background image on iOS (fixed attachment breaks) */
+      body {
+        background-attachment: scroll;
+      }
     }
 
     /* ── Access gate ───────────────────────── */
