@@ -389,6 +389,15 @@
     }
     .typeahead-drop.open { display: block; }
 
+    .plantInputRow {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .plantInputRow .typeahead-wrap { flex: 1; }
+
     .pollinator-badge {
       cursor: default;
       position: relative;
@@ -1037,21 +1046,13 @@
       .planOutput h2 { font-size: 16px; }
       .planOutput h3 { font-size: 15px; }
 
-      /* Must-have & exclude cards — stack input + button vertically */
-      #staplesCard .row,
-      #exclusionsCard .row {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
-        padding-top: 0;
-        padding-bottom: 0;
-      }
-      #staplesCard .row .btnSecondary,
-      #exclusionsCard .row .btnSecondary { width: 100%; }
+      /* Must-have & exclude — stack on mobile */
+      .plantInputRow { flex-direction: column; }
+      .plantInputRow .btnSecondary { width: 100%; }
 
-      /* Fix background image on iOS — use portrait-friendly garden photo */
+      /* Mobile background — veggies on counter, portrait-friendly */
       body {
-        background: url('https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=800&q=85') center top/cover scroll no-repeat;
+        background: url('https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=85') center/cover scroll no-repeat;
       }
     }
 
@@ -1360,8 +1361,8 @@
           <div id="staplesCard" style="display:none;margin-bottom:14px;padding:14px 16px;background:rgba(74,122,90,0.07);border:1px solid rgba(74,122,90,0.22);border-radius:14px;">
             <p style="font-size:12px;font-weight:600;color:var(--primary);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em;">Must-Have Plants</p>
             <div id="staplesRow" class="pillRow" style="flex-wrap:nowrap;gap:6px;margin-bottom:10px;overflow-x:auto;"></div>
-            <div class="row" style="gap:8px;align-items:center;">
-              <div class="typeahead-wrap" style="flex:1;">
+            <div class="plantInputRow">
+              <div class="typeahead-wrap">
                 <input id="staplesInput" class="input" placeholder="Type a plant name…" style="font-size:13px;padding:8px 12px;width:100%;" autocomplete="off" />
                 <div id="staplesDrop" class="typeahead-drop"></div>
               </div>
@@ -1373,8 +1374,8 @@
           <div id="exclusionsCard" style="display:none;margin-bottom:14px;padding:14px 16px;background:rgba(176,60,60,0.06);border:1px solid rgba(176,60,60,0.20);border-radius:14px;">
             <p style="font-size:12px;font-weight:600;color:#8b1a1a;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em;">Exclude Plants</p>
             <div id="exclusionsRow" class="pillRow" style="flex-wrap:nowrap;gap:6px;margin-bottom:10px;overflow-x:auto;"></div>
-            <div class="row" style="gap:8px;align-items:center;">
-              <div class="typeahead-wrap" style="flex:1;">
+            <div class="plantInputRow">
+              <div class="typeahead-wrap">
                 <input id="exclusionsInput" class="input" placeholder="Type a plant name…" style="font-size:13px;padding:8px 12px;width:100%;" autocomplete="off" />
                 <div id="exclusionsDrop" class="typeahead-drop"></div>
               </div>
