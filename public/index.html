@@ -1719,12 +1719,14 @@
 
     async function fetchWeather(zip) {
       try {
-        // Geocode ZIP to lat/lon via free Census API
-        const geo = await fetch(`https://geocoding.geo.census.gov/geocoder/locations/address?street=&city=&state=&zip=${zip}&benchmark=2020&format=json`);
+        // Geocode ZIP to lat/lon via zippopotam.us
+        const geo = await fetch(`https://api.zippopotam.us/us/${zip}`);
+        if (!geo.ok) return;
         const geoData = await geo.json();
-        const match = geoData?.result?.addressMatches?.[0]?.coordinates;
-        if (!match) return;
-        const { x: lon, y: lat } = match;
+        const place = geoData?.places?.[0];
+        if (!place) return;
+        const lat = parseFloat(place.latitude);
+        const lon = parseFloat(place.longitude);
 
         // Get NWS grid point
         const ptRes = await fetch(`https://api.weather.gov/points/${lat.toFixed(4)},${lon.toFixed(4)}`);
