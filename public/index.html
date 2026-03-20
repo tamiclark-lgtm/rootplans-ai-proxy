@@ -1308,8 +1308,9 @@
           </div>
 
           <div id="staplesCard" style="display:none;margin-bottom:14px;padding:14px 16px;background:rgba(74,122,90,0.07);border:1px solid rgba(74,122,90,0.22);border-radius:14px;">
+            <p style="font-size:12px;font-weight:600;color:var(--primary);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em;">Must-Have Plants</p>
+            <div id="staplesRow" class="pillRow" style="flex-wrap:nowrap;gap:6px;margin-bottom:10px;overflow-x:auto;"></div>
             <div class="row" style="gap:8px;align-items:center;">
-              <span style="font-size:13px;font-weight:600;color:var(--primary);white-space:nowrap;min-width:110px;">Must-Have Plants</span>
               <div class="typeahead-wrap" style="flex:1;">
                 <input id="staplesInput" class="input" placeholder="Type a plant name…" style="font-size:13px;padding:8px 12px;width:100%;" autocomplete="off" />
                 <div id="staplesDrop" class="typeahead-drop"></div>
@@ -1320,8 +1321,9 @@
           </div>
 
           <div id="exclusionsCard" style="display:none;margin-bottom:14px;padding:14px 16px;background:rgba(176,60,60,0.06);border:1px solid rgba(176,60,60,0.20);border-radius:14px;">
+            <p style="font-size:12px;font-weight:600;color:#8b1a1a;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em;">Exclude Plants</p>
+            <div id="exclusionsRow" class="pillRow" style="flex-wrap:nowrap;gap:6px;margin-bottom:10px;overflow-x:auto;"></div>
             <div class="row" style="gap:8px;align-items:center;">
-              <span style="font-size:13px;font-weight:600;color:#8b1a1a;white-space:nowrap;min-width:110px;">Exclude Plants</span>
               <div class="typeahead-wrap" style="flex:1;">
                 <input id="exclusionsInput" class="input" placeholder="Type a plant name…" style="font-size:13px;padding:8px 12px;width:100%;" autocomplete="off" />
                 <div id="exclusionsDrop" class="typeahead-drop"></div>
@@ -2021,7 +2023,7 @@ Complete ALL 8 sections. Do not stop early.
       $("staplesCard").style.display = show ? "block" : "none";
       const row = $("staplesRow");
       row.innerHTML = "";
-      STAPLE_VEGGIES.forEach(veg => {
+      STAPLE_VEGGIES.slice(0, 5).forEach(veg => {
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "pill";
@@ -2048,7 +2050,7 @@ Complete ALL 8 sections. Do not stop early.
         selectedPlantType === "both" ||
         item.type === selectedPlantType
       );
-      filtered.forEach(item => {
+      filtered.slice(0, 5).forEach(item => {
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "pill";
