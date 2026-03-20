@@ -1307,32 +1307,28 @@
             <button class="pill" type="button" data-rarity="unique" aria-pressed="false">✨ Unique &amp; Rare</button>
           </div>
 
-          <div id="staplesCard" style="display:none;margin-bottom:20px;padding:16px;background:#f7faf7;border:1px solid #dce8de;border-radius:14px;">
-            <p style="font-weight:700;font-size:14px;color:#274c38;margin-bottom:4px;">Must-Have Plants</p>
-            <p style="font-size:13px;color:#4a5e50;margin-bottom:12px;">Tap any to guarantee it's included — or type your own.</p>
-            <div class="pillRow" id="staplesRow" style="flex-wrap:wrap;gap:8px;margin-bottom:10px;"></div>
-            <div class="row" style="gap:8px;margin-top:6px;">
-              <div class="typeahead-wrap">
-                <input id="staplesInput" class="input" placeholder="Type a plant name…" style="font-size:13px;padding:9px 12px;width:100%;" autocomplete="off" />
+          <div id="staplesCard" style="display:none;margin-bottom:14px;padding:14px 16px;background:rgba(74,122,90,0.07);border:1px solid rgba(74,122,90,0.22);border-radius:14px;">
+            <div class="row" style="gap:8px;align-items:center;">
+              <span style="font-size:13px;font-weight:600;color:var(--primary);white-space:nowrap;min-width:110px;">Must-Have Plants</span>
+              <div class="typeahead-wrap" style="flex:1;">
+                <input id="staplesInput" class="input" placeholder="Type a plant name…" style="font-size:13px;padding:8px 12px;width:100%;" autocomplete="off" />
                 <div id="staplesDrop" class="typeahead-drop"></div>
               </div>
-              <button id="staplesAddBtn" class="btnSecondary" type="button" style="padding:9px 14px;font-size:13px;white-space:nowrap;">Add</button>
+              <button id="staplesAddBtn" class="btnSecondary" type="button" style="padding:8px 14px;font-size:13px;white-space:nowrap;">Add</button>
             </div>
-            <div id="staplesCustomRow" class="pillRow" style="flex-wrap:wrap;gap:8px;margin-top:10px;"></div>
+            <div id="staplesCustomRow" class="pillRow" style="flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
           </div>
 
-          <div id="exclusionsCard" style="display:none;margin-bottom:20px;padding:16px;background:#fff5f5;border:1px solid #fcc;border-radius:14px;">
-            <p style="font-weight:700;font-size:14px;color:#8b1a1a;margin-bottom:4px;">Exclude from My Plan</p>
-            <p style="font-size:13px;color:#a03030;margin-bottom:12px;">Tap anything you don't want — or type your own.</p>
-            <div class="pillRow" id="exclusionsRow" style="flex-wrap:wrap;gap:8px;margin-bottom:10px;"></div>
-            <div class="row" style="gap:8px;margin-top:6px;">
-              <div class="typeahead-wrap">
-                <input id="exclusionsInput" class="input" placeholder="Type a plant name…" style="font-size:13px;padding:9px 12px;width:100%;" autocomplete="off" />
+          <div id="exclusionsCard" style="display:none;margin-bottom:14px;padding:14px 16px;background:rgba(176,60,60,0.06);border:1px solid rgba(176,60,60,0.20);border-radius:14px;">
+            <div class="row" style="gap:8px;align-items:center;">
+              <span style="font-size:13px;font-weight:600;color:#8b1a1a;white-space:nowrap;min-width:110px;">Exclude Plants</span>
+              <div class="typeahead-wrap" style="flex:1;">
+                <input id="exclusionsInput" class="input" placeholder="Type a plant name…" style="font-size:13px;padding:8px 12px;width:100%;" autocomplete="off" />
                 <div id="exclusionsDrop" class="typeahead-drop"></div>
               </div>
-              <button id="exclusionsAddBtn" class="btnSecondary" type="button" style="padding:9px 14px;font-size:13px;white-space:nowrap;">Add</button>
+              <button id="exclusionsAddBtn" class="btnSecondary" type="button" style="padding:8px 14px;font-size:13px;white-space:nowrap;">Add</button>
             </div>
-            <div id="exclusionsCustomRow" class="pillRow" style="flex-wrap:wrap;gap:8px;margin-top:10px;"></div>
+            <div id="exclusionsCustomRow" class="pillRow" style="flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
           </div>
 
           <div class="checkboxStack">
