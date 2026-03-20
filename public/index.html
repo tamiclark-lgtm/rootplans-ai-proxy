@@ -44,8 +44,10 @@
     body {
       margin: 0;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      /* Full-bleed farm photo */
-      background: url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1920&q=88') center/cover fixed no-repeat;
+      /* Full-bleed farm photo + tomato accent bottom-right */
+      background:
+        url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=600&q=80') right bottom/38vmin no-repeat fixed,
+        url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1920&q=88') center/cover fixed no-repeat;
       color: var(--text);
       -webkit-font-smoothing: antialiased;
       min-height: 100vh;
