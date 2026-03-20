@@ -1283,6 +1283,19 @@
           </div>
 
           <div class="statusLine" id="statusText"></div>
+
+          <!-- Weather card -->
+          <div id="weatherCard" style="display:none;margin-top:14px;border-radius:14px;overflow:hidden;border:1px solid #dce8de;">
+            <div id="weatherAlert" style="display:none;padding:10px 14px;background:#fff3cd;border-bottom:1px solid #f0c040;font-size:13px;font-weight:600;color:#7a5800;"></div>
+            <div id="weatherBody" style="padding:14px 16px;background:#f7faf7;display:flex;flex-wrap:wrap;gap:14px;align-items:center;">
+              <div style="font-size:28px;" id="weatherIcon">🌤</div>
+              <div style="flex:1;min-width:120px;">
+                <p style="margin:0;font-size:15px;font-weight:700;color:#274c38;" id="weatherDesc">Loading…</p>
+                <p style="margin:2px 0 0;font-size:13px;color:#4a5e50;" id="weatherTemp"></p>
+              </div>
+              <div style="font-size:12px;color:#6a7b6b;text-align:right;" id="weatherWind"></div>
+            </div>
+          </div>
         </section>
 
         <section class="section">
@@ -1704,6 +1717,84 @@
       $("statusText").textContent = `✅ Zone ${result.zone} detected — see your soil and planting details below.`;
     }
 
+    async function fetchWeather(zip) {
+      try {
+        // Geocode ZIP to lat/lon via free Census API
+        const geo = await fetch(`https://geocoding.geo.census.gov/geocoder/locations/address?street=&city=&state=&zip=${zip}&benchmark=2020&format=json`);
+        const geoData = await geo.json();
+        const match = geoData?.result?.addressMatches?.[0]?.coordinates;
+        if (!match) return;
+        const { x: lon, y: lat } = match;
+
+        // Get NWS grid point
+        const ptRes = await fetch(`https://api.weather.gov/points/${lat.toFixed(4)},${lon.toFixed(4)}`);
+        if (!ptRes.ok) return;
+        const ptData = await ptRes.json();
+        const forecastUrl = ptData.properties?.forecast;
+        const forecastHourlyUrl = ptData.properties?.forecastHourly;
+        if (!forecastUrl) return;
+
+        // Fetch forecast + alerts in parallel
+        const [fRes, alertRes] = await Promise.all([
+          fetch(forecastUrl),
+          fetch(`https://api.weather.gov/alerts/active?point=${lat.toFixed(4)},${lon.toFixed(4)}`)
+        ]);
+        const fData = await fRes.json();
+        const alertData = await alertRes.json();
+
+        const period = fData.properties?.periods?.[0];
+        if (!period) return;
+
+        // Weather icons
+        const iconMap = { sunny: "☀️", clear: "☀️", cloud: "☁️", overcast: "☁️", rain: "🌧️", shower: "🌦️", storm: "⛈️", thunder: "⛈️", snow: "❄️", flurr: "🌨️", fog: "🌫️", wind: "💨", frost: "🥶", ice: "🧊", freez: "🥶" };
+        const desc = (period.shortForecast || "").toLowerCase();
+        let icon = "🌤️";
+        for (const [key, val] of Object.entries(iconMap)) { if (desc.includes(key)) { icon = val; break; } }
+
+        $("weatherIcon").textContent = icon;
+        $("weatherDesc").textContent = period.shortForecast;
+        $("weatherTemp").textContent = `${period.temperature}°${period.temperatureUnit} · ${period.isDaytime ? "Today" : "Tonight"}`;
+        $("weatherWind").innerHTML = `💨 ${period.windSpeed} ${period.windDirection}`;
+        $("weatherCard").style.display = "block";
+
+        // Frost/freeze check — tonight or next 3 periods
+        const periods = fData.properties?.periods?.slice(0, 6) || [];
+        const frostPeriod = periods.find(p => {
+          const t = p.temperature;
+          const unit = p.temperatureUnit;
+          const tempF = unit === "F" ? t : (t * 9/5 + 32);
+          const d = (p.shortForecast || "").toLowerCase();
+          return tempF <= 34 || d.includes("frost") || d.includes("freez") || d.includes("ice");
+        });
+
+        // NWS alerts
+        const activeAlerts = (alertData.features || []).filter(f => {
+          const evt = (f.properties?.event || "").toLowerCase();
+          return evt.includes("frost") || evt.includes("freeze") || evt.includes("winter") ||
+                 evt.includes("ice") || evt.includes("snow") || evt.includes("wind") ||
+                 evt.includes("storm") || evt.includes("tornado") || evt.includes("flood");
+        });
+
+        const alertEl = $("weatherAlert");
+        if (activeAlerts.length > 0) {
+          const evt = activeAlerts[0].properties.event;
+          const headline = activeAlerts[0].properties.headline || evt;
+          alertEl.innerHTML = `⚠️ <strong>Weather Alert:</strong> ${evt} — ${headline}`;
+          alertEl.style.display = "block";
+          alertEl.style.background = "#ffe0e0";
+          alertEl.style.borderBottomColor = "#e05050";
+          alertEl.style.color = "#8b1a1a";
+        } else if (frostPeriod) {
+          alertEl.innerHTML = `🥶 <strong>Frost Risk:</strong> ${frostPeriod.name} forecast shows ${frostPeriod.temperature}°${frostPeriod.temperatureUnit} — protect sensitive plants!`;
+          alertEl.style.display = "block";
+        } else {
+          alertEl.style.display = "none";
+        }
+      } catch (e) {
+        // Silently fail — weather is a bonus feature
+      }
+    }
+
     function renderZoneError(message) {
       $("zoneCard").style.display = "block";
       $("zoneTitle").textContent = "Unable to detect USDA zone";
@@ -1968,6 +2059,7 @@ Complete ALL 8 sections. Do not stop early.
         detected.location = [result.city, result.state].filter(Boolean).join(", ");
 
         renderZoneOk(result, zip);
+        fetchWeather(zip);
       } catch (e) {
         renderZoneError("Zone lookup failed. Please try again.");
       } finally {
