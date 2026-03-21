@@ -1440,7 +1440,10 @@
           <div id="zoneBadge" style="display:none;margin-top:12px;padding:10px 14px;background:#edf4ef;border:1px solid #c6dcc9;border-radius:10px;font-size:13px;color:#274c38;font-weight:600;"></div>
           <div id="aiOutput" class="planOutput" style="display:none;"></div>
           <div id="gardenMap" class="garden-map-wrap" style="display:none;"></div>
-          <div id="planEnd" style="display:none;margin-top:28px;padding-top:16px;border-top:2px solid var(--border);text-align:center;font-size:13px;color:#7a8f7e;letter-spacing:0.08em;">— End of Plan —</div>
+          <div id="planEnd" style="display:none;margin-top:28px;padding-top:20px;border-top:2px solid var(--border);text-align:center;">
+            <button id="pdfBtnBottom" class="btn" type="button" style="margin-bottom:16px;font-size:15px;padding:14px 32px;">⬇️ Download My Garden Plan (PDF)</button>
+            <p style="font-size:13px;color:#7a8f7e;letter-spacing:0.08em;">— End of Plan —</p>
+          </div>
         </section>
       </div>
     </main>
@@ -2616,6 +2619,8 @@ Complete ALL 8 sections. Do not stop early.
       $("pdfBtn").disabled = false;
       $("pdfBtn").textContent = "Download PDF";
     });
+
+    $("pdfBtnBottom").addEventListener("click", () => $("pdfBtn").click());
   </script>
 </body>
 </html>
