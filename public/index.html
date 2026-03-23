@@ -1483,10 +1483,11 @@
   <div id="chatPanel" style="display:none;position:fixed;bottom:108px;right:24px;width:340px;max-width:calc(100vw - 32px);height:480px;max-height:70vh;background:#fff;border-radius:20px;box-shadow:0 8px 48px rgba(0,0,0,0.22);z-index:998;flex-direction:column;overflow:hidden;border:1px solid #dce8de;">
     <div style="background:linear-gradient(135deg,#1f3b2b,#3a6647);padding:14px 18px;display:flex;align-items:center;gap:10px;">
       <span style="font-size:20px;">🌿</span>
-      <div>
+      <div style="flex:1;">
         <p style="margin:0;font-size:14px;font-weight:700;color:#fff;">Garden Assistant</p>
         <p style="margin:0;font-size:11px;color:rgba(255,255,255,0.7);">Ask me anything about your garden</p>
       </div>
+      <button id="chatCloseBtn" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✕</button>
     </div>
     <div id="chatMessages" style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;">
       <div class="chat-bubble chat-ai">Hi! 👋 Ask me anything — planting tips, what to grow, pest problems, companion plants, and more.</div>
@@ -2692,6 +2693,7 @@ ${planHtml}
     }
     chatBtn.addEventListener("click", toggleChat);
     document.querySelector(".chat-label").addEventListener("click", toggleChat);
+    $("chatCloseBtn").addEventListener("click", toggleChat);
 
     async function sendChat() {
       const question = chatInput.value.trim();
