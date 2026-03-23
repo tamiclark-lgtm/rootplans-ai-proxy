@@ -2538,6 +2538,9 @@ Complete ALL 8 sections. Do not stop early.
         $("pdfBtn").style.display = "inline-block";
         $("zoneBadge").textContent = `🌿 All plants in this plan are selected specifically for USDA Zone ${detected.zone}${detected.location ? " · " + detected.location : ""}.`;
         $("zoneBadge").style.display = "block";
+
+        // Auto-download plan as HTML file
+        $("pdfBtn").click();
       } catch (e) {
         console.error(e);
         $("aiStatus").textContent = `Something went wrong: ${e.message || "Unknown error"}`;
