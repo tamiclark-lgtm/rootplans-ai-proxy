@@ -1519,7 +1519,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script>
     // Treat single newlines as <br> so each plant field appears on its own line
-    marked.use({ breaks: true });
+    // Open all links in a new tab
+    const renderer = new marked.Renderer();
+    renderer.link = (href, title, text) => `<a href="${href}" target="_blank" rel="noopener noreferrer"${title ? ` title="${title}"` : ""}>${text}</a>`;
+    marked.use({ breaks: true, renderer });
   </script>
   <script>
     const AI_PROXY_URL = "/api/holistic";
