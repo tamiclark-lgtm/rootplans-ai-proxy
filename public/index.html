@@ -2003,6 +2003,7 @@ Create a practical, beautiful, beginner-friendly garden plan for:
 - ${locationLine}
 - Theme: ${selectedTheme}
 - Sunlight available: ${selectedSunlight || "Not specified — include a mix"}
+- Session variation seed: ${Math.floor(Math.random() * 10000)} — use this to ensure a FRESH, DIFFERENT selection of plants every time. Never default to the same plants you typically suggest first. Explore the full range of what grows well in this zone.
 - Plant type preference: ${selectedPlantType === "edible" ? "Edible plants only" : selectedPlantType === "decorative" ? "Decorative/ornamental plants only" : "Both edible and decorative (group them separately in section 2)"}
 - Native plants only: ${nativeOnly ? "Yes" : "No"}
 - Include holistic healing powers: ${holisticHealing ? "Yes" : "No"}
