@@ -1363,6 +1363,14 @@
             <button class="pill" type="button" data-planttype="decorative" aria-pressed="false">🌸 Decorative only</button>
           </div>
 
+          <p style="font-weight:700;margin-bottom:10px;font-size:15px;">Number of plants</p>
+          <div class="pillRow" id="plantCountRow" style="margin-bottom:20px;">
+            <button class="pill" type="button" data-count="3" aria-pressed="false">3</button>
+            <button class="pill" type="button" data-count="5" aria-pressed="false">5</button>
+            <button class="pill" type="button" data-count="7" aria-pressed="true">7</button>
+            <button class="pill" type="button" data-count="10" aria-pressed="false">10</button>
+          </div>
+
           <p style="font-weight:700;margin-bottom:6px;font-size:15px;">Plant variety</p>
           <p style="font-size:13px;color:var(--muted);margin-bottom:10px;">How adventurous should your plant list be?</p>
           <div class="pillRow" id="rarityRow" style="margin-bottom:20px;">
@@ -1691,6 +1699,7 @@
     let selectedStaples = [];
     let selectedExclusions = [];
     let selectedRarity = "mixed";
+    let selectedPlantCount = 7;
     let lastPlanText = "";
     let lastPlants = [];
 
@@ -2021,6 +2030,7 @@ ${selectedPlantType !== "decorative" && selectedRarity === "common" ? "- Priorit
 - ${nativeOnly ? "Use only native plants appropriate for the zone." : "Prefer native plants first; include well-adapted non-invasive plants as needed."}
 - Do not suggest invasive plants.
 - Include only plants realistic for USDA Zone ${zone}.
+- TOTAL PLANTS: Recommend exactly ${selectedPlantCount} plants in section 2. No more, no less.
 ${(selectedStaples.length || customStaples.length) ? `- REQUIRED — these must appear in the plan no matter what: ${[...selectedStaples, ...customStaples].join(", ")}. Note any zone-specific care adjustments if needed.` : ""}
 ${(selectedExclusions.length || customExclusions.length) ? `- EXCLUDED — do NOT include these under any circumstances: ${[...selectedExclusions, ...customExclusions].join(", ")}.` : ""}
 
@@ -2223,6 +2233,14 @@ Complete ALL 8 sections. Do not stop early.
         renderStaples();
         renderExclusions();
         updatePreferenceSummary();
+      });
+    });
+
+    document.querySelectorAll("#plantCountRow .pill").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedPlantCount = parseInt(btn.dataset.count);
+        document.querySelectorAll("#plantCountRow .pill").forEach(b => b.setAttribute("aria-pressed", "false"));
+        btn.setAttribute("aria-pressed", "true");
       });
     });
 
