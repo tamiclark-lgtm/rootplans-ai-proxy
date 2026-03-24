@@ -1363,14 +1363,6 @@
             <button class="pill" type="button" data-planttype="decorative" aria-pressed="false">🌸 Decorative only</button>
           </div>
 
-          <p style="font-weight:700;margin-bottom:10px;font-size:15px;">Number of plants</p>
-          <div class="pillRow" id="plantCountRow" style="margin-bottom:20px;">
-            <button class="pill" type="button" data-count="3" aria-pressed="false">3</button>
-            <button class="pill" type="button" data-count="5" aria-pressed="false">5</button>
-            <button class="pill" type="button" data-count="7" aria-pressed="true">7</button>
-            <button class="pill" type="button" data-count="10" aria-pressed="false">10</button>
-          </div>
-
           <p style="font-weight:700;margin-bottom:6px;font-size:15px;">Plant variety</p>
           <p style="font-size:13px;color:var(--muted);margin-bottom:10px;">How adventurous should your plant list be?</p>
           <div class="pillRow" id="rarityRow" style="margin-bottom:20px;">
@@ -1438,17 +1430,6 @@
             </div>
           </div>
 
-          <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;padding:10px 14px;background:rgba(74,122,90,0.07);border:1px solid rgba(74,122,90,0.18);border-radius:12px;font-size:12px;color:#4a5e50;">
-            <span style="font-weight:700;color:#274c38;width:100%;margin-bottom:2px;">Your plan icons:</span>
-            <span>☀️ Full Sun &nbsp; ⛅ Partial Shade &nbsp; 🌑 Full Shade</span>
-            <span>🐝 Bees &nbsp; 🦋 Butterflies &nbsp; 🐦 Hummingbirds</span>
-            <span>✅ Pet Safe &nbsp; ⚠️ Toxic to Pets</span>
-          </div>
-
-          <div style="margin-bottom:10px;">
-            <span id="planCounterBadge" style="display:inline-block;font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;background:#edf4ef;color:#274c38;cursor:pointer;" onclick="if(!isPro()) showUpgrade('Upgrade to get unlimited plans.')"></span>
-          </div>
-
           <div class="row">
             <button id="generateBtn" class="btn" type="button">Generate Plan</button>
             <button id="copyBtn" class="btnSecondary" type="button" style="display:none;">Copy</button>
@@ -1459,62 +1440,12 @@
           <div id="zoneBadge" style="display:none;margin-top:12px;padding:10px 14px;background:#edf4ef;border:1px solid #c6dcc9;border-radius:10px;font-size:13px;color:#274c38;font-weight:600;"></div>
           <div id="aiOutput" class="planOutput" style="display:none;"></div>
           <div id="gardenMap" class="garden-map-wrap" style="display:none;"></div>
-          <div id="planEnd" style="display:none;margin-top:28px;padding-top:20px;border-top:2px solid var(--border);text-align:center;">
-            <button id="pdfBtnBottom" class="btn" type="button" style="margin-bottom:16px;font-size:15px;padding:14px 32px;">⬇️ Download My Garden Plan (PDF)</button>
-            <p style="font-size:13px;color:#7a8f7e;letter-spacing:0.08em;">— End of Plan —</p>
-          </div>
+          <div id="planEnd" style="display:none;margin-top:28px;padding-top:16px;border-top:2px solid var(--border);text-align:center;font-size:13px;color:#7a8f7e;letter-spacing:0.08em;">— End of Plan —</div>
         </section>
       </div>
     </main>
 
     <div class="footer">© RootPlans &nbsp;·&nbsp; <a href="/guide.html" target="_blank" style="color:var(--primary);font-weight:700;text-decoration:none;">User Guide</a></div>
-  </div>
-
-  <!-- Chat widget -->
-  <style>
-    .chat-bubble { padding: 10px 13px; border-radius: 14px; font-size: 13px; line-height: 1.55; max-width: 88%; }
-    .chat-user { background: var(--primary); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
-    .chat-ai { background: #edf4ef; color: #1f2b22; align-self: flex-start; border-bottom-left-radius: 4px; }
-    @keyframes chatPulse {
-      0%, 100% { box-shadow: 0 4px 24px rgba(45,106,79,0.55), 0 0 0 0 rgba(82,183,136,0.5); }
-      50% { box-shadow: 0 4px 24px rgba(45,106,79,0.55), 0 0 0 12px rgba(82,183,136,0); }
-    }
-    @keyframes chatLabelPop {
-      0% { opacity: 0; transform: translateX(10px); }
-      100% { opacity: 1; transform: translateX(0); }
-    }
-    .chat-fab { position:fixed;bottom:28px;right:16px;z-index:999;display:flex;align-items:center;gap:8px; }
-    .chat-fab .chat-label { background:#fff;color:#274c38;font-size:13px;font-weight:700;padding:8px 14px;border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,0.18);white-space:nowrap;animation:chatLabelPop 0.4s ease;cursor:pointer; }
-    #chatToggleBtnInner { width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,#2d6a4f,#52b788);color:#fff;font-size:28px;border:none;cursor:pointer;box-shadow:0 4px 24px rgba(45,106,79,0.55);display:flex;align-items:center;justify-content:center;animation:chatPulse 2.5s ease-in-out infinite;transition:transform 0.2s; }
-    @media (max-width: 720px) {
-      .chat-fab { bottom:16px; right:12px; gap:6px; }
-      .chat-fab .chat-label { font-size:12px; padding:6px 10px; display:none; }
-      #chatToggleBtnInner { width:48px; height:48px; font-size:22px; }
-      #chatPanel { width:calc(100vw - 24px); right:12px; bottom:76px; height:60vh; }
-    }
-  </style>
-
-  <div class="chat-fab">
-    <div class="chat-label">Ask the Garden AI 🌿</div>
-    <button id="chatToggleBtnInner">💬</button>
-  </div>
-
-  <div id="chatPanel" style="display:none;position:fixed;bottom:108px;right:24px;width:340px;max-width:calc(100vw - 32px);height:480px;max-height:70vh;background:#fff;border-radius:20px;box-shadow:0 8px 48px rgba(0,0,0,0.22);z-index:998;flex-direction:column;overflow:hidden;border:1px solid #dce8de;">
-    <div style="background:linear-gradient(135deg,#1f3b2b,#3a6647);padding:14px 18px;display:flex;align-items:center;gap:10px;">
-      <span style="font-size:20px;">🌿</span>
-      <div style="flex:1;">
-        <p style="margin:0;font-size:14px;font-weight:700;color:#fff;">Garden Assistant</p>
-        <p style="margin:0;font-size:11px;color:rgba(255,255,255,0.7);">Ask me anything about your garden</p>
-      </div>
-      <button id="chatCloseBtn" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✕</button>
-    </div>
-    <div id="chatMessages" style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;">
-      <div class="chat-bubble chat-ai">Hi! 👋 Ask me anything — planting tips, what to grow, pest problems, companion plants, and more.</div>
-    </div>
-    <div style="padding:10px 12px;border-top:1px solid #e8f0ea;display:flex;gap:8px;background:#f7faf7;">
-      <input id="chatInput" type="text" placeholder="Ask a garden question…" style="flex:1;border:1px solid #c6dcc9;border-radius:10px;padding:9px 12px;font-size:13px;outline:none;font-family:inherit;" />
-      <button id="chatSendBtn" style="background:var(--primary);color:#fff;border:none;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">Send</button>
-    </div>
   </div>
 
   <!-- Hidden PDF document -->
@@ -1527,153 +1458,14 @@
     <div class="pdf-plan-text" id="pdfPlanText"></div>
   </div>
 
-  <!-- Upgrade modal -->
-  <div id="upgradeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;">
-    <div style="background:#fff;border-radius:24px;padding:40px 32px;max-width:400px;width:90%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,0.3);">
-      <div style="font-size:40px;margin-bottom:12px;">🌿</div>
-      <h2 style="font-size:22px;font-weight:800;color:#274c38;margin-bottom:8px;">Upgrade to RootPlans Pro</h2>
-      <p style="font-size:14px;color:#6a7b6b;margin-bottom:20px;" id="upgradeReason">Unlock the full experience.</p>
-      <div style="background:#f7faf7;border-radius:14px;padding:16px;margin-bottom:24px;text-align:left;">
-        <p style="margin:0 0 8px;font-size:13px;font-weight:700;color:#274c38;">Pro includes:</p>
-        <p style="margin:3px 0;font-size:13px;color:#4a5e50;">✅ Unlimited garden plans</p>
-        <p style="margin:3px 0;font-size:13px;color:#4a5e50;">✅ 3–10 plants per plan</p>
-        <p style="margin:3px 0;font-size:13px;color:#4a5e50;">✅ Mixed, unique & rare varieties</p>
-        <p style="margin:3px 0;font-size:13px;color:#4a5e50;">✅ PDF downloads</p>
-        <p style="margin:3px 0;font-size:13px;color:#4a5e50;">✅ AI chat assistant</p>
-        <p style="margin:3px 0;font-size:13px;color:#4a5e50;">✅ Pet safety & pollinator badges</p>
-      </div>
-      <button id="upgradePayBtn" style="width:100%;padding:14px;background:linear-gradient(135deg,#2d6a4f,#52b788);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:10px;">Upgrade for $4.99/month</button>
-      <div style="margin-bottom:12px;">
-        <input id="bypassInput" placeholder="Have a code? Enter it here" style="width:100%;padding:10px 12px;border:1px solid #dce8de;border-radius:10px;font-size:13px;text-align:center;box-sizing:border-box;" />
-      </div>
-      <button id="bypassBtn" style="width:100%;padding:10px;background:#edf4ef;color:#274c38;border:1px solid #c6dcc9;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:8px;">Apply Code</button>
-      <button id="upgradeCloseBtn" style="background:none;border:none;color:#aaa;font-size:13px;cursor:pointer;margin-top:4px;">Maybe later</button>
-    </div>
-  </div>
-
   <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script>
     // Treat single newlines as <br> so each plant field appears on its own line
-    // Open all links in a new tab
-    const renderer = new marked.Renderer();
-    renderer.link = (href, title, text) => `<a href="${href}" target="_blank" rel="noopener noreferrer"${title ? ` title="${title}"` : ""}>${text}</a>`;
-    marked.use({ breaks: true, renderer });
+    marked.use({ breaks: true });
   </script>
   <script>
     const AI_PROXY_URL = "/api/holistic";
     const AUTH_URL = "/api/auth";
-
-    // ── Free/Pro tier ──────────────────────────────────────────────────────
-    const FREE_PLAN_LIMIT = 5;
-    const BYPASS_CODES = ["ROOTS2024", "GARDENPRO", "FRIENDPASS"]; // share these with friends
-    const PRO_STORAGE_KEY = "rp_pro";
-    const PLANS_USED_KEY = "rp_plans_used";
-
-    function isPro() {
-      return localStorage.getItem(PRO_STORAGE_KEY) === "true";
-    }
-    function plansUsed() {
-      return parseInt(localStorage.getItem(PLANS_USED_KEY) || "0");
-    }
-    function incrementPlansUsed() {
-      localStorage.setItem(PLANS_USED_KEY, plansUsed() + 1);
-      updatePlanCounter();
-    }
-    function updatePlanCounter() {
-      const el = document.getElementById("planCounterBadge");
-      if (!el) return;
-      if (isPro()) {
-        el.textContent = "✨ Pro — Unlimited";
-        el.style.background = "linear-gradient(135deg,#2d6a4f,#52b788)";
-        el.style.color = "#fff";
-      } else {
-        const used = plansUsed();
-        const left = Math.max(0, FREE_PLAN_LIMIT - used);
-        el.textContent = `${left} free plan${left !== 1 ? "s" : ""} remaining`;
-        el.style.background = left <= 1 ? "#ffe0e0" : "#edf4ef";
-        el.style.color = left <= 1 ? "#8b1a1a" : "#274c38";
-      }
-    }
-    function showUpgrade(reason) {
-      document.getElementById("upgradeReason").textContent = reason || "Unlock the full RootPlans experience.";
-      document.getElementById("upgradeModal").style.display = "flex";
-    }
-    function activatePro() {
-      localStorage.setItem(PRO_STORAGE_KEY, "true");
-      document.getElementById("upgradeModal").style.display = "none";
-      updatePlanCounter();
-      unlockProUI();
-    }
-    function unlockProUI() {
-      // Show all plant count options
-      document.querySelectorAll("#plantCountRow .pill[data-count='10']").forEach(b => b.style.display = "");
-      // Show all rarity options
-      document.querySelectorAll("#rarityRow .pill[data-rarity='unique']").forEach(b => b.style.display = "");
-      // Show chat
-      document.querySelector(".chat-fab").style.display = "flex";
-    }
-    function lockFreeUI() {
-      // Hide 10 plant option
-      document.querySelectorAll("#plantCountRow .pill[data-count='10']").forEach(b => {
-        b.textContent = "10 🔒"; b.style.opacity = "0.5";
-        b.addEventListener("click", e => { e.stopPropagation(); showUpgrade("10 plants per plan is a Pro feature."); }, true);
-      });
-      // Hide unique rarity
-      document.querySelectorAll("#rarityRow .pill[data-rarity='unique']").forEach(b => {
-        b.textContent = "🌟 Unique & Rare 🔒"; b.style.opacity = "0.6";
-        b.addEventListener("click", e => { e.stopPropagation(); showUpgrade("Unique & Rare varieties are a Pro feature."); }, true);
-      });
-      // Hide chat
-      const fab = document.querySelector(".chat-fab");
-      if (fab) fab.style.display = "none";
-    }
-
-    // Handle upgrade button
-    document.getElementById("upgradePayBtn").addEventListener("click", async () => {
-      const btn = document.getElementById("upgradePayBtn");
-      btn.textContent = "Loading..."; btn.disabled = true;
-      try {
-        const r = await fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
-        const { url } = await r.json();
-        window.location.href = url;
-      } catch { btn.textContent = "Upgrade for $4.99/month"; btn.disabled = false; }
-    });
-
-    // Bypass code
-    document.getElementById("bypassBtn").addEventListener("click", () => {
-      const code = document.getElementById("bypassInput").value.trim().toUpperCase();
-      if (BYPASS_CODES.includes(code)) {
-        activatePro();
-        alert("✅ Code accepted! You now have Pro access.");
-      } else {
-        document.getElementById("bypassInput").style.borderColor = "#e05050";
-        setTimeout(() => document.getElementById("bypassInput").style.borderColor = "", 1500);
-      }
-    });
-    document.getElementById("upgradeCloseBtn").addEventListener("click", () => {
-      document.getElementById("upgradeModal").style.display = "none";
-    });
-
-    // Handle return from Stripe
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get("upgraded") === "true") {
-      const sid = urlParams.get("session_id");
-      if (sid) {
-        fetch(`/api/verify-session?session_id=${sid}`)
-          .then(r => r.json())
-          .then(d => { if (d.success) { activatePro(); if (d.email) localStorage.setItem("rp_email", d.email); } });
-      }
-      window.history.replaceState({}, "", window.location.pathname);
-    }
-
-    // Check existing subscription on load
-    const savedEmail = localStorage.getItem("rp_email");
-    if (savedEmail && !isPro()) {
-      fetch(`/api/check-subscription?email=${encodeURIComponent(savedEmail)}`)
-        .then(r => r.json())
-        .then(d => { if (d.active) activatePro(); });
-    }
 
     // Check session — both auth and disclaimer must be accepted
     if (sessionStorage.getItem("rp_auth") === "1") {
@@ -1838,7 +1630,6 @@
     let selectedStaples = [];
     let selectedExclusions = [];
     let selectedRarity = "mixed";
-    let selectedPlantCount = 7;
     let lastPlanText = "";
     let lastPlants = [];
 
@@ -2154,7 +1945,6 @@ Create a practical, beautiful, beginner-friendly garden plan for:
 - ${locationLine}
 - Theme: ${selectedTheme}
 - Sunlight available: ${selectedSunlight || "Not specified — include a mix"}
-- Session variation seed: ${Math.floor(Math.random() * 10000)} — use this to ensure a FRESH, DIFFERENT selection of plants every time. Never default to the same plants you typically suggest first. Explore the full range of what grows well in this zone.
 - Plant type preference: ${selectedPlantType === "edible" ? "Edible plants only" : selectedPlantType === "decorative" ? "Decorative/ornamental plants only" : "Both edible and decorative (group them separately in section 2)"}
 - Native plants only: ${nativeOnly ? "Yes" : "No"}
 - Include holistic healing powers: ${holisticHealing ? "Yes" : "No"}
@@ -2169,7 +1959,6 @@ ${selectedPlantType !== "decorative" && selectedRarity === "common" ? "- Priorit
 - ${nativeOnly ? "Use only native plants appropriate for the zone." : "Prefer native plants first; include well-adapted non-invasive plants as needed."}
 - Do not suggest invasive plants.
 - Include only plants realistic for USDA Zone ${zone}.
-- TOTAL PLANTS: Recommend exactly ${selectedPlantCount} plants in section 2. No more, no less.
 ${(selectedStaples.length || customStaples.length) ? `- REQUIRED — these must appear in the plan no matter what: ${[...selectedStaples, ...customStaples].join(", ")}. Note any zone-specific care adjustments if needed.` : ""}
 ${(selectedExclusions.length || customExclusions.length) ? `- EXCLUDED — do NOT include these under any circumstances: ${[...selectedExclusions, ...customExclusions].join(", ")}.` : ""}
 
@@ -2184,8 +1973,7 @@ USE THIS EXACT FORMAT — every plant entry must follow this template with no de
 **Best consumed:** [One sentence on best way to eat/use it]` : ""}${holisticHealing ? `
 **Traditionally used for:** [One cautious sentence using phrases like "traditionally associated with" or "commonly used in folk practice for" — no medical claims]` : ""}
 
-For every plant also add these two lines:
-**🐾 Pet Safety:** [One of: "⚠️ Toxic to dogs and cats", "⚠️ Toxic to cats", "⚠️ Toxic to dogs", "⚠️ Toxic to horses", "✅ Safe for pets" — be specific, use ASPCA guidelines]
+For every plant also add one line:
 **Where to buy:** [a search URL in this exact format: https://www.google.com/search?q=buy+[plant+name]+seeds+or+plants — replace spaces with + in the plant name]
 
 Repeat that exact block for every plant. Separate each plant entry with a blank line and then --- on its own line. Do not add extra fields, headers, or sub-bullets within plant entries.
@@ -2375,14 +2163,6 @@ Complete ALL 8 sections. Do not stop early.
       });
     });
 
-    document.querySelectorAll("#plantCountRow .pill").forEach(btn => {
-      btn.addEventListener("click", () => {
-        selectedPlantCount = parseInt(btn.dataset.count);
-        document.querySelectorAll("#plantCountRow .pill").forEach(b => b.setAttribute("aria-pressed", "false"));
-        btn.setAttribute("aria-pressed", "true");
-      });
-    });
-
     function renderStaples() {
       const show = selectedPlantType !== "decorative";
       $("staplesCard").style.display = show ? "block" : "none";
@@ -2554,12 +2334,6 @@ Complete ALL 8 sections. Do not stop early.
     }
 
     $("generateBtn").addEventListener("click", async () => {
-      // Free tier gate
-      if (!isPro() && plansUsed() >= FREE_PLAN_LIMIT) {
-        showUpgrade(`You've used all ${FREE_PLAN_LIMIT} free plans. Upgrade for unlimited plans.`);
-        return;
-      }
-
       $("aiOutput").style.display = "none";
       $("aiOutput").innerHTML = "";
       $("gardenMap").style.display = "none";
@@ -2706,12 +2480,6 @@ Complete ALL 8 sections. Do not stop early.
         $("pdfBtn").style.display = "inline-block";
         $("zoneBadge").textContent = `🌿 All plants in this plan are selected specifically for USDA Zone ${detected.zone}${detected.location ? " · " + detected.location : ""}.`;
         $("zoneBadge").style.display = "block";
-
-        // Track plan usage
-        incrementPlansUsed();
-
-        // Auto-download as PDF
-        if (isPro()) $("pdfBtn").click();
       } catch (e) {
         console.error(e);
         $("aiStatus").textContent = `Something went wrong: ${e.message || "Unknown error"}`;
@@ -2812,122 +2580,42 @@ Complete ALL 8 sections. Do not stop early.
       $("pdfBtn").disabled = true;
       $("pdfBtn").textContent = "Building PDF...";
 
+      // Fetch images for all plants in parallel
+      const images = await Promise.all(lastPlants.map(fetchPlantImage));
+
+      // Build plant grid
+      const grid = $("pdfPlantGrid");
+      grid.innerHTML = "";
+      lastPlants.forEach((plant, i) => {
+        const card = document.createElement("div");
+        card.className = "pdf-plant-card";
+        const imgHtml = images[i]
+          ? `<img src="${images[i]}" alt="${escapeHtml(plant.common)}" />`
+          : `<div class="pdf-plant-img-placeholder">🌿</div>`;
+        card.innerHTML = `
+          ${imgHtml}
+          <div class="pdf-plant-name">
+            <strong>${escapeHtml(plant.common)}</strong>
+            <em>${escapeHtml(plant.botanical)}</em>
+          </div>`;
+        grid.appendChild(card);
+      });
+
+      // Set meta and plan text
       const loc = detected.location ? ` · ${detected.location}` : "";
-      const meta = `Zone ${detected.zone}${loc} · ${selectedTheme} · Generated ${new Date().toLocaleDateString()}`;
-      const planHtml = marked.parse(lastPlanText || "");
+      $("pdfMeta").textContent =
+        `Zone ${detected.zone}${loc} · ${selectedTheme} · Generated ${new Date().toLocaleDateString()}`;
+      $("pdfPlanText").innerHTML = marked.parse(lastPlanText);
 
-      const container = document.createElement("div");
-      container.style.cssText = "font-family:Georgia,serif;color:#1f2b22;padding:32px;max-width:760px;line-height:1.7;";
-      container.innerHTML = `
-        <h1 style="font-size:26px;color:#274c38;margin-bottom:4px;">🌿 RootPlans Garden Plan</h1>
-        <p style="font-size:12px;color:#6a7b6b;border-bottom:2px solid #dce8de;padding-bottom:10px;margin-bottom:24px;">${escapeHtml(meta)}</p>
-        <style>
-          h2{font-size:18px;font-weight:800;color:#274c38;margin-top:28px;border-bottom:1px solid #dce8de;padding-bottom:4px;}
-          h3{font-size:15px;font-weight:700;color:#4a7a5a;margin-top:16px;}
-          strong{color:#274c38;}
-          ul{padding-left:18px;}
-          li{margin-bottom:3px;}
-          hr{border:none;border-top:1px solid #dce8de;margin:10px 0;}
-          p{margin:0 0 8px;}
-        </style>
-        ${planHtml}
-        <p style="margin-top:40px;font-size:10px;color:#aaa;border-top:1px solid #eee;padding-top:10px;text-align:center;">Generated by RootPlans.com · For personal use only</p>`;
-
-      document.body.appendChild(container);
-      await html2pdf().set({
-        margin: 10,
-        filename: `RootPlans-Garden-Plan-${new Date().toISOString().slice(0,10)}.pdf`,
-        image: { type: "jpeg", quality: 0.95 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-      }).from(container).save();
-      document.body.removeChild(container);
+      // Show PDF div, print, hide
+      $("pdfDoc").style.display = "block";
+      await new Promise(r => setTimeout(r, 200)); // let images render
+      window.print();
+      $("pdfDoc").style.display = "none";
 
       $("pdfBtn").disabled = false;
       $("pdfBtn").textContent = "Download PDF";
     });
-
-    $("pdfBtnBottom").addEventListener("click", () => $("pdfBtn").click());
-
-    // Init free/pro UI on load
-    updatePlanCounter();
-    if (!isPro()) lockFreeUI();
-    else unlockProUI();
-
-    // ── Garden Chat ────────────────────────────────────────────────────────
-    const chatBtn = $("chatToggleBtnInner");
-    const chatPanel = $("chatPanel");
-    const chatMessages = $("chatMessages");
-    const chatInput = $("chatInput");
-    const chatSend = $("chatSendBtn");
-    let chatOpen = false;
-
-    function toggleChat() {
-      chatOpen = !chatOpen;
-      chatPanel.style.display = chatOpen ? "flex" : "none";
-      chatBtn.textContent = chatOpen ? "✕" : "💬";
-      const label = document.querySelector(".chat-label");
-      if (label) label.style.display = chatOpen ? "none" : "block";
-      if (chatOpen) chatInput.focus();
-    }
-    chatBtn.addEventListener("click", toggleChat);
-    document.querySelector(".chat-label").addEventListener("click", toggleChat);
-    $("chatCloseBtn").addEventListener("click", toggleChat);
-
-    async function sendChat() {
-      const question = chatInput.value.trim();
-      if (!question) return;
-      chatInput.value = "";
-      chatSend.disabled = true;
-
-      // User bubble
-      const userBubble = document.createElement("div");
-      userBubble.className = "chat-bubble chat-user";
-      userBubble.textContent = question;
-      chatMessages.appendChild(userBubble);
-
-      // AI bubble
-      const aiBubble = document.createElement("div");
-      aiBubble.className = "chat-bubble chat-ai";
-      aiBubble.textContent = "…";
-      chatMessages.appendChild(aiBubble);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-
-      const zone = detected.zone || "7";
-      const location = detected.location || "";
-      const prompt = `The user is asking a garden question. Zone: ${zone}${location ? ", " + location : ""}.\n\nQuestion: ${question}\n\nAnswer helpfully and concisely in plain text (no markdown). Keep it under 120 words.`;
-
-      try {
-        const resp = await fetch(AI_PROXY_URL, {
-          method: "POST",
-          headers: authHeaders(),
-          body: JSON.stringify({ prompt, zone, location })
-        });
-        const reader = resp.body.getReader();
-        const decoder = new TextDecoder();
-        let answer = "";
-        aiBubble.textContent = "";
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          for (const line of decoder.decode(value).split("\n")) {
-            if (!line.startsWith("data:")) continue;
-            const d = line.slice(5).trim();
-            if (d === "[DONE]") break;
-            try { answer += JSON.parse(d).text || ""; } catch {}
-          }
-          aiBubble.textContent = answer;
-          chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-      } catch (e) {
-        aiBubble.textContent = "Sorry, couldn't reach the garden assistant right now.";
-      }
-      chatSend.disabled = false;
-      chatInput.focus();
-    }
-
-    chatSend.addEventListener("click", sendChat);
-    chatInput.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); } });
   </script>
 </body>
 </html>
