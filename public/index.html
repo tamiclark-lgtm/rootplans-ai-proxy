@@ -1246,61 +1246,6 @@
     </section>
 
     <main class="app">
-      <!-- Mode Tabs -->
-      <div class="mode-tabs">
-        <button class="mode-tab active" id="tabBuildBtn" onclick="switchMode('build')">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          Build a Garden
-        </button>
-        <button class="mode-tab" id="tabAskBtn" onclick="switchMode('ask')">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          Ask a Question
-        </button>
-      </div>
-
-      <!-- Ask a Question Panel -->
-      <div id="askPanel" style="display:none;padding:24px 28px 28px;">
-        <div style="margin-bottom:20px;">
-          <p style="font-weight:700;font-size:15px;margin-bottom:8px;color:var(--text);">What would you like to know?</p>
-          <div style="display:flex;gap:8px;">
-            <input id="askInput" class="input" placeholder="e.g. Why are my tomato leaves turning yellow?" style="flex:1;" />
-            <button class="btn" type="button" onclick="sendAskQuestion()">Ask</button>
-          </div>
-        </div>
-
-        <div style="margin-bottom:20px;">
-          <p style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;">Common Pests</p>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;">
-            <button class="quick-list-item" onclick="sendAskDirect('Tell me about Aphids: 1) Which plants they most commonly attack, 2) How to identify them, 3) Natural/organic treatments (neem oil, companion planting, beneficial insects, etc.), 4) Chemical treatments if needed (specific product types and active ingredients). Be specific and practical.')">Aphids</button>
-            <button class="quick-list-item" onclick="sendAskDirect('Tell me about Slugs & Snails: 1) Which plants they most commonly attack, 2) How to identify damage, 3) Natural/organic treatments (copper tape, diatomaceous earth, beer traps, etc.), 4) Chemical treatments if needed. Be specific and practical.')">Slugs & Snails</button>
-            <button class="quick-list-item" onclick="sendAskDirect('Tell me about Whiteflies: 1) Which plants they most commonly attack, 2) How to identify them, 3) Natural/organic treatments (yellow sticky traps, insecticidal soap, beneficial insects, etc.), 4) Chemical treatments if needed. Be specific and practical.')">Whiteflies</button>
-            <button class="quick-list-item" onclick="sendAskDirect('Tell me about Spider Mites: 1) Which plants they most commonly attack, 2) How to identify them and their damage, 3) Natural/organic treatments (water spray, neem oil, predatory mites, etc.), 4) Chemical miticides if needed. Be specific and practical.')">Spider Mites</button>
-            <button class="quick-list-item" onclick="sendAskDirect('Tell me about Caterpillars & Hornworms: 1) Which plants they most commonly attack, 2) How to identify them, 3) Natural/organic treatments (hand-picking, Bt spray, parasitic wasps, etc.), 4) Chemical treatments if needed. Be specific and practical.')">Caterpillars</button>
-            <button class="quick-list-item" onclick="sendAskDirect('Tell me about Japanese Beetles: 1) Which plants they most commonly attack, 2) How to identify them, 3) Natural/organic treatments (hand-picking, neem oil, milky spore, etc.), 4) Chemical treatments if needed. Be specific and practical.')">Japanese Beetles</button>
-            <button class="quick-list-item" onclick="sendAskDirect('Tell me about Fungus Gnats: 1) Which plants they most commonly affect, 2) How to identify them and their damage, 3) Natural/organic treatments (sticky traps, beneficial nematodes, letting soil dry, etc.), 4) Chemical treatments if needed. Be specific and practical.')">Fungus Gnats</button>
-            <button class="quick-list-item" onclick="sendAskDirect('Tell me about Powdery Mildew: 1) Which plants it most commonly affects, 2) How to identify it, 3) Natural/organic treatments (baking soda spray, neem oil, proper spacing, etc.), 4) Chemical fungicides if needed. Be specific and practical.')">Powdery Mildew</button>
-            <button class="quick-list-item" onclick="sendAskDirect('Tell me about Root Rot: 1) Which plants it most commonly affects, 2) How to diagnose it, 3) Natural/organic treatments (improved drainage, beneficial fungi, hydrogen peroxide, etc.), 4) Chemical fungicides if needed. Be specific and practical.')">Root Rot</button>
-            <button class="quick-list-item" onclick="sendAskDirect('Tell me about Squash Vine Borers: 1) Which plants they attack, 2) How to identify them and their damage, 3) Natural/organic treatments (row covers, hand removal, beneficial nematodes, etc.), 4) Chemical treatments if needed. Be specific and practical.')">Squash Vine Borers</button>
-            <button class="quick-list-item" onclick="sendAskDirect('Tell me about Tomato Blight (Early and Late): 1) Which plants it affects, 2) How to identify each type, 3) Natural/organic treatments (copper spray, crop rotation, proper spacing, etc.), 4) Chemical fungicides if needed. Be specific and practical.')">Tomato Blight</button>
-            <button class="quick-list-item" onclick="sendAskDirect('Tell me about Cutworms: 1) Which plants they most commonly attack, 2) How to identify them and their damage, 3) Natural/organic treatments (collar protectors, diatomaceous earth, beneficial nematodes, etc.), 4) Chemical treatments if needed. Be specific and practical.')">Cutworms</button>
-          </div>
-        </div>
-
-        <div>
-          <p style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;">Common Diseases — by Plant</p>
-          <div style="display:flex;gap:8px;margin-bottom:8px;">
-            <input id="diseaseInput" class="input" placeholder="Type a plant (e.g. Tomato, Rose, Basil)…" style="flex:1;font-size:13px;" />
-            <button class="btnSecondary" type="button" onclick="sendDiseaseQuestion()" style="white-space:nowrap;">Get Diseases</button>
-          </div>
-          <p style="font-size:11px;color:var(--muted);">We'll list the most common diseases for that plant and how to treat them organically.</p>
-        </div>
-
-        <!-- Ask output -->
-        <div id="askOutput" style="display:none;margin-top:24px;padding-top:20px;border-top:1px solid var(--border);"></div>
-        <div id="askStatus" style="font-size:12px;color:var(--muted);margin-top:8px;"></div>
-      </div>
-
-      <div id="buildPanel">
       <div class="content">
         <section class="section">
           <div class="sectionHeader">
@@ -1544,7 +1489,6 @@
           </div>
         </section>
       </div>
-      </div><!-- /buildPanel -->
     </main>
 
     <div class="footer">© RootPlans &nbsp;·&nbsp; <a href="/guide.html" target="_blank" style="color:var(--primary);font-weight:700;text-decoration:none;">User Guide</a></div>
@@ -1593,19 +1537,21 @@
     .gantt-cell-harvest { background:#c9a96e; }
     .gantt-cell-both { background:linear-gradient(135deg,#4a7a5a 50%,#c9a96e 50%); }
     @media(max-width:600px){ .gantt-table th,.gantt-table td.month-cell { min-width:20px;font-size:10px;} .gantt-table td.plant-name{font-size:11px;padding:6px 6px;} }
-    /* Mode tabs */
-    .mode-tabs { display:flex;border-bottom:2px solid var(--border);background:rgba(74,122,90,0.04); }
-    .mode-tab { flex:1;padding:16px 12px;border:none;background:transparent;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:color 0.2s,box-shadow 0.2s;border-bottom:3px solid transparent;margin-bottom:-2px; }
-    .mode-tab:hover { color:var(--primary); }
-    .mode-tab.active { color:var(--primary);border-bottom-color:var(--primary); }
-    #askOutput { font-size:14px;line-height:1.7;color:var(--text); }
-    #askOutput h2 { font-size:17px;font-weight:700;color:var(--primary);margin:18px 0 6px;font-family:'Inter',sans-serif; }
-    #askOutput h3 { font-size:14px;font-weight:700;color:var(--text);margin:12px 0 4px;font-family:'Inter',sans-serif; }
-    .quick-topic-btn { display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;border:1.5px solid #4a7a5a;background:transparent;color:#274c38;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:background 0.15s; }
-    .quick-topic-btn:hover,.quick-topic-btn.active { background:#4a7a5a;color:#fff; }
     .quick-list-wrap { display:flex;flex-wrap:wrap;gap:5px; }
     .quick-list-item { padding:4px 10px;border-radius:14px;border:1px solid #dce8de;background:#f5f9f6;color:#274c38;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:background 0.15s; }
     .quick-list-item:hover { background:#4a7a5a;color:#fff;border-color:#4a7a5a; }
+    .help-option { display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border-radius:12px;border:1px solid rgba(74,122,90,0.1);background:rgba(255,255,255,0.6);cursor:pointer;text-align:left;transition:background 0.15s,transform 0.1s;font-family:'Inter',sans-serif; }
+    .help-option:hover { background:rgba(255,255,255,0.95);transform:translateX(2px); }
+    .help-option-icon { width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+    .help-option-title { font-size:13px;font-weight:700;color:#274c38;line-height:1.3; }
+    .help-option-sub { font-size:11px;color:#6a7b6b;line-height:1.3;margin-top:1px; }
+    .help-chip { padding:6px 12px;border-radius:14px;border:1px solid #dce8de;background:#f5f9f6;color:#274c38;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;transition:background 0.15s;display:inline-block;margin:3px; }
+    .help-chip:hover { background:#4a7a5a;color:#fff;border-color:#4a7a5a; }
+    #helpFabBtn:hover { transform:translateY(-2px);box-shadow:0 8px 28px rgba(45,106,79,0.55); }
+    @media(max-width:720px){
+      #helpPanel,#helpSubPanel { width:calc(100vw - 24px);right:12px;bottom:auto;top:auto;max-height:75vh; }
+      #helpFab { bottom:90px;right:12px; }
+    }
     .chat-fab { position:fixed;bottom:28px;right:16px;z-index:999;display:flex;align-items:center;gap:8px; }
     .chat-fab .chat-label { background:#fff;color:#274c38;font-size:13px;font-weight:700;padding:8px 14px;border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,0.18);white-space:nowrap;animation:chatLabelPop 0.4s ease;cursor:pointer; }
     #chatToggleBtnInner { width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,#2d6a4f,#52b788);color:#fff;font-size:28px;border:none;cursor:pointer;box-shadow:0 4px 24px rgba(45,106,79,0.55);display:flex;align-items:center;justify-content:center;animation:chatPulse 2.5s ease-in-out infinite;transition:transform 0.2s; }
@@ -3185,38 +3131,86 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
     if (!isPro()) lockFreeUI();
     else unlockProUI();
 
-    // ── Mode Tabs ───────────────────────────────────────────────────────────
-    function switchMode(mode) {
-      const isBuild = mode === 'build';
-      $("buildPanel").style.display = isBuild ? "block" : "none";
-      $("askPanel").style.display = isBuild ? "none" : "block";
-      $("tabBuildBtn").classList.toggle("active", isBuild);
-      $("tabAskBtn").classList.toggle("active", !isBuild);
+    // ── Floating Help Launcher ──────────────────────────────────────────────
+    function toggleHelpPanel() {
+      const panel = $("helpPanel");
+      const sub = $("helpSubPanel");
+      const overlay = $("helpOverlay");
+      const isOpen = panel.style.display !== "none";
+      closeHelpAll();
+      if (!isOpen) {
+        panel.style.display = "block";
+        overlay.style.display = "block";
+      }
     }
+    function showHelpPanel() {
+      $("helpSubPanel").style.display = "none";
+      $("helpPanel").style.display = "block";
+    }
+    function closeHelpAll() {
+      $("helpPanel").style.display = "none";
+      $("helpSubPanel").style.display = "none";
+      $("helpOverlay").style.display = "none";
+    }
+    function openHelpTopic(type) {
+      $("helpPanel").style.display = "none";
+      const sub = $("helpSubPanel");
+      const title = $("helpSubTitle");
+      const content = $("helpSubContent");
+      const inputWrap = $("helpSubInput");
+      sub.style.display = "flex";
 
-    async function sendAskQuestion() {
-      const q = $("askInput").value.trim();
+      if (type === "pest") {
+        title.textContent = "🐛 Pest Help";
+        inputWrap.style.display = "none";
+        content.innerHTML = `<p style="font-size:11px;color:#6a7b6b;margin-bottom:10px;font-family:'Inter',sans-serif;">Tap a pest for organic & chemical solutions:</p><div>
+      ${["Aphids","Slugs & Snails","Whiteflies","Spider Mites","Caterpillars","Japanese Beetles","Fungus Gnats","Powdery Mildew","Root Rot","Squash Vine Borers","Tomato Blight","Cutworms"].map(p =>
+        `<button class="help-chip" onclick="runHelpQuery('Tell me about ${p}: which plants it affects, how to identify it, natural/organic treatments, and chemical options if needed.')">${p}</button>`
+      ).join("")}
+    </div>`;
+      } else if (type === "health") {
+        title.textContent = "🌿 Plant Health";
+        inputWrap.style.display = "none";
+        content.innerHTML = `<p style="font-size:11px;color:#6a7b6b;margin-bottom:10px;font-family:'Inter',sans-serif;">Tap a benefit to find aligned plants:</p><div>
+      ${["Stress & Anxiety","Better Sleep","Immune Support","Digestion","Anti-Inflammatory","Heart Health","Energy & Focus","Skin Health","Hormone Balance","Detox","Pain Relief","Respiratory Health"].map(b =>
+        `<button class="help-chip" onclick="runHelpQuery('Which garden plants support ${b}? How do I grow and use them? Note this is not medical advice.')">${b}</button>`
+      ).join("")}
+    </div>`;
+      } else if (type === "disease") {
+        title.textContent = "🦠 Plant Diseases";
+        inputWrap.style.display = "flex";
+        $("helpAskInput").placeholder = "Which plant? (e.g. Tomato, Rose…)";
+        content.innerHTML = `<p style="font-size:11px;color:#6a7b6b;margin-bottom:10px;font-family:'Inter',sans-serif;">Type a plant below to get common diseases and treatments:</p>`;
+        $("helpAskInput").onkeydown = e => { if(e.key==="Enter") submitHelpDisease(); };
+        document.getElementById("helpSubInput").querySelector("button").onclick = submitHelpDisease;
+      } else if (type === "ask") {
+        title.textContent = "💬 Ask Anything";
+        inputWrap.style.display = "flex";
+        $("helpAskInput").placeholder = "Ask any garden question…";
+        content.innerHTML = `<p style="font-size:11px;color:#6a7b6b;margin-bottom:10px;font-family:'Inter',sans-serif;">Ask anything about gardening, planting, soil, seasons, and more.</p>`;
+        $("helpAskInput").onkeydown = e => { if(e.key==="Enter") submitHelpAsk(); };
+        document.getElementById("helpSubInput").querySelector("button").onclick = submitHelpAsk;
+      }
+    }
+    function submitHelpAsk() {
+      const q = $("helpAskInput").value.trim();
       if (!q) return;
-      await runAskQuery(q);
-      $("askInput").value = "";
+      $("helpAskInput").value = "";
+      runHelpQuery(q);
     }
-
-    function sendAskDirect(msg) { runAskQuery(msg); }
-
-    function sendDiseaseQuestion() {
-      const plant = $("diseaseInput").value.trim();
+    function submitHelpDisease() {
+      const plant = $("helpAskInput").value.trim();
       if (!plant) return;
-      runAskQuery(`What are the most common diseases that affect ${plant}? For each disease: what causes it, what the symptoms look like, and the best organic treatment and prevention methods.`);
-      $("diseaseInput").value = "";
+      $("helpAskInput").value = "";
+      runHelpQuery(`What are the most common diseases affecting ${plant}? For each: cause, symptoms, organic treatment, and chemical options.`);
     }
-
-    async function runAskQuery(question) {
-      const out = $("askOutput");
-      const status = $("askStatus");
-      out.style.display = "block";
-      out.innerHTML = "";
-      status.textContent = "Thinking…";
+    async function runHelpQuery(question) {
+      const content = $("helpSubContent");
       const token = sessionStorage.getItem("rp_token") || "";
+      const answerDiv = document.createElement("div");
+      answerDiv.style.cssText = "margin-top:12px;font-size:12px;line-height:1.7;color:#274c38;border-top:1px solid rgba(74,122,90,0.12);padding-top:10px;";
+      content.appendChild(answerDiv);
+      content.scrollTop = content.scrollHeight;
       try {
         const res = await fetch("/api/ask", {
           method: "POST",
@@ -3235,17 +3229,11 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
             if (!line.startsWith("data: ")) continue;
             const payload = line.slice(6).trim();
             if (payload === "[DONE]") continue;
-            try {
-              const parsed = JSON.parse(payload);
-              if (parsed.text) { fullText += parsed.text; out.innerHTML = marked.parse(fullText); }
-            } catch(e) {}
+            try { const p = JSON.parse(payload); if (p.text) { fullText += p.text; answerDiv.innerHTML = marked.parse(fullText); content.scrollTop = content.scrollHeight; } } catch(e) {}
           }
           if (done) break;
         }
-        status.textContent = "";
-      } catch(e) {
-        status.textContent = "Something went wrong. Try again.";
-      }
+      } catch(e) { answerDiv.textContent = "Something went wrong. Try again."; }
     }
 
     function toggleQuickList(id) {
@@ -3356,5 +3344,67 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
     chatSend.addEventListener("click", sendChat);
     chatInput.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); } });
   </script>
+
+<!-- Floating Garden Help Launcher -->
+<div id="helpFab" style="position:fixed;bottom:104px;right:20px;z-index:997;">
+  <button id="helpFabBtn" onclick="toggleHelpPanel()" style="display:flex;align-items:center;gap:8px;padding:11px 18px;background:linear-gradient(135deg,#2d6a4f,#52b788);color:#fff;border:none;border-radius:999px;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;box-shadow:0 4px 20px rgba(45,106,79,0.45);letter-spacing:0.02em;white-space:nowrap;transition:transform 0.2s,box-shadow 0.2s;">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    Garden Help
+  </button>
+</div>
+
+<!-- Help Panel -->
+<div id="helpPanel" style="display:none;position:fixed;bottom:160px;right:20px;z-index:996;width:300px;background:rgba(252,249,240,0.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:20px;border:1px solid rgba(255,255,255,0.45);box-shadow:0 16px 56px rgba(0,0,0,0.18),0 0 0 1px rgba(255,255,255,0.2) inset;padding:20px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+    <span style="font-size:14px;font-weight:700;color:#274c38;font-family:'Inter',sans-serif;">How can we help?</span>
+    <button onclick="toggleHelpPanel()" style="background:none;border:none;cursor:pointer;font-size:18px;color:#6a7b6b;line-height:1;padding:2px 4px;border-radius:6px;">✕</button>
+  </div>
+  <p style="font-size:11px;color:#6a7b6b;margin:0 0 14px;font-family:'Inter',sans-serif;">Get quick help without leaving your plan.</p>
+  <div style="display:flex;flex-direction:column;gap:8px;">
+    <button class="help-option" onclick="openHelpTopic('pest')">
+      <div class="help-option-icon" style="background:#edf4ef;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4a7a5a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+      </div>
+      <div><div class="help-option-title">Pest Help</div><div class="help-option-sub">Identify & treat common garden pests</div></div>
+    </button>
+    <button class="help-option" onclick="openHelpTopic('health')">
+      <div class="help-option-icon" style="background:#fdf0e8;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/></svg>
+      </div>
+      <div><div class="help-option-title">Plant Health</div><div class="help-option-sub">Benefits, uses & wellness properties</div></div>
+    </button>
+    <button class="help-option" onclick="openHelpTopic('disease')">
+      <div class="help-option-icon" style="background:#f0f4ff;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7fd7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 3"/><circle cx="18" cy="5" r="3"/></svg>
+      </div>
+      <div><div class="help-option-title">Plant Diseases</div><div class="help-option-sub">Diagnose & treat common diseases</div></div>
+    </button>
+    <button class="help-option" onclick="openHelpTopic('ask')">
+      <div class="help-option-icon" style="background:#f5f0fc;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9b6fd7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div><div class="help-option-title">Ask Anything</div><div class="help-option-sub">Any garden question answered by AI</div></div>
+    </button>
+  </div>
+</div>
+
+<!-- Help Sub-panels -->
+<div id="helpSubPanel" style="display:none;position:fixed;bottom:160px;right:20px;z-index:996;width:300px;max-height:70vh;background:rgba(252,249,240,0.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:20px;border:1px solid rgba(255,255,255,0.45);box-shadow:0 16px 56px rgba(0,0,0,0.18);display:none;flex-direction:column;overflow:hidden;">
+  <div style="padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(74,122,90,0.12);">
+    <button onclick="showHelpPanel()" style="background:none;border:none;cursor:pointer;font-size:12px;color:#4a7a5a;font-weight:600;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:4px;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Back
+    </button>
+    <span id="helpSubTitle" style="font-size:13px;font-weight:700;color:#274c38;font-family:'Inter',sans-serif;"></span>
+    <button onclick="closeHelpAll()" style="background:none;border:none;cursor:pointer;font-size:16px;color:#6a7b6b;">✕</button>
+  </div>
+  <div id="helpSubContent" style="overflow-y:auto;padding:12px 14px 16px;flex:1;"></div>
+  <div id="helpSubInput" style="display:none;padding:10px 14px 14px;border-top:1px solid rgba(74,122,90,0.1);">
+    <div style="display:flex;gap:6px;">
+      <input id="helpAskInput" class="input" placeholder="Type your question…" style="flex:1;font-size:13px;padding:8px 12px;" />
+      <button class="btn" type="button" onclick="submitHelpAsk()" style="padding:8px 14px;font-size:13px;">Ask</button>
+    </div>
+  </div>
+</div>
+<div id="helpOverlay" onclick="closeHelpAll()" style="display:none;position:fixed;inset:0;z-index:995;"></div>
 </body>
 </html>
