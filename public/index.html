@@ -3213,10 +3213,10 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
       status.textContent = "Thinking…";
       const token = sessionStorage.getItem("rp_token") || "";
       try {
-        const res = await fetch(AI_PROXY_URL, {
+        const res = await fetch("/api/ask", {
           method: "POST",
           headers: { "Content-Type": "application/json", "X-Session-Token": token },
-          body: JSON.stringify({ messages: [{ role: "user", content: question }], stream: true, system: "You are RootPlans, an expert garden advisor. Answer concisely and practically. Focus on organic, beginner-friendly solutions. Use markdown formatting." })
+          body: JSON.stringify({ messages: [{ role: "user", content: question }] })
         });
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
@@ -3317,13 +3317,13 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
 
       const zone = detected.zone || "7";
       const location = detected.location || "";
-      const prompt = `The user is asking a garden question. Zone: ${zone}${location ? ", " + location : ""}.\n\nQuestion: ${question}\n\nAnswer helpfully and concisely in plain text (no markdown). Keep it under 120 words.`;
+      const prompt = `Zone: ${zone}${location ? ", " + location : ""}. ${question}`;
 
       try {
-        const resp = await fetch(AI_PROXY_URL, {
+        const resp = await fetch("/api/ask", {
           method: "POST",
           headers: authHeaders(),
-          body: JSON.stringify({ prompt, zone, location })
+          body: JSON.stringify({ messages: [{ role: "user", content: prompt }] })
         });
         const reader = resp.body.getReader();
         const decoder = new TextDecoder();
