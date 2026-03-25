@@ -3864,6 +3864,7 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
           headers: { 'Content-Type': 'application/json', 'X-Session-Token': token },
           body: JSON.stringify({ messages: [{ role: 'user', content: question }] })
         });
+        if (!res.ok) { answerDiv.innerHTML = `<em style="color:#c0392b;">Error ${res.status} — try refreshing the page and logging in again.</em>`; return; }
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
         let buffer = '';

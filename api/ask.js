@@ -21,7 +21,7 @@ export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
 
   const token = req.headers["x-session-token"] || "";
-  if (!validTokens.has(token)) return res.status(401).json({ error: "Unauthorized" });
+  if (!validTokens().has(token)) return res.status(401).json({ error: "Unauthorized" });
 
   const { messages } = req.body || {};
   if (!messages || !Array.isArray(messages)) return res.status(400).json({ error: "Missing messages" });
