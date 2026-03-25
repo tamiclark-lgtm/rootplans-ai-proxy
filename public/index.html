@@ -1531,6 +1531,7 @@
           <div id="zoneBadge" style="display:none;margin-top:12px;padding:10px 14px;background:#edf4ef;border:1px solid #c6dcc9;border-radius:10px;font-size:13px;color:#274c38;font-weight:600;"></div>
           <div id="aiOutput" class="planOutput" style="display:none;"></div>
           <div id="ganttWrap" style="display:none;margin-top:32px;"></div>
+          <div id="gridVizWrap" style="display:none;margin-top:32px;"></div>
           <div id="gardenMap" class="garden-map-wrap" style="display:none;"></div>
           <div id="planEnd" style="display:none;margin-top:28px;padding-top:20px;border-top:2px solid var(--border);text-align:center;">
             <button id="pdfBtnBottom" class="btn" type="button" style="margin-bottom:16px;font-size:15px;padding:14px 32px;">⬇️ Download My Garden Plan (PDF)</button>
@@ -1557,6 +1558,20 @@
       0% { opacity: 0; transform: translateX(10px); }
       100% { opacity: 1; transform: translateX(0); }
     }
+    /* ── Grid Visualizer ───────────────────── */
+    .grid-viz-title { font-size:17px;font-weight:700;color:#274c38;margin-bottom:4px;font-family:'Inter',sans-serif; }
+    .grid-viz-sub { font-size:12px;color:#6a7b6b;margin-bottom:16px; }
+    .grid-viz-legend { display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px; }
+    .grid-viz-legend-item { display:flex;align-items:center;gap:5px;font-size:11px;color:#555; }
+    .grid-viz-legend-swatch { width:14px;height:14px;border-radius:3px;flex-shrink:0; }
+    .raised-bed-grid { display:grid;gap:10px;margin-bottom:8px; }
+    .raised-bed-square { border-radius:12px;border:2px solid rgba(74,122,90,0.25);background:#f0f6f1;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;text-align:center;position:relative;min-height:80px; }
+    .raised-bed-square .sq-num { position:absolute;top:5px;left:8px;font-size:9px;font-weight:700;color:#9ab;letter-spacing:0.05em; }
+    .raised-bed-square .sq-plant { font-size:11px;font-weight:700;color:#274c38;line-height:1.3;margin-top:4px; }
+    .raised-bed-square .sq-depth { font-size:10px;color:#6a7b6b;margin-top:2px; }
+    .raised-bed-square .sq-icon { font-size:22px;line-height:1; }
+    .raised-bed-square.empty { background:#f8f8f8;border-style:dashed;opacity:0.5; }
+    @media(max-width:600px){ .raised-bed-square { min-height:64px; } .raised-bed-square .sq-plant { font-size:10px; } }
     /* ── Gantt Calendar ───────────────────── */
     .gantt-wrap { font-family:'Inter',sans-serif; }
     .gantt-title { font-size:17px;font-weight:700;color:#274c38;margin-bottom:4px; }
@@ -1922,6 +1937,59 @@
         html += `</tr>`;
       });
       html += `</tbody></table></div></div>`;
+      wrap.innerHTML = html;
+      wrap.style.display = "block";
+    }
+
+    function renderGridViz(plants, calData) {
+      const wrap = $("gridVizWrap");
+      const gridCount = parseInt($("gridCountInput")?.value || "0");
+      if (!plants || !plants.length) { wrap.style.display = "none"; return; }
+
+      const colors = ["#4a7a5a","#c9a96e","#6b8f71","#8c6e58","#5b8e6b","#a0c878","#7a6a50","#3d6b52","#b8860b","#556b2f","#8fbc8f","#cd853f"];
+      const icons = ["🌿","🍅","🌱","🥬","🌸","🫛","🌾","🥕","🌻","🍃","🫐","🌶️"];
+
+      // Build square assignments — distribute plants across squares
+      const calMap = {};
+      if (calData) calData.forEach(c => { calMap[c.plant?.toLowerCase()] = c; });
+
+      // Extract depth info from plant descriptions if available
+      const squares = [];
+      let plantIdx = 0;
+      const totalSquares = Math.max(gridCount || plants.length, plants.length);
+
+      for (let i = 0; i < totalSquares; i++) {
+        if (plantIdx < plants.length) {
+          const p = plants[plantIdx];
+          const name = p.common || p.name || "";
+          squares.push({ plant: name, color: colors[plantIdx % colors.length], icon: icons[plantIdx % icons.length], depth: p.depth || null });
+          plantIdx++;
+        } else {
+          squares.push(null); // empty square
+        }
+      }
+
+      const cols = Math.min(Math.ceil(Math.sqrt(totalSquares)), 5);
+      let html = `<div class="grid-viz-title">🟩 Raised Bed Layout</div>
+        <div class="grid-viz-sub">${totalSquares} × 4ft squares — each square = 16 sq ft. Plants assigned one per square for easy spacing.</div>
+        <div class="grid-viz-legend">`;
+      plants.forEach((p, i) => {
+        html += `<div class="grid-viz-legend-item"><div class="grid-viz-legend-swatch" style="background:${colors[i % colors.length]}"></div>${escapeHtml(p.common || p.name || "")}</div>`;
+      });
+      html += `</div><div class="raised-bed-grid" style="grid-template-columns:repeat(${cols},1fr);">`;
+      squares.forEach((sq, i) => {
+        if (!sq) {
+          html += `<div class="raised-bed-square empty"><span class="sq-num">#${i+1}</span><span style="font-size:20px;opacity:0.3">＋</span><div class="sq-plant" style="color:#aaa;font-weight:400">Empty</div></div>`;
+        } else {
+          html += `<div class="raised-bed-square" style="border-color:${sq.color};background:${sq.color}18;">
+            <span class="sq-num">#${i+1}</span>
+            <div class="sq-icon">${sq.icon}</div>
+            <div class="sq-plant" style="color:${sq.color}">${escapeHtml(sq.plant)}</div>
+            ${sq.depth ? `<div class="sq-depth">Plant ${sq.depth}</div>` : ""}
+          </div>`;
+        }
+      });
+      html += `</div>`;
       wrap.innerHTML = html;
       wrap.style.display = "block";
     }
@@ -2538,6 +2606,8 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
       $("gardenMap").innerHTML = "";
       $("ganttWrap").style.display = "none";
       $("ganttWrap").innerHTML = "";
+      $("gridVizWrap").style.display = "none";
+      $("gridVizWrap").innerHTML = "";
       $("planEnd").style.display = "none";
       $("copyBtn").style.display = "none";
       $("pdfBtn").style.display = "none";
@@ -2785,6 +2855,8 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
       $("gardenMap").innerHTML = "";
       $("ganttWrap").style.display = "none";
       $("ganttWrap").innerHTML = "";
+      $("gridVizWrap").style.display = "none";
+      $("gridVizWrap").innerHTML = "";
       $("planEnd").style.display = "none";
       $("copyBtn").style.display = "none";
 
@@ -2922,14 +2994,16 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
           });
         }
 
-        // ── Parse & render Gantt calendar ───────────────────────────────
+        // ── Parse & render Gantt calendar + Grid visualizer ─────────────
+        let calData = [];
         try {
           const calMatch = fullText.match(/CALENDAR_JSON_START\s*([\s\S]*?)\s*CALENDAR_JSON_END/);
           if (calMatch) {
-            const calData = JSON.parse(calMatch[1]);
+            calData = JSON.parse(calMatch[1]);
             renderGantt(calData);
           }
         } catch(e) { /* skip if parse fails */ }
+        renderGridViz(lastPlants, calData);
 
         $("planEnd").style.display = "block";
 
