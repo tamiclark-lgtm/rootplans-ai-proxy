@@ -1221,6 +1221,59 @@
     </div>
   </div>
 
+  <!-- Left Sidebar -->
+  <div id="leftSidebar">
+    <button class="sidebar-tab" id="pestTabBtn" title="Pest Help" onclick="openSidePanel('pest')">🐛</button>
+    <button class="sidebar-tab" id="healthTabBtn" title="Health Benefits" onclick="openSidePanel('health')">🌿</button>
+  </div>
+
+  <!-- Pest Panel -->
+  <div id="pestPanel" class="side-panel">
+    <div class="side-panel-header">
+      <span>🐛 Pest Help</span>
+      <button onclick="closeSidePanel('pest')" class="side-panel-close">✕</button>
+    </div>
+    <p class="side-panel-sub">Click a pest to get AI advice on dealing with it in your garden.</p>
+    <div class="side-panel-list">
+      <button class="side-panel-item" onclick="askAboutPest('Aphids')">🟢 Aphids</button>
+      <button class="side-panel-item" onclick="askAboutPest('Slugs & Snails')">🐌 Slugs & Snails</button>
+      <button class="side-panel-item" onclick="askAboutPest('Whiteflies')">🤍 Whiteflies</button>
+      <button class="side-panel-item" onclick="askAboutPest('Spider Mites')">🕷️ Spider Mites</button>
+      <button class="side-panel-item" onclick="askAboutPest('Caterpillars & Hornworms')">🐛 Caterpillars & Hornworms</button>
+      <button class="side-panel-item" onclick="askAboutPest('Japanese Beetles')">🪲 Japanese Beetles</button>
+      <button class="side-panel-item" onclick="askAboutPest('Fungus Gnats')">🦟 Fungus Gnats</button>
+      <button class="side-panel-item" onclick="askAboutPest('Root Rot')">🍂 Root Rot</button>
+      <button class="side-panel-item" onclick="askAboutPest('Powdery Mildew')">🌫️ Powdery Mildew</button>
+      <button class="side-panel-item" onclick="askAboutPest('Squash Vine Borers')">🎃 Squash Vine Borers</button>
+      <button class="side-panel-item" onclick="askAboutPest('Cutworms')">🪱 Cutworms</button>
+      <button class="side-panel-item" onclick="askAboutPest('Tomato Blight')">🍅 Tomato Blight</button>
+    </div>
+  </div>
+
+  <!-- Health Benefits Panel -->
+  <div id="healthPanel" class="side-panel">
+    <div class="side-panel-header">
+      <span>🌿 Health Benefits</span>
+      <button onclick="closeSidePanel('health')" class="side-panel-close">✕</button>
+    </div>
+    <p class="side-panel-sub">Click a benefit to discover which plants align with it and how to grow them.</p>
+    <div class="side-panel-list">
+      <button class="side-panel-item" onclick="askAboutHealth('stress & anxiety relief')">😌 Stress & Anxiety Relief</button>
+      <button class="side-panel-item" onclick="askAboutHealth('better sleep')">😴 Better Sleep</button>
+      <button class="side-panel-item" onclick="askAboutHealth('immune support')">🛡️ Immune Support</button>
+      <button class="side-panel-item" onclick="askAboutHealth('digestion & gut health')">🫁 Digestion & Gut Health</button>
+      <button class="side-panel-item" onclick="askAboutHealth('anti-inflammatory')">🔥 Anti-Inflammatory</button>
+      <button class="side-panel-item" onclick="askAboutHealth('heart health')">❤️ Heart Health</button>
+      <button class="side-panel-item" onclick="askAboutHealth('energy & focus')">⚡ Energy & Focus</button>
+      <button class="side-panel-item" onclick="askAboutHealth('skin health')">✨ Skin Health</button>
+      <button class="side-panel-item" onclick="askAboutHealth('hormone balance')">⚖️ Hormone Balance</button>
+      <button class="side-panel-item" onclick="askAboutHealth('detox & cleansing')">🌊 Detox & Cleansing</button>
+      <button class="side-panel-item" onclick="askAboutHealth('pain relief')">💊 Pain Relief</button>
+      <button class="side-panel-item" onclick="askAboutHealth('respiratory health')">🫧 Respiratory Health</button>
+    </div>
+  </div>
+  <div id="sidePanelOverlay" onclick="closeAllSidePanels()"></div>
+
   <div class="shell">
 
     <section class="hero">
@@ -1405,6 +1458,23 @@
             <div id="exclusionsCustomRow" class="pillRow" style="flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
           </div>
 
+          <!-- Pest selector -->
+          <div style="margin-bottom:14px;padding:14px 16px;background:rgba(139,90,43,0.07);border:1px solid rgba(139,90,43,0.22);border-radius:14px;">
+            <p style="font-size:12px;font-weight:600;color:#6b3a1f;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em;">🐛 Pests I'm Already Dealing With <span style="font-weight:400;opacity:0.7;">(optional)</span></p>
+            <div id="pestRow" class="pillRow" style="flex-wrap:wrap;gap:6px;margin-bottom:8px;">
+              <button class="pill pest-pill" data-pest="Aphids" type="button">Aphids</button>
+              <button class="pill pest-pill" data-pest="Slugs" type="button">Slugs</button>
+              <button class="pill pest-pill" data-pest="Whiteflies" type="button">Whiteflies</button>
+              <button class="pill pest-pill" data-pest="Spider mites" type="button">Spider mites</button>
+              <button class="pill pest-pill" data-pest="Caterpillars" type="button">Caterpillars</button>
+              <button class="pill pest-pill" data-pest="Japanese beetles" type="button">Japanese beetles</button>
+              <button class="pill pest-pill" data-pest="Fungus gnats" type="button">Fungus gnats</button>
+              <button class="pill pest-pill" data-pest="Root rot" type="button">Root rot</button>
+              <button class="pill pest-pill" data-pest="Powdery mildew" type="button">Powdery mildew</button>
+              <button class="pill pest-pill" data-pest="Squash vine borers" type="button">Squash vine borers</button>
+            </div>
+          </div>
+
           <div class="checkboxStack">
             <label class="checkboxCard">
               <input type="checkbox" id="nativeOnlyCheckbox" />
@@ -1482,6 +1552,27 @@
     @keyframes chatLabelPop {
       0% { opacity: 0; transform: translateX(10px); }
       100% { opacity: 1; transform: translateX(0); }
+    }
+    /* ── Left Sidebar ───────────────────── */
+    #leftSidebar { position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:900;display:flex;flex-direction:column;gap:8px;padding:10px 6px;background:rgba(252,249,240,0.92);backdrop-filter:blur(12px);border-radius:0 16px 16px 0;border:1px solid rgba(255,255,255,0.4);border-left:none;box-shadow:4px 0 24px rgba(0,0,0,0.12); }
+    .sidebar-tab { width:46px;height:46px;border-radius:12px;border:none;background:transparent;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s,transform 0.15s;color:#274c38; }
+    .sidebar-tab:hover { background:rgba(74,122,90,0.12);transform:scale(1.08); }
+    .sidebar-tab.active { background:rgba(74,122,90,0.18); }
+    .side-panel { position:fixed;left:64px;top:50%;transform:translateY(-50%);z-index:901;width:280px;max-height:75vh;background:rgba(252,249,240,0.97);backdrop-filter:blur(20px);border-radius:16px;border:1px solid rgba(255,255,255,0.4);box-shadow:8px 0 40px rgba(0,0,0,0.18);display:none;flex-direction:column;overflow:hidden; }
+    .side-panel.open { display:flex; }
+    .side-panel-header { display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;font-weight:700;font-size:14px;color:#274c38;border-bottom:1px solid rgba(74,122,90,0.15); }
+    .side-panel-close { background:none;border:none;cursor:pointer;font-size:16px;color:#6a7b6b;padding:4px;border-radius:6px;line-height:1; }
+    .side-panel-close:hover { background:rgba(0,0,0,0.06); }
+    .side-panel-sub { padding:8px 16px 4px;font-size:11px;color:#6a7b6b;line-height:1.4;margin:0; }
+    .side-panel-list { overflow-y:auto;padding:8px 10px 12px;display:flex;flex-direction:column;gap:4px; }
+    .side-panel-item { text-align:left;padding:9px 12px;border-radius:10px;border:1px solid rgba(74,122,90,0.12);background:rgba(74,122,90,0.04);cursor:pointer;font-size:13px;color:#274c38;font-family:'Inter',sans-serif;transition:background 0.15s,transform 0.1s; }
+    .side-panel-item:hover { background:rgba(74,122,90,0.12);transform:translateX(2px); }
+    #sidePanelOverlay { display:none;position:fixed;inset:0;z-index:899; }
+    #sidePanelOverlay.open { display:block; }
+    @media (max-width:720px) {
+      #leftSidebar { top:auto;bottom:100px;transform:none;flex-direction:row;border-radius:0 0 0 0;border-radius:12px 12px 0 0;left:50%;transform:translateX(-50%);padding:6px 10px;gap:6px; }
+      .sidebar-tab { width:42px;height:42px; }
+      .side-panel { left:50%;top:auto;bottom:160px;transform:translateX(-50%);width:calc(100vw - 32px);max-width:340px;max-height:60vh; }
     }
     .chat-fab { position:fixed;bottom:28px;right:16px;z-index:999;display:flex;align-items:center;gap:8px; }
     .chat-fab .chat-label { background:#fff;color:#274c38;font-size:13px;font-weight:700;padding:8px 14px;border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,0.18);white-space:nowrap;animation:chatLabelPop 0.4s ease;cursor:pointer; }
@@ -1839,6 +1930,7 @@
     let selectedExclusions = [];
     let selectedRarity = "mixed";
     let selectedPlantCount = 7;
+    let selectedPests = [];
     let lastPlanText = "";
     let lastPlants = [];
 
@@ -2172,6 +2264,7 @@ ${selectedPlantType !== "decorative" && selectedRarity === "common" ? "- Priorit
 - TOTAL PLANTS: Recommend exactly ${selectedPlantCount} plants in section 2. No more, no less.
 ${(selectedStaples.length || customStaples.length) ? `- REQUIRED — these must appear in the plan no matter what: ${[...selectedStaples, ...customStaples].join(", ")}. Note any zone-specific care adjustments if needed.` : ""}
 ${(selectedExclusions.length || customExclusions.length) ? `- EXCLUDED — do NOT include these under any circumstances: ${[...selectedExclusions, ...customExclusions].join(", ")}.` : ""}
+${selectedPests.length ? `- ACTIVE PESTS: The gardener is already dealing with: ${selectedPests.join(", ")}. In section 8, prioritize fixes for these specific pests and recommend companion plants or varieties that naturally deter them.` : ""}
 
 SUNLIGHT: ${selectedSunlight ? `Only recommend plants that thrive in "${selectedSunlight}" conditions.` : "Include a mix of sun tolerances."}
 
@@ -2217,10 +2310,17 @@ Give a beginner a concrete shopping checklist organized into three groups:
 **🛠️ Basic Tools & Supplies** — list only the essential tools a beginner truly needs (e.g. trowel, watering can or hose attachment, gloves, plant labels, mulch). Keep it minimal — 5–7 items max.
 For each item, add a one-line tip on what to look for or avoid when buying.
 
-## 8. Safety Note
+## 8. Common Pests & How to Stop Them
+For the plants in this plan, list the 4–5 most likely pests or diseases the gardener will encounter. For each one:
+- **Pest name** — what it looks like and which plants it targets
+- **Early warning signs** — how to spot it before it spreads
+- **Organic fix** — cheapest, safest solution (neem oil, hand-picking, companion planting, etc.)
+- **Prevention tip** — one thing to do now to avoid it entirely
+
+## 9. Safety Note
 [2–3 sentences: note any plants to handle carefully, remind that holistic notes are not medical advice.]
 
-Complete ALL 8 sections. Do not stop early.
+Complete ALL 9 sections. Do not stop early.
       `.trim();
     }
 
@@ -2380,6 +2480,19 @@ Complete ALL 8 sections. Do not stop early.
         selectedPlantCount = parseInt(btn.dataset.count);
         document.querySelectorAll("#plantCountRow .pill").forEach(b => b.setAttribute("aria-pressed", "false"));
         btn.setAttribute("aria-pressed", "true");
+      });
+    });
+
+    document.querySelectorAll("#pestRow .pest-pill").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const pest = btn.dataset.pest;
+        if (selectedPests.includes(pest)) {
+          selectedPests = selectedPests.filter(p => p !== pest);
+          btn.setAttribute("aria-pressed", "false");
+        } else {
+          selectedPests.push(pest);
+          btn.setAttribute("aria-pressed", "true");
+        }
       });
     });
 
@@ -2853,6 +2966,55 @@ Complete ALL 8 sections. Do not stop early.
     updatePlanCounter();
     if (!isPro()) lockFreeUI();
     else unlockProUI();
+
+    // ── Left Sidebar Panels ────────────────────────────────────────────────
+    function openSidePanel(type) {
+      const pestPanel = $("pestPanel");
+      const healthPanel = $("healthPanel");
+      const overlay = $("sidePanelOverlay");
+      const isOpen = (type === 'pest' ? pestPanel : healthPanel).classList.contains('open');
+      pestPanel.classList.remove('open');
+      healthPanel.classList.remove('open');
+      document.querySelectorAll('.sidebar-tab').forEach(b => b.classList.remove('active'));
+      if (!isOpen) {
+        (type === 'pest' ? pestPanel : healthPanel).classList.add('open');
+        $( type === 'pest' ? 'pestTabBtn' : 'healthTabBtn').classList.add('active');
+        overlay.classList.add('open');
+      } else {
+        overlay.classList.remove('open');
+      }
+    }
+    function closeSidePanel(type) {
+      $( type === 'pest' ? 'pestPanel' : 'healthPanel').classList.remove('open');
+      $( type === 'pest' ? 'pestTabBtn' : 'healthTabBtn').classList.remove('active');
+      if (!$("pestPanel").classList.contains('open') && !$("healthPanel").classList.contains('open')) {
+        $("sidePanelOverlay").classList.remove('open');
+      }
+    }
+    function closeAllSidePanels() {
+      $("pestPanel").classList.remove('open');
+      $("healthPanel").classList.remove('open');
+      $("sidePanelOverlay").classList.remove('open');
+      document.querySelectorAll('.sidebar-tab').forEach(b => b.classList.remove('active'));
+    }
+    function askAboutPest(pest) {
+      closeAllSidePanels();
+      const msg = `I'm dealing with ${pest} in my garden. What's the best organic way to get rid of them and prevent them from coming back?`;
+      openChatWithMessage(msg);
+    }
+    function askAboutHealth(benefit) {
+      closeAllSidePanels();
+      const msg = `I'm interested in growing plants for ${benefit}. Which plants in my garden would support this, how do I use them, and what should I know?`;
+      openChatWithMessage(msg);
+    }
+    function openChatWithMessage(msg) {
+      if (!chatOpen) toggleChat();
+      setTimeout(() => {
+        chatInput.value = msg;
+        chatInput.focus();
+        sendChat();
+      }, 100);
+    }
 
     // ── Garden Chat ────────────────────────────────────────────────────────
     const chatBtn = $("chatToggleBtnInner");
