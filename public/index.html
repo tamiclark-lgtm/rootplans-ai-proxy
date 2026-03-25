@@ -1542,7 +1542,7 @@
       </div>
     </main>
 
-    <div class="footer">© RootPlans &nbsp;·&nbsp; <a href="/guide.html" target="_blank" style="color:var(--primary);font-weight:700;text-decoration:none;">User Guide</a></div>
+    <div class="footer">© RootPlans &nbsp;·&nbsp; <a href="/guide.html" target="_blank" style="color:var(--primary);font-weight:700;text-decoration:none;">User Guide</a> &nbsp;·&nbsp; <a href="#" onclick="openContactModal();return false;" style="color:var(--primary);font-weight:700;text-decoration:none;">Contact Us</a></div>
   </div>
 
   <!-- Chat widget -->
@@ -4162,5 +4162,95 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
 </div>
 
 <div id="utilOverlay" onclick="utilOverlayClick()"></div>
+
+<!-- Contact Modal -->
+<div id="contactModal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(8,22,12,0.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;">
+  <div style="background:#fdf9f0;border-radius:24px;width:100%;max-width:480px;box-shadow:0 32px 80px rgba(0,0,0,0.32);overflow:hidden;">
+    <div style="background:linear-gradient(135deg,#2d6a4f,#52b788);padding:24px 28px 20px;display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:#fff;">Contact Us</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.8);margin-top:2px;">We usually respond within 24 hours</div>
+      </div>
+      <button onclick="closeContactModal()" style="background:rgba(255,255,255,0.18);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:18px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✕</button>
+    </div>
+    <form id="contactForm" onsubmit="submitContact(event)" style="padding:28px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <div>
+          <label style="font-size:12px;font-weight:700;color:#4a7a5a;letter-spacing:0.05em;display:block;margin-bottom:6px;">YOUR NAME</label>
+          <input name="name" required class="input" placeholder="Jane Smith" style="width:100%;box-sizing:border-box;" />
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:700;color:#4a7a5a;letter-spacing:0.05em;display:block;margin-bottom:6px;">YOUR EMAIL</label>
+          <input name="email" type="email" required class="input" placeholder="jane@example.com" style="width:100%;box-sizing:border-box;" />
+        </div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="font-size:12px;font-weight:700;color:#4a7a5a;letter-spacing:0.05em;display:block;margin-bottom:6px;">TOPIC</label>
+        <select name="topic" class="input" style="width:100%;box-sizing:border-box;">
+          <option>General Question</option>
+          <option>Technical Issue</option>
+          <option>Feedback / Suggestion</option>
+          <option>Billing / Subscription</option>
+          <option>Partnership / Press</option>
+        </select>
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="font-size:12px;font-weight:700;color:#4a7a5a;letter-spacing:0.05em;display:block;margin-bottom:6px;">MESSAGE</label>
+        <textarea name="message" required class="input" rows="5" placeholder="How can we help you?" style="width:100%;box-sizing:border-box;resize:vertical;min-height:110px;"></textarea>
+      </div>
+      <div id="contactStatus" style="display:none;margin-bottom:14px;padding:12px 16px;border-radius:12px;font-size:13px;font-weight:600;"></div>
+      <button type="submit" id="contactSubmitBtn" class="btn" style="width:100%;font-size:15px;padding:14px;">Send Message</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  function openContactModal() {
+    const m = document.getElementById('contactModal');
+    m.style.display = 'flex';
+    document.getElementById('contactStatus').style.display = 'none';
+    document.getElementById('contactForm').reset();
+  }
+  function closeContactModal() {
+    document.getElementById('contactModal').style.display = 'none';
+  }
+  document.getElementById('contactModal').addEventListener('click', function(e) {
+    if (e.target === this) closeContactModal();
+  });
+  async function submitContact(e) {
+    e.preventDefault();
+    const btn = document.getElementById('contactSubmitBtn');
+    const status = document.getElementById('contactStatus');
+    const form = document.getElementById('contactForm');
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    const data = new FormData(form);
+    try {
+      const res = await fetch('https://formspree.io/f/xpwzgqkd', {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        status.style.display = 'block';
+        status.style.background = '#d1fae5';
+        status.style.color = '#065f46';
+        status.textContent = '✓ Message sent! We\'ll get back to you within 24 hours.';
+        form.reset();
+        setTimeout(closeContactModal, 3000);
+      } else {
+        throw new Error('failed');
+      }
+    } catch {
+      status.style.display = 'block';
+      status.style.background = '#fee2e2';
+      status.style.color = '#991b1b';
+      status.textContent = 'Something went wrong. Please email us directly at tamiclark@gmail.com';
+    }
+    btn.disabled = false;
+    btn.textContent = 'Send Message';
+  }
+</script>
+
 </body>
 </html>
