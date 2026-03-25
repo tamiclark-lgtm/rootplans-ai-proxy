@@ -1684,31 +1684,41 @@
 }
 
 /* Mobile FAB */
-#utilMobileFab {
-  position: fixed;
-  bottom: 110px;
-  right: 16px;
-  z-index: 900;
+#utilMobileFab { display: none; }
+
+/* Mobile bottom utility bar */
+#utilBottomBar {
   display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 900;
+  background: rgba(18,38,24,0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
 }
-.util-fab-btn {
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-  border: none;
-  background: linear-gradient(135deg, #2d6a4f, #52b788);
-  color: #fff;
-  box-shadow: 0 6px 24px rgba(45,106,79,0.5);
-  cursor: pointer;
+.util-bar-btn {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 2px;
-  transition: transform 0.2s, box-shadow 0.2s;
+  gap: 3px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 4px;
+  border-radius: 12px;
+  transition: background 0.15s;
+  color: rgba(255,255,255,0.65);
+  font-family: 'Inter', sans-serif;
 }
-.util-fab-btn:active { transform: scale(0.95); }
-.util-fab-label { font-size: 8px; font-weight: 800; letter-spacing: 0.05em; font-family: 'Inter', sans-serif; }
+.util-bar-btn:active, .util-bar-btn.active { background: rgba(82,183,136,0.22); color: #52b788; }
+.util-bar-icon { font-size: 22px; line-height: 1; }
+.util-bar-label { font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
 
 /* Mobile bottom sheet — tool menu */
 #utilMobileMenu {
@@ -1874,7 +1884,9 @@
 }
 @media (max-width: 899px) {
   #utilRail { display: none; }
-  #utilMobileFab { display: flex; }
+  #utilMobileFab { display: none !important; }
+  #utilBottomBar { display: flex; }
+  .app { padding-bottom: calc(70px + env(safe-area-inset-bottom)); }
 }
 
     /* ── Bed Planner ───────────────────── */
@@ -3732,9 +3744,9 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
       },
       health: {
         title: '🌿 Plant Health',
-        chips: ['Stress & Anxiety','Better Sleep','Immune Support','Digestion','Anti-Inflammatory','Heart Health','Energy & Focus','Skin Health','Hormone Balance','Detox','Pain Relief','Respiratory Health'],
-        chipQuery: b => `Which garden plants support ${b}? How do I grow and use them? What should I know about using them? Note this is for educational purposes only, not medical advice.`,
-        hint: 'Tap a benefit to find plants that support it:',
+        chips: ['Yellowing Leaves','Wilting Plants','Brown Leaf Tips','Leggy / Stretched','Not Flowering','Stunted Growth','Root Rot','Nutrient Deficiency','Overwatering','Underwatering','Transplant Shock','Sunscald / Leaf Burn'],
+        chipQuery: p => `My plant has a problem: ${p}. What causes this, how do I diagnose it, and what are the best organic and chemical fixes? Be specific and practical.`,
+        hint: 'Tap a symptom to diagnose and fix it:',
         hasInput: false
       },
       garden: {
@@ -4036,6 +4048,17 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
     window.utilMobileDrawerClose = utilMobileDrawerClose;
     window.utilOverlayClick = utilOverlayClick;
     window.utilAsk = utilAsk;
+
+    // Bottom bar direct open — skips menu, opens drawer straight to tool
+    function utilMobileOpenTool(tool) {
+      // Update active bar button
+      document.querySelectorAll('.util-bar-btn').forEach(b => b.classList.remove('active'));
+      const barMap = { pest: 'barPest', health: 'barHealth', garden: 'barGarden', ask: 'barAsk' };
+      if (barMap[tool]) { const b = document.getElementById(barMap[tool]); if (b) b.classList.add('active'); }
+      // Open drawer with this tool
+      utilMobileOpen(tool);
+    }
+    window.utilMobileOpenTool = utilMobileOpenTool;
   </script>
 
 <!-- ── Utility Nav ──────────────────────────────────── -->
@@ -4078,11 +4101,26 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
   </div>
 </div>
 
-<!-- Mobile FAB -->
-<div id="utilMobileFab">
-  <button class="util-fab-btn" onclick="utilMobileMenuOpen()">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-    <span class="util-fab-label">HELP</span>
+<!-- Mobile FAB (hidden, replaced by bottom bar) -->
+<div id="utilMobileFab" style="display:none;"></div>
+
+<!-- Mobile Bottom Bar -->
+<div id="utilBottomBar">
+  <button class="util-bar-btn" id="barPest" onclick="utilMobileOpenTool('pest')">
+    <span class="util-bar-icon">🐛</span>
+    <span class="util-bar-label">Pests</span>
+  </button>
+  <button class="util-bar-btn" id="barHealth" onclick="utilMobileOpenTool('health')">
+    <span class="util-bar-icon">🌿</span>
+    <span class="util-bar-label">Plant Health</span>
+  </button>
+  <button class="util-bar-btn" id="barGarden" onclick="utilMobileOpenTool('garden')">
+    <span class="util-bar-icon">🗺</span>
+    <span class="util-bar-label">My Garden</span>
+  </button>
+  <button class="util-bar-btn" id="barAsk" onclick="utilMobileOpenTool('ask')">
+    <span class="util-bar-icon">💬</span>
+    <span class="util-bar-label">Ask AI</span>
   </button>
 </div>
 
