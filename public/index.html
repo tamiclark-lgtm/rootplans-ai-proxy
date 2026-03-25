@@ -3528,6 +3528,20 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
 
     chatSend.addEventListener("click", sendChat);
     chatInput.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); } });
+
+    // Expose help functions globally so onclick attributes can reach them
+    window.toggleHelpPanel = toggleHelpPanel;
+    window.closeHelpAll = closeHelpAll;
+    window.showHelpPanel = showHelpPanel;
+    window.openHelpTopic = openHelpTopic;
+    window.submitHelpAsk = submitHelpAsk;
+    window.submitHelpDisease = submitHelpDisease;
+    window.runHelpQuery = runHelpQuery;
+    window.toggleQuickList = toggleQuickList;
+    window.sendQuickQuestion = sendQuickQuestion;
+    window.stepBed = stepBed;
+    window.buildBedGrid = buildBedGrid;
+    window.clearBedGrid = clearBedGrid;
   </script>
 
 <!-- Floating Garden Help Launcher -->
