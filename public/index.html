@@ -1221,59 +1221,6 @@
     </div>
   </div>
 
-  <!-- Left Sidebar -->
-  <div id="leftSidebar">
-    <button class="sidebar-tab" id="pestTabBtn" title="Pest Help" onclick="openSidePanel('pest')">🐛</button>
-    <button class="sidebar-tab" id="healthTabBtn" title="Health Benefits" onclick="openSidePanel('health')">🌿</button>
-  </div>
-
-  <!-- Pest Panel -->
-  <div id="pestPanel" class="side-panel">
-    <div class="side-panel-header">
-      <span>🐛 Pest Help</span>
-      <button onclick="closeSidePanel('pest')" class="side-panel-close">✕</button>
-    </div>
-    <p class="side-panel-sub">Click a pest to get AI advice on dealing with it in your garden.</p>
-    <div class="side-panel-list">
-      <button class="side-panel-item" onclick="askAboutPest('Aphids')">🟢 Aphids</button>
-      <button class="side-panel-item" onclick="askAboutPest('Slugs & Snails')">🐌 Slugs & Snails</button>
-      <button class="side-panel-item" onclick="askAboutPest('Whiteflies')">🤍 Whiteflies</button>
-      <button class="side-panel-item" onclick="askAboutPest('Spider Mites')">🕷️ Spider Mites</button>
-      <button class="side-panel-item" onclick="askAboutPest('Caterpillars & Hornworms')">🐛 Caterpillars & Hornworms</button>
-      <button class="side-panel-item" onclick="askAboutPest('Japanese Beetles')">🪲 Japanese Beetles</button>
-      <button class="side-panel-item" onclick="askAboutPest('Fungus Gnats')">🦟 Fungus Gnats</button>
-      <button class="side-panel-item" onclick="askAboutPest('Root Rot')">🍂 Root Rot</button>
-      <button class="side-panel-item" onclick="askAboutPest('Powdery Mildew')">🌫️ Powdery Mildew</button>
-      <button class="side-panel-item" onclick="askAboutPest('Squash Vine Borers')">🎃 Squash Vine Borers</button>
-      <button class="side-panel-item" onclick="askAboutPest('Cutworms')">🪱 Cutworms</button>
-      <button class="side-panel-item" onclick="askAboutPest('Tomato Blight')">🍅 Tomato Blight</button>
-    </div>
-  </div>
-
-  <!-- Health Benefits Panel -->
-  <div id="healthPanel" class="side-panel">
-    <div class="side-panel-header">
-      <span>🌿 Health Benefits</span>
-      <button onclick="closeSidePanel('health')" class="side-panel-close">✕</button>
-    </div>
-    <p class="side-panel-sub">Click a benefit to discover which plants align with it and how to grow them.</p>
-    <div class="side-panel-list">
-      <button class="side-panel-item" onclick="askAboutHealth('stress & anxiety relief')">😌 Stress & Anxiety Relief</button>
-      <button class="side-panel-item" onclick="askAboutHealth('better sleep')">😴 Better Sleep</button>
-      <button class="side-panel-item" onclick="askAboutHealth('immune support')">🛡️ Immune Support</button>
-      <button class="side-panel-item" onclick="askAboutHealth('digestion & gut health')">🫁 Digestion & Gut Health</button>
-      <button class="side-panel-item" onclick="askAboutHealth('anti-inflammatory')">🔥 Anti-Inflammatory</button>
-      <button class="side-panel-item" onclick="askAboutHealth('heart health')">❤️ Heart Health</button>
-      <button class="side-panel-item" onclick="askAboutHealth('energy & focus')">⚡ Energy & Focus</button>
-      <button class="side-panel-item" onclick="askAboutHealth('skin health')">✨ Skin Health</button>
-      <button class="side-panel-item" onclick="askAboutHealth('hormone balance')">⚖️ Hormone Balance</button>
-      <button class="side-panel-item" onclick="askAboutHealth('detox & cleansing')">🌊 Detox & Cleansing</button>
-      <button class="side-panel-item" onclick="askAboutHealth('pain relief')">💊 Pain Relief</button>
-      <button class="side-panel-item" onclick="askAboutHealth('respiratory health')">🫧 Respiratory Health</button>
-    </div>
-  </div>
-  <div id="sidePanelOverlay" onclick="closeAllSidePanels()"></div>
-
   <div class="shell">
 
     <section class="hero">
@@ -1528,6 +1475,7 @@
           <div class="tinyNote" id="aiStatus" style="margin-top:12px;"></div>
           <div id="zoneBadge" style="display:none;margin-top:12px;padding:10px 14px;background:#edf4ef;border:1px solid #c6dcc9;border-radius:10px;font-size:13px;color:#274c38;font-weight:600;"></div>
           <div id="aiOutput" class="planOutput" style="display:none;"></div>
+          <div id="ganttWrap" style="display:none;margin-top:32px;"></div>
           <div id="gardenMap" class="garden-map-wrap" style="display:none;"></div>
           <div id="planEnd" style="display:none;margin-top:28px;padding-top:20px;border-top:2px solid var(--border);text-align:center;">
             <button id="pdfBtnBottom" class="btn" type="button" style="margin-bottom:16px;font-size:15px;padding:14px 32px;">⬇️ Download My Garden Plan (PDF)</button>
@@ -1553,27 +1501,27 @@
       0% { opacity: 0; transform: translateX(10px); }
       100% { opacity: 1; transform: translateX(0); }
     }
-    /* ── Left Sidebar ───────────────────── */
-    #leftSidebar { position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:900;display:flex;flex-direction:column;gap:8px;padding:10px 6px;background:rgba(252,249,240,0.92);backdrop-filter:blur(12px);border-radius:0 16px 16px 0;border:1px solid rgba(255,255,255,0.4);border-left:none;box-shadow:4px 0 24px rgba(0,0,0,0.12); }
-    .sidebar-tab { width:46px;height:46px;border-radius:12px;border:none;background:transparent;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s,transform 0.15s;color:#274c38; }
-    .sidebar-tab:hover { background:rgba(74,122,90,0.12);transform:scale(1.08); }
-    .sidebar-tab.active { background:rgba(74,122,90,0.18); }
-    .side-panel { position:fixed;left:64px;top:50%;transform:translateY(-50%);z-index:901;width:280px;max-height:75vh;background:rgba(252,249,240,0.97);backdrop-filter:blur(20px);border-radius:16px;border:1px solid rgba(255,255,255,0.4);box-shadow:8px 0 40px rgba(0,0,0,0.18);display:none;flex-direction:column;overflow:hidden; }
-    .side-panel.open { display:flex; }
-    .side-panel-header { display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;font-weight:700;font-size:14px;color:#274c38;border-bottom:1px solid rgba(74,122,90,0.15); }
-    .side-panel-close { background:none;border:none;cursor:pointer;font-size:16px;color:#6a7b6b;padding:4px;border-radius:6px;line-height:1; }
-    .side-panel-close:hover { background:rgba(0,0,0,0.06); }
-    .side-panel-sub { padding:8px 16px 4px;font-size:11px;color:#6a7b6b;line-height:1.4;margin:0; }
-    .side-panel-list { overflow-y:auto;padding:8px 10px 12px;display:flex;flex-direction:column;gap:4px; }
-    .side-panel-item { text-align:left;padding:9px 12px;border-radius:10px;border:1px solid rgba(74,122,90,0.12);background:rgba(74,122,90,0.04);cursor:pointer;font-size:13px;color:#274c38;font-family:'Inter',sans-serif;transition:background 0.15s,transform 0.1s; }
-    .side-panel-item:hover { background:rgba(74,122,90,0.12);transform:translateX(2px); }
-    #sidePanelOverlay { display:none;position:fixed;inset:0;z-index:899; }
-    #sidePanelOverlay.open { display:block; }
-    @media (max-width:720px) {
-      #leftSidebar { top:auto;bottom:100px;transform:none;flex-direction:row;border-radius:0 0 0 0;border-radius:12px 12px 0 0;left:50%;transform:translateX(-50%);padding:6px 10px;gap:6px; }
-      .sidebar-tab { width:42px;height:42px; }
-      .side-panel { left:50%;top:auto;bottom:160px;transform:translateX(-50%);width:calc(100vw - 32px);max-width:340px;max-height:60vh; }
-    }
+    /* ── Gantt Calendar ───────────────────── */
+    .gantt-wrap { font-family:'Inter',sans-serif; }
+    .gantt-title { font-size:17px;font-weight:700;color:#274c38;margin-bottom:4px; }
+    .gantt-sub { font-size:12px;color:#6a7b6b;margin-bottom:16px; }
+    .gantt-legend { display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px; }
+    .gantt-legend span { font-size:11px;color:#555;display:flex;align-items:center;gap:5px; }
+    .gantt-legend i { display:inline-block;width:14px;height:14px;border-radius:3px; }
+    .gantt-table { width:100%;border-collapse:collapse;font-size:12px; }
+    .gantt-table th { background:#f0f4f1;color:#4a7a5a;font-weight:600;text-align:center;padding:6px 2px;font-size:11px;border:1px solid #dce8de; }
+    .gantt-table td.plant-name { font-weight:600;color:#274c38;padding:7px 10px;white-space:nowrap;font-size:12px;border:1px solid #dce8de;background:#fafcfa; }
+    .gantt-table td.month-cell { border:1px solid #dce8de;padding:0;height:28px;min-width:26px; }
+    .gantt-cell-sow { background:#a8d5ba;position:relative; }
+    .gantt-cell-plant { background:#4a7a5a; }
+    .gantt-cell-harvest { background:#c9a96e; }
+    .gantt-cell-both { background:linear-gradient(135deg,#4a7a5a 50%,#c9a96e 50%); }
+    @media(max-width:600px){ .gantt-table th,.gantt-table td.month-cell { min-width:20px;font-size:10px;} .gantt-table td.plant-name{font-size:11px;padding:6px 6px;} }
+    .quick-topic-btn { display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;border:1.5px solid #4a7a5a;background:transparent;color:#274c38;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:background 0.15s; }
+    .quick-topic-btn:hover,.quick-topic-btn.active { background:#4a7a5a;color:#fff; }
+    .quick-list-wrap { display:flex;flex-wrap:wrap;gap:5px; }
+    .quick-list-item { padding:4px 10px;border-radius:14px;border:1px solid #dce8de;background:#f5f9f6;color:#274c38;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:background 0.15s; }
+    .quick-list-item:hover { background:#4a7a5a;color:#fff;border-color:#4a7a5a; }
     .chat-fab { position:fixed;bottom:28px;right:16px;z-index:999;display:flex;align-items:center;gap:8px; }
     .chat-fab .chat-label { background:#fff;color:#274c38;font-size:13px;font-weight:700;padding:8px 14px;border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,0.18);white-space:nowrap;animation:chatLabelPop 0.4s ease;cursor:pointer; }
     #chatToggleBtnInner { width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,#2d6a4f,#52b788);color:#fff;font-size:28px;border:none;cursor:pointer;box-shadow:0 4px 24px rgba(45,106,79,0.55);display:flex;align-items:center;justify-content:center;animation:chatPulse 2.5s ease-in-out infinite;transition:transform 0.2s; }
@@ -1598,6 +1546,51 @@
         <p style="margin:0;font-size:11px;color:rgba(255,255,255,0.7);">Ask me anything about your garden</p>
       </div>
       <button id="chatCloseBtn" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✕</button>
+    </div>
+    <div id="chatQuickTopics" style="padding:10px 12px 0;">
+      <div style="font-size:11px;font-weight:700;color:#6a7b6b;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;">Ask about</div>
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <button onclick="toggleQuickList('pestList')" class="quick-topic-btn" id="pestTopicBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+          Pests
+        </button>
+        <button onclick="toggleQuickList('healthList')" class="quick-topic-btn" id="healthTopicBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/></svg>
+          Health
+        </button>
+      </div>
+      <div id="pestList" style="display:none;margin-bottom:8px;">
+        <div class="quick-list-wrap">
+          <button class="quick-list-item" onclick="sendQuickQuestion('I\'m dealing with Aphids in my garden. What\'s the best organic way to eliminate them and prevent them from coming back?')">Aphids</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('I\'m dealing with Slugs &amp; Snails. What\'s the best organic way to eliminate them and prevent them from coming back?')">Slugs &amp; Snails</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('I\'m dealing with Whiteflies. What\'s the best organic way to eliminate them and prevent them from coming back?')">Whiteflies</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('I\'m dealing with Spider Mites. What\'s the best organic way to eliminate them and prevent them from coming back?')">Spider Mites</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('I\'m dealing with Caterpillars &amp; Hornworms. What\'s the best organic way to eliminate them?')">Caterpillars</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('I\'m dealing with Japanese Beetles. What\'s the best organic way to eliminate them and prevent them?')">Japanese Beetles</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('I\'m dealing with Fungus Gnats. What\'s the best organic way to eliminate them?')">Fungus Gnats</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('I\'m dealing with Root Rot. How do I diagnose, treat, and prevent it?')">Root Rot</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('I\'m dealing with Powdery Mildew. What\'s the best organic way to treat and prevent it?')">Powdery Mildew</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('I\'m dealing with Squash Vine Borers. What\'s the best organic way to deal with them?')">Squash Vine Borers</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('I\'m dealing with Tomato Blight. How do I identify which type it is and treat it organically?')">Tomato Blight</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('I\'m dealing with Cutworms. What\'s the best organic way to protect my plants?')">Cutworms</button>
+        </div>
+      </div>
+      <div id="healthList" style="display:none;margin-bottom:8px;">
+        <div class="quick-list-wrap">
+          <button class="quick-list-item" onclick="sendQuickQuestion('Which plants in my garden support stress and anxiety relief? How do I grow and use them?')">Stress &amp; Anxiety</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('Which plants in my garden can help with better sleep? How do I grow and use them?')">Better Sleep</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('Which plants in my garden support immune health? How do I grow and use them?')">Immune Support</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('Which plants in my garden support digestion and gut health? How do I grow and use them?')">Digestion &amp; Gut Health</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('Which plants in my garden have anti-inflammatory properties? How do I grow and use them?')">Anti-Inflammatory</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('Which plants in my garden support heart health? How do I grow and use them?')">Heart Health</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('Which plants in my garden boost energy and focus? How do I grow and use them?')">Energy &amp; Focus</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('Which plants in my garden benefit skin health? How do I grow and use them?')">Skin Health</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('Which plants in my garden support hormone balance? How do I grow and use them?')">Hormone Balance</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('Which plants in my garden support detox and cleansing? How do I grow and use them?')">Detox &amp; Cleansing</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('Which plants in my garden offer natural pain relief? How do I grow and use them?')">Pain Relief</button>
+          <button class="quick-list-item" onclick="sendQuickQuestion('Which plants in my garden support respiratory health? How do I grow and use them?')">Respiratory Health</button>
+        </div>
+      </div>
     </div>
     <div id="chatMessages" style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;">
       <div class="chat-bubble chat-ai">Hi! 👋 Ask me anything — planting tips, what to grow, pest problems, companion plants, and more.</div>
@@ -1830,6 +1823,43 @@
 
     function cleanZip(zip) {
       return String(zip || "").trim().replace(/\D/g, "").slice(0, 5);
+    }
+
+    function renderGantt(data) {
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const wrap = $("ganttWrap");
+      if (!data || !data.length) { wrap.style.display = "none"; return; }
+      let html = `<div class="gantt-wrap">
+        <div class="gantt-title">📅 Planting & Harvest Calendar</div>
+        <div class="gantt-sub">Based on your USDA zone — adjust by 2–3 weeks for local conditions.</div>
+        <div class="gantt-legend">
+          <span><i style="background:#a8d5ba"></i> Start indoors</span>
+          <span><i style="background:#4a7a5a"></i> Plant outdoors</span>
+          <span><i style="background:#c9a96e"></i> Harvest window</span>
+        </div>
+        <div style="overflow-x:auto;">
+        <table class="gantt-table">
+          <thead><tr><th style="text-align:left;padding:6px 10px;">Plant</th>`;
+      months.forEach(m => html += `<th>${m}</th>`);
+      html += `</tr></thead><tbody>`;
+      data.forEach(row => {
+        html += `<tr><td class="plant-name">${escapeHtml(row.plant)}</td>`;
+        for (let m = 1; m <= 12; m++) {
+          const isSow = row.sow_start && row.sow_end && m >= row.sow_start && m <= row.sow_end;
+          const isPlant = m >= row.plant_start && m <= row.plant_end;
+          const isHarvest = m >= row.harvest_start && m <= row.harvest_end;
+          let cls = "";
+          if (isPlant && isHarvest) cls = "gantt-cell-both";
+          else if (isHarvest) cls = "gantt-cell-harvest";
+          else if (isPlant) cls = "gantt-cell-plant";
+          else if (isSow) cls = "gantt-cell-sow";
+          html += `<td class="month-cell ${cls}"></td>`;
+        }
+        html += `</tr>`;
+      });
+      html += `</tbody></table></div></div>`;
+      wrap.innerHTML = html;
+      wrap.style.display = "block";
     }
 
     function escapeHtml(str) {
@@ -2321,6 +2351,15 @@ For the plants in this plan, list the 4–5 most likely pests or diseases the ga
 [2–3 sentences: note any plants to handle carefully, remind that holistic notes are not medical advice.]
 
 Complete ALL 9 sections. Do not stop early.
+
+After section 9, output a JSON block for the calendar — exactly this format, no extra text:
+CALENDAR_JSON_START
+[
+  {"plant":"Plant Name","sow_start":3,"sow_end":4,"plant_start":5,"plant_end":6,"harvest_start":7,"harvest_end":9},
+  ...one entry per plant...
+]
+CALENDAR_JSON_END
+Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow outdoors, harvest = harvest window. If sowing indoors is not applicable set sow_start and sow_end to 0.
       `.trim();
     }
 
@@ -2432,6 +2471,8 @@ Complete ALL 9 sections. Do not stop early.
       $("aiOutput").innerHTML = "";
       $("gardenMap").style.display = "none";
       $("gardenMap").innerHTML = "";
+      $("ganttWrap").style.display = "none";
+      $("ganttWrap").innerHTML = "";
       $("planEnd").style.display = "none";
       $("copyBtn").style.display = "none";
       $("pdfBtn").style.display = "none";
@@ -2677,6 +2718,8 @@ Complete ALL 9 sections. Do not stop early.
       $("aiOutput").innerHTML = "";
       $("gardenMap").style.display = "none";
       $("gardenMap").innerHTML = "";
+      $("ganttWrap").style.display = "none";
+      $("ganttWrap").innerHTML = "";
       $("planEnd").style.display = "none";
       $("copyBtn").style.display = "none";
 
@@ -2747,7 +2790,9 @@ Complete ALL 9 sections. Do not stop early.
               if (parsed.error) throw new Error(parsed.error);
               if (parsed.text) {
                 fullText += parsed.text;
-                $("aiOutput").innerHTML = marked.parse(fullText);
+                // Strip calendar JSON block from visible output
+                const visibleText = fullText.replace(/CALENDAR_JSON_START[\s\S]*?CALENDAR_JSON_END/g, "").trim();
+                $("aiOutput").innerHTML = marked.parse(visibleText);
                 addPollinatorTooltips($("aiOutput"));
               }
             } catch (parseErr) {
@@ -2811,6 +2856,15 @@ Complete ALL 9 sections. Do not stop early.
             });
           });
         }
+
+        // ── Parse & render Gantt calendar ───────────────────────────────
+        try {
+          const calMatch = fullText.match(/CALENDAR_JSON_START\s*([\s\S]*?)\s*CALENDAR_JSON_END/);
+          if (calMatch) {
+            const calData = JSON.parse(calMatch[1]);
+            renderGantt(calData);
+          }
+        } catch(e) { /* skip if parse fails */ }
 
         $("planEnd").style.display = "block";
 
@@ -2967,53 +3021,37 @@ Complete ALL 9 sections. Do not stop early.
     if (!isPro()) lockFreeUI();
     else unlockProUI();
 
-    // ── Left Sidebar Panels ────────────────────────────────────────────────
-    function openSidePanel(type) {
-      const pestPanel = $("pestPanel");
-      const healthPanel = $("healthPanel");
-      const overlay = $("sidePanelOverlay");
-      const isOpen = (type === 'pest' ? pestPanel : healthPanel).classList.contains('open');
-      pestPanel.classList.remove('open');
-      healthPanel.classList.remove('open');
-      document.querySelectorAll('.sidebar-tab').forEach(b => b.classList.remove('active'));
-      if (!isOpen) {
-        (type === 'pest' ? pestPanel : healthPanel).classList.add('open');
-        $( type === 'pest' ? 'pestTabBtn' : 'healthTabBtn').classList.add('active');
-        overlay.classList.add('open');
+    function toggleQuickList(id) {
+      const pestList = document.getElementById('pestList');
+      const healthList = document.getElementById('healthList');
+      const pestBtn = document.getElementById('pestTopicBtn');
+      const healthBtn = document.getElementById('healthTopicBtn');
+      if (id === 'pestList') {
+        const open = pestList.style.display === 'none';
+        pestList.style.display = open ? 'block' : 'none';
+        healthList.style.display = 'none';
+        pestBtn.classList.toggle('active', open);
+        healthBtn.classList.remove('active');
       } else {
-        overlay.classList.remove('open');
+        const open = healthList.style.display === 'none';
+        healthList.style.display = open ? 'block' : 'none';
+        pestList.style.display = 'none';
+        healthBtn.classList.toggle('active', open);
+        pestBtn.classList.remove('active');
       }
     }
-    function closeSidePanel(type) {
-      $( type === 'pest' ? 'pestPanel' : 'healthPanel').classList.remove('open');
-      $( type === 'pest' ? 'pestTabBtn' : 'healthTabBtn').classList.remove('active');
-      if (!$("pestPanel").classList.contains('open') && !$("healthPanel").classList.contains('open')) {
-        $("sidePanelOverlay").classList.remove('open');
-      }
-    }
-    function closeAllSidePanels() {
-      $("pestPanel").classList.remove('open');
-      $("healthPanel").classList.remove('open');
-      $("sidePanelOverlay").classList.remove('open');
-      document.querySelectorAll('.sidebar-tab').forEach(b => b.classList.remove('active'));
-    }
-    function askAboutPest(pest) {
-      closeAllSidePanels();
-      const msg = `I'm dealing with ${pest} in my garden. What's the best organic way to get rid of them and prevent them from coming back?`;
-      openChatWithMessage(msg);
-    }
-    function askAboutHealth(benefit) {
-      closeAllSidePanels();
-      const msg = `I'm interested in growing plants for ${benefit}. Which plants in my garden would support this, how do I use them, and what should I know?`;
-      openChatWithMessage(msg);
-    }
-    function openChatWithMessage(msg) {
-      if (!chatOpen) toggleChat();
-      setTimeout(() => {
+    function sendQuickQuestion(msg) {
+      // Close the quick lists
+      document.getElementById('pestList').style.display = 'none';
+      document.getElementById('healthList').style.display = 'none';
+      document.getElementById('pestTopicBtn').classList.remove('active');
+      document.getElementById('healthTopicBtn').classList.remove('active');
+      // Put in chat input and send
+      const chatInput = document.getElementById('chatInput');
+      if (chatInput) {
         chatInput.value = msg;
-        chatInput.focus();
         sendChat();
-      }, 100);
+      }
     }
 
     // ── Garden Chat ────────────────────────────────────────────────────────
