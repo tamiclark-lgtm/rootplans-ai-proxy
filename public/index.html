@@ -1609,7 +1609,7 @@
   padding: 0;
 }
 .util-rail-btn:hover { background: rgba(74,122,90,0.1); transform: scale(1.05); }
-.util-rail-btn.active { background: rgba(74,122,90,0.18); color: #2d6a4f; }
+.util-rail-btn.active { background: #2d6a4f !important; color: #fff !important; box-shadow: 0 2px 8px rgba(45,106,79,0.35); }
 .util-rail-btn svg { flex-shrink: 0; }
 .util-rail-label {
   font-size: 9px;
@@ -1864,7 +1864,8 @@
   transition: background 0.15s;
   line-height: 1;
 }
-.util-chip:hover, .util-chip:active { background: #4a7a5a; color: #fff; border-color: #4a7a5a; }
+.util-chip:hover { background: rgba(74,122,90,0.15); }
+.util-chip.active, .util-chip:active { background: #2d6a4f !important; color: #fff !important; border-color: #2d6a4f !important; }
 .util-answer {
   margin-top: 14px;
   padding-top: 12px;
@@ -3802,13 +3803,21 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
         return;
       }
 
-      let html = `<div class="util-section-hint">${def.hint}</div><div class="util-chips">`;
-      def.chips.forEach(chip => {
-        const q = def.chipQuery(chip).replace(/'/g, "\\'");
-        html += `<button class="util-chip" onclick="utilAsk('${q}', this)">${chip}</button>`;
+      let html = `<div class="util-section-hint">${def.hint}</div><div class="util-chips" id="utilChipRow_${tool}">`;
+      def.chips.forEach((chip, i) => {
+        html += `<button class="util-chip" data-idx="${i}">${chip}</button>`;
       });
-      html += `</div><div id="utilAnswerTarget_${tool}"></div>`;
+      html += `</div><div class="util-answer" style="display:none;"></div>`;
       targetBody.innerHTML = html;
+
+      // Attach click handlers via JS (avoids apostrophe/quote issues in onclick)
+      targetBody.querySelectorAll('.util-chip').forEach((btn, i) => {
+        btn.addEventListener('click', () => {
+          targetBody.querySelectorAll('.util-chip').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          utilAsk(def.chipQuery(def.chips[i]), btn, targetBody);
+        });
+      });
 
       if (targetInput) {
         if (def.hasInput) {
@@ -3842,7 +3851,9 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
         answerDiv.className = 'util-answer';
         body.appendChild(answerDiv);
       }
+      answerDiv.style.display = 'block';
       answerDiv.innerHTML = '<em style="color:#6a7b6b;font-size:12px;">Thinking…</em>';
+      body.scrollTop = body.scrollHeight;
       body.scrollTop = body.scrollHeight;
 
       const token = sessionStorage.getItem('rp_token') || '';
