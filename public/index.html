@@ -1371,6 +1371,14 @@
             <button class="pill" type="button" data-count="10" aria-pressed="false">10</button>
           </div>
 
+          <!-- Garden Grid Size -->
+          <p style="font-weight:700;margin-bottom:6px;font-size:15px;">Garden grid size</p>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:10px;">How many 4×4 ft raised bed squares do you have?</p>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+            <input id="gridCountInput" type="number" min="1" max="50" value="" placeholder="e.g. 4" class="input" style="width:90px;font-size:15px;padding:8px 12px;" />
+            <span style="font-size:13px;color:var(--muted);">squares (each 4×4 ft)</span>
+          </div>
+
           <p style="font-weight:700;margin-bottom:6px;font-size:15px;">Plant variety</p>
           <p style="font-size:13px;color:var(--muted);margin-bottom:10px;">How adventurous should your plant list be?</p>
           <div class="pillRow" id="rarityRow" style="margin-bottom:20px;">
@@ -2292,6 +2300,7 @@ ${selectedPlantType !== "decorative" && selectedRarity === "common" ? "- Priorit
 - Do not suggest invasive plants.
 - Include only plants realistic for USDA Zone ${zone}.
 - TOTAL PLANTS: Recommend exactly ${selectedPlantCount} plants in section 2. No more, no less.
+${(()=>{ const g = parseInt(document.getElementById('gridCountInput')?.value||'0'); return g > 0 ? `- GARDEN GRID: The gardener has ${g} raised bed squares (each 4×4 ft = 16 sq ft, total ${g*16} sq ft). For each plant in section 2, include: how many 4×4 squares it needs AND the planting depth. Format as: 📐 Needs X square(s) · Plant X inches deep` : ''; })()}
 ${(selectedStaples.length || customStaples.length) ? `- REQUIRED — these must appear in the plan no matter what: ${[...selectedStaples, ...customStaples].join(", ")}. Note any zone-specific care adjustments if needed.` : ""}
 ${(selectedExclusions.length || customExclusions.length) ? `- EXCLUDED — do NOT include these under any circumstances: ${[...selectedExclusions, ...customExclusions].join(", ")}.` : ""}
 ${selectedPests.length ? `- ACTIVE PESTS: The gardener is already dealing with: ${selectedPests.join(", ")}. In section 8, prioritize fixes for these specific pests and recommend companion plants or varieties that naturally deter them.` : ""}
