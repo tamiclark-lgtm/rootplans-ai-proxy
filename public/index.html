@@ -1481,6 +1481,57 @@
           <div id="zoneBadge" style="display:none;margin-top:12px;padding:10px 14px;background:#edf4ef;border:1px solid #c6dcc9;border-radius:10px;font-size:13px;color:#274c38;font-weight:600;"></div>
           <div id="aiOutput" class="planOutput" style="display:none;"></div>
           <div id="ganttWrap" style="display:none;margin-top:32px;"></div>
+          <div id="bedPlannerWrap" style="display:none;margin-top:32px;">
+  <div class="bed-planner">
+    <div class="bed-planner-title">🪴 Garden Bed Planner</div>
+    <div class="bed-planner-sub">Configure your bed then drag plants from your plan into the grid.</div>
+
+    <!-- Config row -->
+    <div class="bed-config-row">
+      <div class="bed-config-item">
+        <label class="bed-config-label">Bed Type</label>
+        <select id="bedTypeSelect" class="bed-select">
+          <option value="raised">Raised Bed</option>
+          <option value="ground">In-Ground</option>
+          <option value="container">Container</option>
+          <option value="pot">Large Pot</option>
+        </select>
+      </div>
+      <div class="bed-config-item">
+        <label class="bed-config-label">Width (ft)</label>
+        <div class="bed-stepper">
+          <button type="button" onclick="stepBed('w',-1)">−</button>
+          <span id="bedW">4</span>
+          <button type="button" onclick="stepBed('w',1)">+</button>
+        </div>
+      </div>
+      <div class="bed-config-item">
+        <label class="bed-config-label">Length (ft)</label>
+        <div class="bed-stepper">
+          <button type="button" onclick="stepBed('l',-1)">−</button>
+          <span id="bedL">4</span>
+          <button type="button" onclick="stepBed('l',1)">+</button>
+        </div>
+      </div>
+      <button class="btn" type="button" onclick="buildBedGrid()" style="align-self:flex-end;padding:10px 20px;font-size:13px;">Build Grid</button>
+    </div>
+
+    <!-- Plant palette -->
+    <div id="bedPalette" style="display:none;margin-bottom:14px;">
+      <div class="bed-palette-label">Your Plants — drag into the grid:</div>
+      <div id="bedPaletteItems" class="bed-palette-items"></div>
+    </div>
+
+    <!-- Grid -->
+    <div id="bedGridWrap" style="display:none;">
+      <div id="bedGrid" class="bed-grid"></div>
+      <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btnSecondary" type="button" onclick="clearBedGrid()" style="font-size:12px;padding:6px 14px;">Clear Grid</button>
+        <span style="font-size:11px;color:#6a7b6b;align-self:center;">Tap a filled cell to remove a plant</span>
+      </div>
+    </div>
+  </div>
+</div>
           <div id="gridVizWrap" style="display:none;margin-top:32px;"></div>
           <div id="gardenMap" class="garden-map-wrap" style="display:none;"></div>
           <div id="planEnd" style="display:none;margin-top:28px;padding-top:20px;border-top:2px solid var(--border);text-align:center;">
@@ -1521,6 +1572,29 @@
     .raised-bed-square .sq-icon { font-size:22px;line-height:1; }
     .raised-bed-square.empty { background:#f8f8f8;border-style:dashed;opacity:0.5; }
     @media(max-width:600px){ .raised-bed-square { min-height:64px; } .raised-bed-square .sq-plant { font-size:10px; } }
+    /* ── Bed Planner ───────────────────── */
+    .bed-planner { background:rgba(255,255,255,0.7);border-radius:16px;border:1px solid rgba(74,122,90,0.15);padding:20px;font-family:'Inter',sans-serif; }
+    .bed-planner-title { font-size:17px;font-weight:700;color:#274c38;margin-bottom:4px; }
+    .bed-planner-sub { font-size:12px;color:#6a7b6b;margin-bottom:16px; }
+    .bed-config-row { display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-bottom:16px;padding:14px;background:#f5f9f6;border-radius:12px;border:1px solid rgba(74,122,90,0.12); }
+    .bed-config-item { display:flex;flex-direction:column;gap:4px; }
+    .bed-config-label { font-size:11px;font-weight:700;color:#4a7a5a;text-transform:uppercase;letter-spacing:0.07em; }
+    .bed-select { padding:8px 10px;border-radius:8px;border:1px solid #dce8de;background:#fff;font-size:13px;color:#274c38;font-family:'Inter',sans-serif;cursor:pointer; }
+    .bed-stepper { display:flex;align-items:center;gap:0;border:1px solid #dce8de;border-radius:8px;overflow:hidden;background:#fff; }
+    .bed-stepper button { width:32px;height:34px;border:none;background:transparent;cursor:pointer;font-size:16px;color:#4a7a5a;font-weight:700;transition:background 0.15s; }
+    .bed-stepper button:hover { background:#edf4ef; }
+    .bed-stepper span { width:36px;text-align:center;font-size:14px;font-weight:700;color:#274c38; }
+    .bed-palette-label { font-size:11px;font-weight:700;color:#4a7a5a;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px; }
+    .bed-palette-items { display:flex;flex-wrap:wrap;gap:6px; }
+    .bed-chip { padding:6px 12px;border-radius:20px;border:2px solid transparent;font-size:12px;font-weight:600;cursor:grab;color:#fff;user-select:none;transition:transform 0.15s,opacity 0.15s;touch-action:none; }
+    .bed-chip:active { cursor:grabbing;transform:scale(1.08); }
+    .bed-chip.used { opacity:0.4; }
+    .bed-grid { display:grid;gap:3px;touch-action:none; }
+    .bed-cell { aspect-ratio:1;border-radius:6px;border:2px dashed rgba(139,94,60,0.3);background: repeating-linear-gradient(45deg,#7a4f2a,#7a4f2a 2px,#8B5E3C 2px,#8B5E3C 12px);background-size:16px 16px;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;transition:border-color 0.15s;min-width:32px;min-height:32px; }
+    .bed-cell.drag-over { border-color:#fff;border-style:solid;background:rgba(74,122,90,0.3) !important; }
+    .bed-cell.filled { border-style:solid;cursor:pointer; }
+    .bed-cell .cell-label { font-size:9px;font-weight:700;color:#fff;text-align:center;line-height:1.2;padding:2px;text-shadow:0 1px 3px rgba(0,0,0,0.8);pointer-events:none; }
+    @media(max-width:600px){ .bed-config-row { gap:8px; } .bed-cell { min-width:26px;min-height:26px; } .bed-cell .cell-label { font-size:8px; } }
     /* ── Gantt Calendar ───────────────────── */
     .gantt-wrap { font-family:'Inter',sans-serif; }
     .gantt-title { font-size:17px;font-weight:700;color:#274c38;margin-bottom:4px; }
@@ -2559,6 +2633,7 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
       $("ganttWrap").innerHTML = "";
       $("gridVizWrap").style.display = "none";
       $("gridVizWrap").innerHTML = "";
+      $("bedPlannerWrap").style.display = "none";
       $("planEnd").style.display = "none";
       $("copyBtn").style.display = "none";
       $("pdfBtn").style.display = "none";
@@ -2808,6 +2883,7 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
       $("ganttWrap").innerHTML = "";
       $("gridVizWrap").style.display = "none";
       $("gridVizWrap").innerHTML = "";
+      $("bedPlannerWrap").style.display = "none";
       $("planEnd").style.display = "none";
       $("copyBtn").style.display = "none";
 
@@ -2955,6 +3031,7 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
           }
         } catch(e) { /* skip if parse fails */ }
         renderGridViz(lastPlants, calData);
+        renderBedPlanner(lastPlants);
 
         $("planEnd").style.display = "block";
 
@@ -3130,6 +3207,111 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
     updatePlanCounter();
     if (!isPro()) lockFreeUI();
     else unlockProUI();
+
+    // ── Garden Bed Planner ──────────────────────────────────────────────────
+    let bedW = 4, bedL = 4;
+    let bedPlantColors = {};
+    let draggedPlant = null;
+
+    function stepBed(dim, delta) {
+      if (dim === 'w') { bedW = Math.max(1, Math.min(12, bedW + delta)); $("bedW").textContent = bedW; }
+      else { bedL = Math.max(1, Math.min(12, bedL + delta)); $("bedL").textContent = bedL; }
+    }
+
+    function buildBedGrid() {
+      const plants = lastPlants || [];
+      const palette = $("bedPaletteItems");
+      const grid = $("bedGrid");
+      const colors = ["#4a7a5a","#c9a96e","#6b8f71","#8c6e58","#5b8e6b","#a0522d","#3d6b52","#b8860b","#556b2f","#8b7355","#6b8e23","#cd853f"];
+
+      // Build palette
+      bedPlantColors = {};
+      palette.innerHTML = "";
+      plants.forEach((p, i) => {
+        const name = p.common || p.name || "";
+        const color = colors[i % colors.length];
+        bedPlantColors[name] = color;
+        const chip = document.createElement("div");
+        chip.className = "bed-chip";
+        chip.id = `chip_${i}`;
+        chip.textContent = name;
+        chip.style.background = color;
+        chip.style.borderColor = color;
+        chip.draggable = true;
+        chip.dataset.plant = name;
+        chip.addEventListener("dragstart", e => { draggedPlant = name; chip.style.opacity = "0.5"; });
+        chip.addEventListener("dragend", e => { chip.style.opacity = ""; draggedPlant = null; });
+        // Touch support
+        chip.addEventListener("touchstart", e => { draggedPlant = name; chip.style.opacity = "0.6"; }, { passive: true });
+        chip.addEventListener("touchend", e => { chip.style.opacity = ""; });
+        palette.appendChild(chip);
+      });
+
+      // Build grid
+      const cols = bedW;
+      const rows = bedL;
+      grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      grid.innerHTML = "";
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const cell = document.createElement("div");
+          cell.className = "bed-cell";
+          cell.dataset.row = r;
+          cell.dataset.col = c;
+          // Drag & drop
+          cell.addEventListener("dragover", e => { e.preventDefault(); cell.classList.add("drag-over"); });
+          cell.addEventListener("dragleave", () => cell.classList.remove("drag-over"));
+          cell.addEventListener("drop", e => { e.preventDefault(); cell.classList.remove("drag-over"); if (draggedPlant) plantInCell(cell, draggedPlant); });
+          // Touch drop
+          cell.addEventListener("touchmove", e => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const el = document.elementFromPoint(touch.clientX, touch.clientY);
+            document.querySelectorAll(".bed-cell").forEach(c => c.classList.remove("drag-over"));
+            if (el && el.classList.contains("bed-cell")) el.classList.add("drag-over");
+          }, { passive: false });
+          cell.addEventListener("touchend", e => {
+            const touch = e.changedTouches[0];
+            const el = document.elementFromPoint(touch.clientX, touch.clientY);
+            document.querySelectorAll(".bed-cell").forEach(c => c.classList.remove("drag-over"));
+            if (el && el.classList.contains("bed-cell") && draggedPlant) plantInCell(el, draggedPlant);
+            draggedPlant = null;
+          });
+          // Click to remove
+          cell.addEventListener("click", () => { if (cell.classList.contains("filled")) clearCell(cell); });
+          grid.appendChild(cell);
+        }
+      }
+      $("bedPalette").style.display = "block";
+      $("bedGridWrap").style.display = "block";
+    }
+
+    function plantInCell(cell, plantName) {
+      const color = bedPlantColors[plantName] || "#4a7a5a";
+      cell.style.background = color;
+      cell.style.borderColor = color;
+      cell.classList.add("filled");
+      cell.dataset.plantName = plantName;
+      const short = plantName.length > 10 ? plantName.split(" ")[0] : plantName;
+      cell.innerHTML = `<span class="cell-label">${short}</span>`;
+    }
+
+    function clearCell(cell) {
+      cell.style.background = "";
+      cell.style.borderColor = "";
+      cell.classList.remove("filled");
+      cell.dataset.plantName = "";
+      cell.innerHTML = "";
+    }
+
+    function clearBedGrid() {
+      document.querySelectorAll(".bed-cell").forEach(c => clearCell(c));
+    }
+
+    function renderBedPlanner(plants) {
+      if (!plants || !plants.length) { $("bedPlannerWrap").style.display = "none"; return; }
+      $("bedPlannerWrap").style.display = "block";
+    }
 
     // ── Floating Help Launcher ──────────────────────────────────────────────
     function toggleHelpPanel() {
