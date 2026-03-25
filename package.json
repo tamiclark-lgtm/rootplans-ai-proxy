@@ -4,6 +4,7 @@
   "type": "module",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.79.0",
+    "@neondatabase/serverless": "^1.0.2",
     "stripe": "^20.4.1"
   }
 }

@@ -2886,6 +2886,26 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
         // Track plan usage
         incrementPlansUsed();
 
+        // Silently save plant data to database
+        try {
+          const calMatch = fullText.match(/CALENDAR_JSON_START\s*([\s\S]*?)\s*CALENDAR_JSON_END/);
+          const calData = calMatch ? JSON.parse(calMatch[1]) : [];
+          fetch("/api/save-plants", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              plants: lastPlants,
+              zone: detected.zone,
+              zip_code: $("zipInput")?.value || "",
+              location: detected.location || "",
+              sunlight: selectedSunlight,
+              plant_type: selectedPlantType,
+              rarity: selectedRarity,
+              calendar: calData
+            })
+          });
+        } catch(e) { /* non-critical, ignore */ }
+
         // Auto-download as PDF
         if (isPro()) $("pdfBtn").click();
       } catch (e) {
