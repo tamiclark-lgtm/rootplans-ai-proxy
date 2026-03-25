@@ -1623,8 +1623,9 @@
     .help-chip:hover { background:#4a7a5a;color:#fff;border-color:#4a7a5a; }
     #helpFabBtn:hover { transform:translateY(-2px);box-shadow:0 8px 28px rgba(45,106,79,0.55); }
     @media(max-width:720px){
-      #helpPanel,#helpSubPanel { width:calc(100vw - 24px);right:12px;bottom:auto;top:auto;max-height:75vh; }
+      #helpPanel,#helpSubPanel { width:100vw!important;right:0!important;left:0!important;bottom:0!important;border-radius:20px 20px 0 0!important;max-height:80vh; }
       #helpFab { bottom:90px;right:12px; }
+      #helpFabBtn { font-size:14px;padding:12px 18px; }
     }
     .chat-fab { position:fixed;bottom:28px;right:16px;z-index:999;display:flex;align-items:center;gap:8px; }
     .chat-fab .chat-label { background:#fff;color:#274c38;font-size:13px;font-weight:700;padding:8px 14px;border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,0.18);white-space:nowrap;animation:chatLabelPop 0.4s ease;cursor:pointer; }
@@ -3314,25 +3315,26 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
     }
 
     // ── Floating Help Launcher ──────────────────────────────────────────────
+    let helpOpen = false;
     function toggleHelpPanel() {
-      const panel = $("helpPanel");
-      const sub = $("helpSubPanel");
-      const overlay = $("helpOverlay");
-      const isOpen = panel.style.display !== "none";
-      closeHelpAll();
-      if (!isOpen) {
-        panel.style.display = "block";
-        overlay.style.display = "block";
-      }
+      helpOpen = !helpOpen;
+      $("helpPanel").style.display = helpOpen ? "block" : "none";
+      $("helpSubPanel").style.display = "none";
+      $("helpOverlay").style.display = helpOpen ? "block" : "none";
+      $("helpFabBtn").style.background = helpOpen
+        ? "linear-gradient(135deg,#1f3b2b,#2d6a4f)"
+        : "linear-gradient(135deg,#2d6a4f,#52b788)";
     }
     function showHelpPanel() {
       $("helpSubPanel").style.display = "none";
       $("helpPanel").style.display = "block";
     }
     function closeHelpAll() {
+      helpOpen = false;
       $("helpPanel").style.display = "none";
       $("helpSubPanel").style.display = "none";
       $("helpOverlay").style.display = "none";
+      $("helpFabBtn").style.background = "linear-gradient(135deg,#2d6a4f,#52b788)";
     }
     function openHelpTopic(type) {
       $("helpPanel").style.display = "none";
@@ -3340,6 +3342,7 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
       const title = $("helpSubTitle");
       const content = $("helpSubContent");
       const inputWrap = $("helpSubInput");
+      content.innerHTML = "";
       sub.style.display = "flex";
 
       if (type === "pest") {
@@ -3528,9 +3531,9 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
   </script>
 
 <!-- Floating Garden Help Launcher -->
-<div id="helpFab" style="position:fixed;bottom:104px;right:20px;z-index:997;">
-  <button id="helpFabBtn" onclick="toggleHelpPanel()" style="display:flex;align-items:center;gap:8px;padding:11px 18px;background:linear-gradient(135deg,#2d6a4f,#52b788);color:#fff;border:none;border-radius:999px;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;box-shadow:0 4px 20px rgba(45,106,79,0.45);letter-spacing:0.02em;white-space:nowrap;transition:transform 0.2s,box-shadow 0.2s;">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+<div id="helpFab" style="position:fixed;bottom:110px;right:20px;z-index:997;">
+  <button id="helpFabBtn" onclick="toggleHelpPanel()" style="display:flex;align-items:center;gap:9px;padding:14px 22px;background:linear-gradient(135deg,#2d6a4f,#52b788);color:#fff;border:none;border-radius:999px;font-size:15px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;box-shadow:0 6px 28px rgba(45,106,79,0.55),0 2px 8px rgba(0,0,0,0.15);letter-spacing:0.02em;white-space:nowrap;transition:transform 0.2s,box-shadow 0.2s,background 0.2s;">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
     Garden Help
   </button>
 </div>
@@ -3571,7 +3574,7 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
 </div>
 
 <!-- Help Sub-panels -->
-<div id="helpSubPanel" style="display:none;position:fixed;bottom:160px;right:20px;z-index:996;width:300px;max-height:70vh;background:rgba(252,249,240,0.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:20px;border:1px solid rgba(255,255,255,0.45);box-shadow:0 16px 56px rgba(0,0,0,0.18);display:none;flex-direction:column;overflow:hidden;">
+<div id="helpSubPanel" style="display:none;position:fixed;bottom:160px;right:20px;z-index:996;width:300px;max-height:70vh;background:rgba(252,249,240,0.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:20px;border:1px solid rgba(255,255,255,0.45);box-shadow:0 16px 56px rgba(0,0,0,0.18);flex-direction:column;overflow:hidden;">
   <div style="padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(74,122,90,0.12);">
     <button onclick="showHelpPanel()" style="background:none;border:none;cursor:pointer;font-size:12px;color:#4a7a5a;font-weight:600;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:4px;">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Back
