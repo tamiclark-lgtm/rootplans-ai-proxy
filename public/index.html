@@ -1572,6 +1572,326 @@
     .raised-bed-square .sq-icon { font-size:22px;line-height:1; }
     .raised-bed-square.empty { background:#f8f8f8;border-style:dashed;opacity:0.5; }
     @media(max-width:600px){ .raised-bed-square { min-height:64px; } .raised-bed-square .sq-plant { font-size:10px; } }
+    /* ── Utility Nav ──────────────────────────────────────────────────────── */
+
+/* Desktop left rail */
+#utilRail {
+  position: fixed;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 8px;
+  background: rgba(252,249,240,0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.5);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 0 0 1px rgba(255,255,255,0.2) inset;
+}
+.util-rail-btn {
+  width: 52px;
+  height: 56px;
+  border: none;
+  background: transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #4a7a5a;
+  transition: background 0.18s, transform 0.15s, color 0.18s;
+  padding: 0;
+}
+.util-rail-btn:hover { background: rgba(74,122,90,0.1); transform: scale(1.05); }
+.util-rail-btn.active { background: rgba(74,122,90,0.18); color: #2d6a4f; }
+.util-rail-btn svg { flex-shrink: 0; }
+.util-rail-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
+  line-height: 1;
+}
+
+/* Desktop draggable popup */
+#utilPopup {
+  position: fixed;
+  top: 80px;
+  left: 90px;
+  z-index: 920;
+  width: 320px;
+  max-height: 75vh;
+  background: rgba(252,249,240,0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.5);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.15) inset;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  user-select: none;
+}
+#utilPopup.open { display: flex; }
+#utilPopupHeader {
+  padding: 14px 16px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(74,122,90,0.12);
+  cursor: grab;
+  background: rgba(74,122,90,0.04);
+}
+#utilPopupHeader:active { cursor: grabbing; }
+.util-popup-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #274c38;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.util-drag-hint {
+  font-size: 10px;
+  color: #9ab;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.util-close-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: rgba(0,0,0,0.06);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #6a7b6b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.util-close-btn:hover { background: rgba(0,0,0,0.12); }
+#utilPopupBody {
+  overflow-y: auto;
+  flex: 1;
+  padding: 14px 16px 16px;
+  overscroll-behavior: contain;
+}
+#utilPopupInput {
+  padding: 10px 14px 14px;
+  border-top: 1px solid rgba(74,122,90,0.1);
+  display: none;
+}
+#utilPopupInput .util-input-row {
+  display: flex;
+  gap: 6px;
+}
+
+/* Mobile FAB */
+#utilMobileFab {
+  position: fixed;
+  bottom: 110px;
+  right: 16px;
+  z-index: 900;
+  display: none;
+}
+.util-fab-btn {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #2d6a4f, #52b788);
+  color: #fff;
+  box-shadow: 0 6px 24px rgba(45,106,79,0.5);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.util-fab-btn:active { transform: scale(0.95); }
+.util-fab-label { font-size: 8px; font-weight: 800; letter-spacing: 0.05em; font-family: 'Inter', sans-serif; }
+
+/* Mobile bottom sheet — tool menu */
+#utilMobileMenu {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 920;
+  background: rgba(252,249,240,0.99);
+  border-radius: 20px 20px 0 0;
+  border-top: 1px solid rgba(255,255,255,0.5);
+  box-shadow: 0 -8px 40px rgba(0,0,0,0.18);
+  padding: 0 0 env(safe-area-inset-bottom, 16px);
+  transform: translateY(100%);
+  transition: transform 0.32s cubic-bezier(0.32,0.72,0,1);
+  touch-action: none;
+}
+#utilMobileMenu.open { transform: translateY(0); }
+.util-sheet-handle {
+  width: 36px;
+  height: 4px;
+  background: rgba(0,0,0,0.12);
+  border-radius: 2px;
+  margin: 12px auto 8px;
+}
+.util-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 20px 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #274c38;
+  font-family: 'Inter', sans-serif;
+}
+.util-menu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 16px 20px;
+}
+.util-menu-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(74,122,90,0.12);
+  background: rgba(255,255,255,0.7);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  text-align: left;
+  font-family: 'Inter', sans-serif;
+  min-height: 90px;
+}
+.util-menu-card:active { transform: scale(0.97); background: rgba(255,255,255,0.95); }
+.util-menu-card-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.util-menu-card-title { font-size: 14px; font-weight: 700; color: #274c38; }
+.util-menu-card-sub { font-size: 11px; color: #6a7b6b; line-height: 1.3; }
+
+/* Mobile content drawer */
+#utilMobileDrawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 930;
+  background: rgba(252,249,240,0.99);
+  border-radius: 20px 20px 0 0;
+  border-top: 1px solid rgba(255,255,255,0.5);
+  box-shadow: 0 -8px 40px rgba(0,0,0,0.2);
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+  max-height: 82vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.32s cubic-bezier(0.32,0.72,0,1);
+  touch-action: none;
+}
+#utilMobileDrawer.open { transform: translateY(0); }
+.util-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 20px 12px;
+  border-bottom: 1px solid rgba(74,122,90,0.1);
+  flex-shrink: 0;
+}
+.util-drawer-back {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  background: none;
+  color: #4a7a5a;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  padding: 4px 0;
+}
+.util-drawer-title { font-size: 14px; font-weight: 700; color: #274c38; font-family: 'Inter', sans-serif; }
+.util-drawer-body { overflow-y: auto; flex: 1; padding: 14px 18px 16px; overscroll-behavior: contain; }
+.util-drawer-input { padding: 10px 16px 16px; border-top: 1px solid rgba(74,122,90,0.1); display: none; flex-shrink: 0; }
+
+/* Overlay backdrop */
+#utilOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 910;
+  background: rgba(0,0,0,0.28);
+}
+#utilOverlay.open { display: block; }
+
+/* Shared content styles */
+.util-section-hint { font-size: 11px; color: #6a7b6b; margin-bottom: 12px; font-family: 'Inter', sans-serif; line-height: 1.4; }
+.util-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.util-chip {
+  padding: 7px 13px;
+  border-radius: 20px;
+  border: 1px solid rgba(74,122,90,0.2);
+  background: rgba(74,122,90,0.06);
+  color: #274c38;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: background 0.15s;
+  line-height: 1;
+}
+.util-chip:hover, .util-chip:active { background: #4a7a5a; color: #fff; border-color: #4a7a5a; }
+.util-answer {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(74,122,90,0.12);
+  font-size: 13px;
+  line-height: 1.7;
+  color: #274c38;
+  font-family: 'Inter', sans-serif;
+}
+.util-answer h2 { font-size: 15px; font-weight: 700; color: #274c38; margin: 14px 0 5px; font-family: 'Inter', sans-serif; }
+.util-answer h3 { font-size: 13px; font-weight: 700; color: #4a7a5a; margin: 10px 0 4px; font-family: 'Inter', sans-serif; }
+.util-answer p { margin: 0 0 8px; }
+.util-answer ul, .util-answer ol { padding-left: 18px; margin: 0 0 8px; }
+.util-answer li { margin-bottom: 3px; }
+.util-answer strong { color: #274c38; }
+.util-input-row { display: flex; gap: 6px; }
+
+/* Responsive breakpoint */
+@media (min-width: 900px) {
+  #utilRail { display: flex; }
+  #utilMobileFab { display: none; }
+}
+@media (max-width: 899px) {
+  #utilRail { display: none; }
+  #utilMobileFab { display: flex; }
+}
+
     /* ── Bed Planner ───────────────────── */
     .bed-planner { background:rgba(255,255,255,0.7);border-radius:16px;border:1px solid rgba(74,122,90,0.15);padding:20px;font-family:'Inter',sans-serif; }
     .bed-planner-title { font-size:17px;font-weight:700;color:#274c38;margin-bottom:4px; }
@@ -1614,19 +1934,6 @@
     .quick-list-wrap { display:flex;flex-wrap:wrap;gap:5px; }
     .quick-list-item { padding:4px 10px;border-radius:14px;border:1px solid #dce8de;background:#f5f9f6;color:#274c38;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:background 0.15s; }
     .quick-list-item:hover { background:#4a7a5a;color:#fff;border-color:#4a7a5a; }
-    .help-option { display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border-radius:12px;border:1px solid rgba(74,122,90,0.1);background:rgba(255,255,255,0.6);cursor:pointer;text-align:left;transition:background 0.15s,transform 0.1s;font-family:'Inter',sans-serif; }
-    .help-option:hover { background:rgba(255,255,255,0.95);transform:translateX(2px); }
-    .help-option-icon { width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
-    .help-option-title { font-size:13px;font-weight:700;color:#274c38;line-height:1.3; }
-    .help-option-sub { font-size:11px;color:#6a7b6b;line-height:1.3;margin-top:1px; }
-    .help-chip { padding:6px 12px;border-radius:14px;border:1px solid #dce8de;background:#f5f9f6;color:#274c38;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;transition:background 0.15s;display:inline-block;margin:3px; }
-    .help-chip:hover { background:#4a7a5a;color:#fff;border-color:#4a7a5a; }
-    #helpFabBtn:hover { transform:translateY(-2px);box-shadow:0 8px 28px rgba(45,106,79,0.55); }
-    @media(max-width:720px){
-      #helpPanel,#helpSubPanel { width:100vw!important;right:0!important;left:0!important;bottom:0!important;border-radius:20px 20px 0 0!important;max-height:80vh; }
-      #helpFab { bottom:90px;right:12px; }
-      #helpFabBtn { font-size:14px;padding:12px 18px; }
-    }
     .chat-fab { position:fixed;bottom:28px;right:16px;z-index:999;display:flex;align-items:center;gap:8px; }
     .chat-fab .chat-label { background:#fff;color:#274c38;font-size:13px;font-weight:700;padding:8px 14px;border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,0.18);white-space:nowrap;animation:chatLabelPop 0.4s ease;cursor:pointer; }
     #chatToggleBtnInner { width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,#2d6a4f,#52b788);color:#fff;font-size:28px;border:none;cursor:pointer;box-shadow:0 4px 24px rgba(45,106,79,0.55);display:flex;align-items:center;justify-content:center;animation:chatPulse 2.5s ease-in-out infinite;transition:transform 0.2s; }
@@ -3314,113 +3621,6 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
       $("bedPlannerWrap").style.display = "block";
     }
 
-    // ── Floating Help Launcher ──────────────────────────────────────────────
-    let helpOpen = false;
-    function toggleHelpPanel() {
-      helpOpen = !helpOpen;
-      $("helpPanel").style.display = helpOpen ? "block" : "none";
-      $("helpSubPanel").style.display = "none";
-      $("helpOverlay").style.display = helpOpen ? "block" : "none";
-      $("helpFabBtn").style.background = helpOpen
-        ? "linear-gradient(135deg,#1f3b2b,#2d6a4f)"
-        : "linear-gradient(135deg,#2d6a4f,#52b788)";
-    }
-    function showHelpPanel() {
-      $("helpSubPanel").style.display = "none";
-      $("helpPanel").style.display = "block";
-    }
-    function closeHelpAll() {
-      helpOpen = false;
-      $("helpPanel").style.display = "none";
-      $("helpSubPanel").style.display = "none";
-      $("helpOverlay").style.display = "none";
-      $("helpFabBtn").style.background = "linear-gradient(135deg,#2d6a4f,#52b788)";
-    }
-    function openHelpTopic(type) {
-      $("helpPanel").style.display = "none";
-      const sub = $("helpSubPanel");
-      const title = $("helpSubTitle");
-      const content = $("helpSubContent");
-      const inputWrap = $("helpSubInput");
-      content.innerHTML = "";
-      sub.style.display = "flex";
-
-      if (type === "pest") {
-        title.textContent = "🐛 Pest Help";
-        inputWrap.style.display = "none";
-        content.innerHTML = `<p style="font-size:11px;color:#6a7b6b;margin-bottom:10px;font-family:'Inter',sans-serif;">Tap a pest for organic & chemical solutions:</p><div>
-      ${["Aphids","Slugs & Snails","Whiteflies","Spider Mites","Caterpillars","Japanese Beetles","Fungus Gnats","Powdery Mildew","Root Rot","Squash Vine Borers","Tomato Blight","Cutworms"].map(p =>
-        `<button class="help-chip" onclick="runHelpQuery('Tell me about ${p}: which plants it affects, how to identify it, natural/organic treatments, and chemical options if needed.')">${p}</button>`
-      ).join("")}
-    </div>`;
-      } else if (type === "health") {
-        title.textContent = "🌿 Plant Health";
-        inputWrap.style.display = "none";
-        content.innerHTML = `<p style="font-size:11px;color:#6a7b6b;margin-bottom:10px;font-family:'Inter',sans-serif;">Tap a benefit to find aligned plants:</p><div>
-      ${["Stress & Anxiety","Better Sleep","Immune Support","Digestion","Anti-Inflammatory","Heart Health","Energy & Focus","Skin Health","Hormone Balance","Detox","Pain Relief","Respiratory Health"].map(b =>
-        `<button class="help-chip" onclick="runHelpQuery('Which garden plants support ${b}? How do I grow and use them? Note this is not medical advice.')">${b}</button>`
-      ).join("")}
-    </div>`;
-      } else if (type === "disease") {
-        title.textContent = "🦠 Plant Diseases";
-        inputWrap.style.display = "flex";
-        $("helpAskInput").placeholder = "Which plant? (e.g. Tomato, Rose…)";
-        content.innerHTML = `<p style="font-size:11px;color:#6a7b6b;margin-bottom:10px;font-family:'Inter',sans-serif;">Type a plant below to get common diseases and treatments:</p>`;
-        $("helpAskInput").onkeydown = e => { if(e.key==="Enter") submitHelpDisease(); };
-        document.getElementById("helpSubInput").querySelector("button").onclick = submitHelpDisease;
-      } else if (type === "ask") {
-        title.textContent = "💬 Ask Anything";
-        inputWrap.style.display = "flex";
-        $("helpAskInput").placeholder = "Ask any garden question…";
-        content.innerHTML = `<p style="font-size:11px;color:#6a7b6b;margin-bottom:10px;font-family:'Inter',sans-serif;">Ask anything about gardening, planting, soil, seasons, and more.</p>`;
-        $("helpAskInput").onkeydown = e => { if(e.key==="Enter") submitHelpAsk(); };
-        document.getElementById("helpSubInput").querySelector("button").onclick = submitHelpAsk;
-      }
-    }
-    function submitHelpAsk() {
-      const q = $("helpAskInput").value.trim();
-      if (!q) return;
-      $("helpAskInput").value = "";
-      runHelpQuery(q);
-    }
-    function submitHelpDisease() {
-      const plant = $("helpAskInput").value.trim();
-      if (!plant) return;
-      $("helpAskInput").value = "";
-      runHelpQuery(`What are the most common diseases affecting ${plant}? For each: cause, symptoms, organic treatment, and chemical options.`);
-    }
-    async function runHelpQuery(question) {
-      const content = $("helpSubContent");
-      const token = sessionStorage.getItem("rp_token") || "";
-      const answerDiv = document.createElement("div");
-      answerDiv.style.cssText = "margin-top:12px;font-size:12px;line-height:1.7;color:#274c38;border-top:1px solid rgba(74,122,90,0.12);padding-top:10px;";
-      content.appendChild(answerDiv);
-      content.scrollTop = content.scrollHeight;
-      try {
-        const res = await fetch("/api/ask", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "X-Session-Token": token },
-          body: JSON.stringify({ messages: [{ role: "user", content: question }] })
-        });
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = "", fullText = "";
-        while (true) {
-          const { done, value } = await reader.read();
-          if (!done) buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split("\n");
-          buffer = done ? "" : lines.pop();
-          for (const line of lines) {
-            if (!line.startsWith("data: ")) continue;
-            const payload = line.slice(6).trim();
-            if (payload === "[DONE]") continue;
-            try { const p = JSON.parse(payload); if (p.text) { fullText += p.text; answerDiv.innerHTML = marked.parse(fullText); content.scrollTop = content.scrollHeight; } } catch(e) {}
-          }
-          if (done) break;
-        }
-      } catch(e) { answerDiv.textContent = "Something went wrong. Try again."; }
-    }
-
     function toggleQuickList(id) {
       const pestList = document.getElementById('pestList');
       const healthList = document.getElementById('healthList');
@@ -3529,81 +3729,426 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
     chatSend.addEventListener("click", sendChat);
     chatInput.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); } });
 
-    // Expose help functions globally so onclick attributes can reach them
-    window.toggleHelpPanel = toggleHelpPanel;
-    window.closeHelpAll = closeHelpAll;
-    window.showHelpPanel = showHelpPanel;
-    window.openHelpTopic = openHelpTopic;
-    window.submitHelpAsk = submitHelpAsk;
-    window.submitHelpDisease = submitHelpDisease;
-    window.runHelpQuery = runHelpQuery;
     window.toggleQuickList = toggleQuickList;
     window.sendQuickQuestion = sendQuickQuestion;
     window.stepBed = stepBed;
     window.buildBedGrid = buildBedGrid;
     window.clearBedGrid = clearBedGrid;
+
+    // ── Utility Nav System ──────────────────────────────────────────────────
+
+    const UTIL_TOOLS = {
+      pest: {
+        title: '🐛 Pest Help',
+        chips: ['Aphids','Slugs & Snails','Whiteflies','Spider Mites','Caterpillars','Japanese Beetles','Fungus Gnats','Powdery Mildew','Root Rot','Squash Vine Borers','Tomato Blight','Cutworms'],
+        chipQuery: p => `Tell me about ${p}: which plants it affects, how to identify it, natural/organic treatments, and chemical options if needed. Be specific and practical.`,
+        hint: 'Tap a pest for organic & chemical solutions:',
+        hasInput: false
+      },
+      health: {
+        title: '🌿 Plant Health',
+        chips: ['Stress & Anxiety','Better Sleep','Immune Support','Digestion','Anti-Inflammatory','Heart Health','Energy & Focus','Skin Health','Hormone Balance','Detox','Pain Relief','Respiratory Health'],
+        chipQuery: b => `Which garden plants support ${b}? How do I grow and use them? What should I know about using them? Note this is for educational purposes only, not medical advice.`,
+        hint: 'Tap a benefit to find plants that support it:',
+        hasInput: false
+      },
+      garden: {
+        title: '🗺 Garden Viewer',
+        chips: [],
+        hint: '',
+        hasInput: false,
+        custom: true
+      },
+      ask: {
+        title: '💬 Ask Anything',
+        chips: ['Best soil for raised beds','When to start seeds indoors','Companion planting basics','How to water correctly','Natural fertilizers','Dealing with clay soil','Best plants for shade','Extending the growing season'],
+        chipQuery: q => q,
+        hint: 'Ask any garden question or pick a common topic:',
+        hasInput: true,
+        inputPlaceholder: 'Ask any garden question…',
+        inputQuery: q => q
+      }
+    };
+
+    let utilActiveTool = null;
+    let utilDragActive = false;
+    let utilDragOffsetX = 0;
+    let utilDragOffsetY = 0;
+
+    function utilBuildContent(tool, targetBody, targetInput) {
+      const def = UTIL_TOOLS[tool];
+      if (!def) return;
+
+      if (def.custom && tool === 'garden') {
+        const planText = (typeof lastPlanText !== 'undefined' && lastPlanText) ? lastPlanText : null;
+        const plants = (typeof lastPlants !== 'undefined' && lastPlants.length) ? lastPlants : null;
+        if (!planText && !plants) {
+          targetBody.innerHTML = `<div class="util-section-hint">Generate a plan first and your garden layout, Gantt calendar, and plant grid will appear here.</div>`;
+        } else {
+          let html = `<div class="util-section-hint">Your latest generated plan summary:</div>`;
+          if (plants && plants.length) {
+            html += `<div style="margin-bottom:12px;"><div style="font-size:11px;font-weight:700;color:#4a7a5a;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:7px;">Plants in Your Plan</div><div class="util-chips">`;
+            plants.forEach((p,i) => {
+              const colors = ["#4a7a5a","#c9a96e","#6b8f71","#8c6e58","#5b8e6b"];
+              html += `<span style="padding:5px 10px;border-radius:14px;font-size:12px;font-weight:600;color:#fff;background:${colors[i%colors.length]};font-family:'Inter',sans-serif;">${p.common||p.name||''}</span>`;
+            });
+            html += `</div></div>`;
+          }
+          html += `<button class="btn" type="button" onclick="document.getElementById('ganttWrap').scrollIntoView({behavior:'smooth'});utilClose();utilMobileDrawerClose();" style="width:100%;margin-top:4px;margin-bottom:8px;font-size:13px;padding:10px;">📅 View Planting Calendar</button>`;
+          html += `<button class="btn" type="button" onclick="document.getElementById('bedPlannerWrap').scrollIntoView({behavior:'smooth'});utilClose();utilMobileDrawerClose();" style="width:100%;background:var(--primary-2);font-size:13px;padding:10px;">🪴 Go to Garden Bed Planner</button>`;
+          targetBody.innerHTML = html;
+        }
+        if (targetInput) targetInput.style.display = 'none';
+        return;
+      }
+
+      let html = `<div class="util-section-hint">${def.hint}</div><div class="util-chips">`;
+      def.chips.forEach(chip => {
+        const q = def.chipQuery(chip).replace(/'/g, "\\'");
+        html += `<button class="util-chip" onclick="utilAsk('${q}', this)">${chip}</button>`;
+      });
+      html += `</div><div id="utilAnswerTarget_${tool}"></div>`;
+      targetBody.innerHTML = html;
+
+      if (targetInput) {
+        if (def.hasInput) {
+          targetInput.style.display = 'block';
+          const inp = targetInput.querySelector('input');
+          const btn = targetInput.querySelector('button');
+          if (inp) inp.placeholder = def.inputPlaceholder || 'Ask here…';
+          if (btn && inp) {
+            btn.onclick = () => {
+              const q = inp.value.trim();
+              if (!q) return;
+              inp.value = '';
+              utilAsk(def.inputQuery(q), null, targetBody);
+            };
+            inp.onkeydown = e => { if (e.key === 'Enter') btn.click(); };
+          }
+        } else {
+          targetInput.style.display = 'none';
+        }
+      }
+    }
+
+    async function utilAsk(question, chipEl, forceBody) {
+      const isMobile = window.innerWidth < 900;
+      const body = forceBody || (isMobile ? $('utilDrawerBody') : $('utilPopupBody'));
+
+      // Find or create answer div
+      let answerDiv = body.querySelector('.util-answer');
+      if (!answerDiv) {
+        answerDiv = document.createElement('div');
+        answerDiv.className = 'util-answer';
+        body.appendChild(answerDiv);
+      }
+      answerDiv.innerHTML = '<em style="color:#6a7b6b;font-size:12px;">Thinking…</em>';
+      body.scrollTop = body.scrollHeight;
+
+      const token = sessionStorage.getItem('rp_token') || '';
+      let fullText = '';
+      try {
+        const res = await fetch('/api/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Session-Token': token },
+          body: JSON.stringify({ messages: [{ role: 'user', content: question }] })
+        });
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        while (true) {
+          const { done, value } = await reader.read();
+          if (!done) buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = done ? '' : lines.pop();
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            const payload = line.slice(6).trim();
+            if (payload === '[DONE]') continue;
+            try { const p = JSON.parse(payload); if (p.text) { fullText += p.text; answerDiv.innerHTML = marked.parse(fullText); body.scrollTop = body.scrollHeight; } } catch(e) {}
+          }
+          if (done) break;
+        }
+      } catch(e) { answerDiv.innerHTML = '<em style="color:red;">Something went wrong. Try again.</em>'; }
+    }
+
+    // Desktop popup functions
+    function utilOpen(tool) {
+      const popup = $('utilPopup');
+      const body = $('utilPopupBody');
+      const input = $('utilPopupInput');
+      const titleEl = $('utilPopupTitle');
+
+      // Toggle off if same tool
+      if (utilActiveTool === tool && popup.classList.contains('open')) {
+        utilClose();
+        return;
+      }
+
+      utilActiveTool = tool;
+      titleEl.textContent = UTIL_TOOLS[tool]?.title || tool;
+
+      // Update rail active state
+      document.querySelectorAll('.util-rail-btn').forEach(b => b.classList.remove('active'));
+      const railBtn = document.getElementById('rail' + tool.charAt(0).toUpperCase() + tool.slice(1));
+      if (railBtn) railBtn.classList.add('active');
+
+      utilBuildContent(tool, body, input);
+      popup.classList.add('open');
+    }
+
+    function utilClose() {
+      $('utilPopup').classList.remove('open');
+      document.querySelectorAll('.util-rail-btn').forEach(b => b.classList.remove('active'));
+      utilActiveTool = null;
+    }
+
+    // Draggable popup
+    (function() {
+      function initDrag() {
+        const header = $('utilPopupHeader');
+        const popup = $('utilPopup');
+        if (!header || !popup) return;
+
+        header.addEventListener('mousedown', e => {
+          if (e.target.classList.contains('util-close-btn')) return;
+          utilDragActive = true;
+          const rect = popup.getBoundingClientRect();
+          utilDragOffsetX = e.clientX - rect.left;
+          utilDragOffsetY = e.clientY - rect.top;
+          e.preventDefault();
+        });
+        document.addEventListener('mousemove', e => {
+          if (!utilDragActive) return;
+          const x = Math.max(0, Math.min(window.innerWidth - popup.offsetWidth, e.clientX - utilDragOffsetX));
+          const y = Math.max(0, Math.min(window.innerHeight - popup.offsetHeight, e.clientY - utilDragOffsetY));
+          popup.style.left = x + 'px';
+          popup.style.top = y + 'px';
+        });
+        document.addEventListener('mouseup', () => { utilDragActive = false; });
+      }
+      // Init after DOM ready
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initDrag);
+      else initDrag();
+    })();
+
+    // Escape key closes popup
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { utilClose(); utilMobileMenuClose(); utilMobileDrawerClose(); } });
+
+    // Mobile functions
+    function utilMobileMenuOpen() {
+      $('utilMobileMenu').classList.add('open');
+      $('utilOverlay').classList.add('open');
+    }
+    function utilMobileMenuClose() {
+      $('utilMobileMenu').classList.remove('open');
+      $('utilOverlay').classList.remove('open');
+    }
+    function utilMobileOpen(tool) {
+      utilMobileMenuClose();
+      const drawer = $('utilMobileDrawer');
+      const body = $('utilDrawerBody');
+      const input = $('utilDrawerInput');
+      const titleEl = $('utilDrawerTitle');
+      titleEl.textContent = UTIL_TOOLS[tool]?.title || tool;
+      body.innerHTML = '';
+      utilBuildContent(tool, body, input);
+      // Wire input button
+      const inp = $('utilDrawerInputField');
+      const btn = $('utilDrawerInputBtn');
+      if (inp && btn) {
+        btn.onclick = () => {
+          const q = inp.value.trim();
+          if (!q) return;
+          inp.value = '';
+          utilAsk(q, null, body);
+        };
+        inp.onkeydown = e => { if (e.key === 'Enter') btn.click(); };
+      }
+      drawer.classList.add('open');
+      $('utilOverlay').classList.add('open');
+      utilActiveTool = tool;
+    }
+    function utilMobileDrawerBack() {
+      $('utilMobileDrawer').classList.remove('open');
+      $('utilOverlay').classList.remove('open');
+      utilMobileMenuOpen();
+    }
+    function utilMobileDrawerClose() {
+      $('utilMobileDrawer').classList.remove('open');
+      $('utilOverlay').classList.remove('open');
+      utilActiveTool = null;
+    }
+    function utilOverlayClick() {
+      if ($('utilMobileDrawer').classList.contains('open')) { utilMobileDrawerClose(); return; }
+      if ($('utilMobileMenu').classList.contains('open')) { utilMobileMenuClose(); return; }
+      utilClose();
+    }
+
+    // Swipe-down to close mobile drawer
+    (function() {
+      function initSwipe() {
+        const drawer = $('utilMobileDrawer');
+        const handle = $('utilDrawerHandle');
+        if (!drawer) return;
+        let startY = 0, isDragging = false;
+        const onStart = e => { startY = (e.touches || [e])[0].clientY; isDragging = true; };
+        const onMove = e => {
+          if (!isDragging) return;
+          const dy = (e.touches || [e])[0].clientY - startY;
+          if (dy > 0) { drawer.style.transform = `translateY(${dy}px)`; e.preventDefault(); }
+        };
+        const onEnd = e => {
+          if (!isDragging) return;
+          isDragging = false;
+          const dy = (e.changedTouches || [e])[0].clientY - startY;
+          drawer.style.transform = '';
+          if (dy > 80) utilMobileDrawerClose();
+        };
+        handle.addEventListener('touchstart', onStart, { passive: true });
+        handle.addEventListener('touchmove', onMove, { passive: false });
+        handle.addEventListener('touchend', onEnd, { passive: true });
+        // Also swipe-down for mobile menu
+        const menuHandle = document.querySelector('#utilMobileMenu .util-sheet-handle');
+        if (menuHandle) {
+          let mStartY = 0, mDrag = false;
+          menuHandle.addEventListener('touchstart', e => { mStartY = e.touches[0].clientY; mDrag = true; }, { passive: true });
+          menuHandle.addEventListener('touchmove', e => {
+            if (!mDrag) return;
+            const dy = e.touches[0].clientY - mStartY;
+            if (dy > 0) { $('utilMobileMenu').style.transform = `translateY(${dy}px)`; e.preventDefault(); }
+          }, { passive: false });
+          menuHandle.addEventListener('touchend', e => {
+            if (!mDrag) return;
+            mDrag = false;
+            const dy = e.changedTouches[0].clientY - mStartY;
+            $('utilMobileMenu').style.transform = '';
+            if (dy > 60) utilMobileMenuClose();
+          }, { passive: true });
+        }
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initSwipe);
+      else initSwipe();
+    })();
+
+    window.utilOpen = utilOpen;
+    window.utilClose = utilClose;
+    window.utilMobileMenuOpen = utilMobileMenuOpen;
+    window.utilMobileMenuClose = utilMobileMenuClose;
+    window.utilMobileOpen = utilMobileOpen;
+    window.utilMobileDrawerBack = utilMobileDrawerBack;
+    window.utilMobileDrawerClose = utilMobileDrawerClose;
+    window.utilOverlayClick = utilOverlayClick;
+    window.utilAsk = utilAsk;
   </script>
 
-<!-- Floating Garden Help Launcher -->
-<div id="helpFab" style="position:fixed;bottom:110px;right:20px;z-index:997;">
-  <button id="helpFabBtn" onclick="toggleHelpPanel()" style="display:flex;align-items:center;gap:9px;padding:14px 22px;background:linear-gradient(135deg,#2d6a4f,#52b788);color:#fff;border:none;border-radius:999px;font-size:15px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;box-shadow:0 6px 28px rgba(45,106,79,0.55),0 2px 8px rgba(0,0,0,0.15);letter-spacing:0.02em;white-space:nowrap;transition:transform 0.2s,box-shadow 0.2s,background 0.2s;">
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-    Garden Help
+<!-- ── Utility Nav ──────────────────────────────────── -->
+
+<!-- Desktop left rail -->
+<div id="utilRail">
+  <button class="util-rail-btn" id="railPest" onclick="utilOpen('pest')" title="Pest Help">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+    <span class="util-rail-label">Pests</span>
+  </button>
+  <button class="util-rail-btn" id="railHealth" onclick="utilOpen('health')" title="Plant Health">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/></svg>
+    <span class="util-rail-label">Health</span>
+  </button>
+  <button class="util-rail-btn" id="railGarden" onclick="utilOpen('garden')" title="Garden Viewer">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    <span class="util-rail-label">Garden</span>
+  </button>
+  <button class="util-rail-btn" id="railAsk" onclick="utilOpen('ask')" title="Ask a Question">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span class="util-rail-label">Ask</span>
   </button>
 </div>
 
-<!-- Help Panel -->
-<div id="helpPanel" style="display:none;position:fixed;bottom:160px;right:20px;z-index:996;width:300px;background:rgba(252,249,240,0.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:20px;border:1px solid rgba(255,255,255,0.45);box-shadow:0 16px 56px rgba(0,0,0,0.18),0 0 0 1px rgba(255,255,255,0.2) inset;padding:20px;">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-    <span style="font-size:14px;font-weight:700;color:#274c38;font-family:'Inter',sans-serif;">How can we help?</span>
-    <button onclick="toggleHelpPanel()" style="background:none;border:none;cursor:pointer;font-size:18px;color:#6a7b6b;line-height:1;padding:2px 4px;border-radius:6px;">✕</button>
+<!-- Desktop draggable popup -->
+<div id="utilPopup">
+  <div id="utilPopupHeader">
+    <div class="util-popup-title" id="utilPopupTitle">Pest Help</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="util-drag-hint">⠿ drag</span>
+      <button class="util-close-btn" onclick="utilClose()">✕</button>
+    </div>
   </div>
-  <p style="font-size:11px;color:#6a7b6b;margin:0 0 14px;font-family:'Inter',sans-serif;">Get quick help without leaving your plan.</p>
-  <div style="display:flex;flex-direction:column;gap:8px;">
-    <button class="help-option" onclick="openHelpTopic('pest')">
-      <div class="help-option-icon" style="background:#edf4ef;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4a7a5a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+  <div id="utilPopupBody"></div>
+  <div id="utilPopupInput">
+    <div class="util-input-row">
+      <input id="utilInputField" class="input" placeholder="Type here…" style="flex:1;font-size:13px;padding:8px 12px;" />
+      <button class="btn" type="button" id="utilInputBtn" style="padding:8px 14px;font-size:13px;">Ask</button>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile FAB -->
+<div id="utilMobileFab">
+  <button class="util-fab-btn" onclick="utilMobileMenuOpen()">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <span class="util-fab-label">HELP</span>
+  </button>
+</div>
+
+<!-- Mobile menu bottom sheet -->
+<div id="utilMobileMenu">
+  <div class="util-sheet-handle"></div>
+  <div class="util-menu-header">
+    <span>Garden Tools</span>
+    <button class="util-close-btn" onclick="utilMobileMenuClose()">✕</button>
+  </div>
+  <div class="util-menu-grid">
+    <button class="util-menu-card" onclick="utilMobileOpen('pest')">
+      <div class="util-menu-card-icon" style="background:#edf4ef;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4a7a5a" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
       </div>
-      <div><div class="help-option-title">Pest Help</div><div class="help-option-sub">Identify & treat common garden pests</div></div>
+      <div class="util-menu-card-title">Pest Help</div>
+      <div class="util-menu-card-sub">Identify & treat garden pests</div>
     </button>
-    <button class="help-option" onclick="openHelpTopic('health')">
-      <div class="help-option-icon" style="background:#fdf0e8;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/></svg>
+    <button class="util-menu-card" onclick="utilMobileOpen('health')">
+      <div class="util-menu-card-icon" style="background:#fdf0e8;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" stroke-width="2"><path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/></svg>
       </div>
-      <div><div class="help-option-title">Plant Health</div><div class="help-option-sub">Benefits, uses & wellness properties</div></div>
+      <div class="util-menu-card-title">Plant Health</div>
+      <div class="util-menu-card-sub">Benefits & wellness plants</div>
     </button>
-    <button class="help-option" onclick="openHelpTopic('disease')">
-      <div class="help-option-icon" style="background:#f0f4ff;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7fd7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 3"/><circle cx="18" cy="5" r="3"/></svg>
+    <button class="util-menu-card" onclick="utilMobileOpen('garden')">
+      <div class="util-menu-card-icon" style="background:#eef4ff;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6b7fd7" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       </div>
-      <div><div class="help-option-title">Plant Diseases</div><div class="help-option-sub">Diagnose & treat common diseases</div></div>
+      <div class="util-menu-card-title">Garden Viewer</div>
+      <div class="util-menu-card-sub">View your plan & grid</div>
     </button>
-    <button class="help-option" onclick="openHelpTopic('ask')">
-      <div class="help-option-icon" style="background:#f5f0fc;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9b6fd7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <button class="util-menu-card" onclick="utilMobileOpen('ask')">
+      <div class="util-menu-card-icon" style="background:#f5f0fc;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9b6fd7" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </div>
-      <div><div class="help-option-title">Ask Anything</div><div class="help-option-sub">Any garden question answered by AI</div></div>
+      <div class="util-menu-card-title">Ask Anything</div>
+      <div class="util-menu-card-sub">Any garden question</div>
     </button>
   </div>
 </div>
 
-<!-- Help Sub-panels -->
-<div id="helpSubPanel" style="display:none;position:fixed;bottom:160px;right:20px;z-index:996;width:300px;max-height:70vh;background:rgba(252,249,240,0.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:20px;border:1px solid rgba(255,255,255,0.45);box-shadow:0 16px 56px rgba(0,0,0,0.18);flex-direction:column;overflow:hidden;">
-  <div style="padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(74,122,90,0.12);">
-    <button onclick="showHelpPanel()" style="background:none;border:none;cursor:pointer;font-size:12px;color:#4a7a5a;font-weight:600;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:4px;">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Back
+<!-- Mobile content drawer -->
+<div id="utilMobileDrawer">
+  <div class="util-sheet-handle" id="utilDrawerHandle"></div>
+  <div class="util-drawer-header">
+    <button class="util-drawer-back" onclick="utilMobileDrawerBack()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
     </button>
-    <span id="helpSubTitle" style="font-size:13px;font-weight:700;color:#274c38;font-family:'Inter',sans-serif;"></span>
-    <button onclick="closeHelpAll()" style="background:none;border:none;cursor:pointer;font-size:16px;color:#6a7b6b;">✕</button>
+    <span class="util-drawer-title" id="utilDrawerTitle"></span>
+    <button class="util-close-btn" onclick="utilMobileDrawerClose()">✕</button>
   </div>
-  <div id="helpSubContent" style="overflow-y:auto;padding:12px 14px 16px;flex:1;"></div>
-  <div id="helpSubInput" style="display:none;padding:10px 14px 14px;border-top:1px solid rgba(74,122,90,0.1);">
-    <div style="display:flex;gap:6px;">
-      <input id="helpAskInput" class="input" placeholder="Type your question…" style="flex:1;font-size:13px;padding:8px 12px;" />
-      <button class="btn" type="button" onclick="submitHelpAsk()" style="padding:8px 14px;font-size:13px;">Ask</button>
+  <div class="util-drawer-body" id="utilDrawerBody"></div>
+  <div class="util-drawer-input" id="utilDrawerInput">
+    <div class="util-input-row">
+      <input id="utilDrawerInputField" class="input" placeholder="Type here…" style="flex:1;font-size:14px;padding:10px 14px;" />
+      <button class="btn" type="button" id="utilDrawerInputBtn" style="padding:10px 16px;font-size:14px;">Ask</button>
     </div>
   </div>
 </div>
-<div id="helpOverlay" onclick="closeHelpAll()" style="display:none;position:fixed;inset:0;z-index:995;"></div>
+
+<div id="utilOverlay" onclick="utilOverlayClick()"></div>
 </body>
 </html>
