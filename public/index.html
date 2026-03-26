@@ -2421,6 +2421,7 @@
     let selectedPests = [];
     let lastPlanText = "";
     let lastPlants = [];
+    let lastCalData = [];
 
     const EXCLUSION_ITEMS = [
       { label: "🍅 Tomatoes",     value: "Tomatoes",     type: "edible" },
@@ -3326,6 +3327,7 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
           if (calMatch) {
             const raw = calMatch[1].replace(/```json|```/g, '').trim();
             calData = JSON.parse(raw);
+            lastCalData = calData;
             renderGantt(calData);
           }
         } catch(e) { console.warn('Gantt parse failed:', e); }
@@ -3771,22 +3773,55 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
       if (!def) return;
 
       if (def.custom && tool === 'garden') {
-        const planText = (typeof lastPlanText !== 'undefined' && lastPlanText) ? lastPlanText : null;
         const plants = (typeof lastPlants !== 'undefined' && lastPlants.length) ? lastPlants : null;
-        if (!planText && !plants) {
-          targetBody.innerHTML = `<div class="util-section-hint">Generate a plan first and your garden layout, Gantt calendar, and plant grid will appear here.</div>`;
+        const calData = (typeof lastCalData !== 'undefined' && lastCalData.length) ? lastCalData : null;
+        if (!plants) {
+          targetBody.innerHTML = `<div class="util-section-hint" style="text-align:center;padding:24px 12px;">🌱<br><br>Generate a garden plan first — your planting calendar and bed layout will appear here.</div>`;
         } else {
-          let html = `<div class="util-section-hint">Your latest generated plan summary:</div>`;
-          if (plants && plants.length) {
-            html += `<div style="margin-bottom:12px;"><div style="font-size:11px;font-weight:700;color:#4a7a5a;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:7px;">Plants in Your Plan</div><div class="util-chips">`;
-            plants.forEach((p,i) => {
-              const colors = ["#4a7a5a","#c9a96e","#6b8f71","#8c6e58","#5b8e6b"];
-              html += `<span style="padding:5px 10px;border-radius:14px;font-size:12px;font-weight:600;color:#fff;background:${colors[i%colors.length]};font-family:'Inter',sans-serif;">${p.common||p.name||''}</span>`;
+          // Render Gantt inline
+          const months = ['J','F','M','A','M','J','J','A','S','O','N','D'];
+          let html = `<div style="font-size:12px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px;">📅 Planting Calendar</div>`;
+          if (calData && calData.length) {
+            html += `<div style="overflow-x:auto;margin-bottom:20px;"><table style="width:100%;border-collapse:collapse;font-size:11px;font-family:'Inter',sans-serif;">`;
+            html += `<thead><tr><th style="text-align:left;padding:4px 6px;color:#4a4a4a;font-weight:600;">Plant</th>`;
+            months.forEach(m => html += `<th style="padding:3px 2px;color:#4a4a4a;font-weight:600;text-align:center;">${m}</th>`);
+            html += `</tr></thead><tbody>`;
+            calData.forEach(row => {
+              html += `<tr><td style="padding:4px 6px;font-weight:600;color:#1a1a1a;white-space:nowrap;max-width:90px;overflow:hidden;text-overflow:ellipsis;">${row.plant}</td>`;
+              for (let m = 1; m <= 12; m++) {
+                const isSow = row.sow_start && row.sow_end && m >= row.sow_start && m <= row.sow_end;
+                const isPlant = m >= row.plant_start && m <= row.plant_end;
+                const isHarvest = m >= row.harvest_start && m <= row.harvest_end;
+                let bg = 'transparent';
+                if (isHarvest) bg = '#c9a96e';
+                else if (isPlant) bg = '#2f5d34';
+                else if (isSow) bg = '#a8d5ba';
+                html += `<td style="padding:3px 2px;text-align:center;"><div style="width:14px;height:14px;border-radius:3px;background:${bg};margin:0 auto;"></div></td>`;
+              }
+              html += `</tr>`;
             });
-            html += `</div></div>`;
+            html += `</tbody></table>`;
+            html += `<div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;">
+              <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:#4a4a4a;"><span style="width:10px;height:10px;background:#a8d5ba;border-radius:2px;display:inline-block;"></span>Indoors</span>
+              <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:#4a4a4a;"><span style="width:10px;height:10px;background:#2f5d34;border-radius:2px;display:inline-block;"></span>Outdoors</span>
+              <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:#4a4a4a;"><span style="width:10px;height:10px;background:#c9a96e;border-radius:2px;display:inline-block;"></span>Harvest</span>
+            </div></div>`;
+          } else {
+            html += `<div style="color:#4a4a4a;font-size:12px;margin-bottom:16px;">Regenerate your plan to load calendar data.</div>`;
           }
-          html += `<button class="btn" type="button" onclick="document.getElementById('ganttWrap').scrollIntoView({behavior:'smooth'});utilClose();utilMobileDrawerClose();" style="width:100%;margin-top:4px;margin-bottom:8px;font-size:13px;padding:10px;">📅 View Planting Calendar</button>`;
-          html += `<button class="btn" type="button" onclick="document.getElementById('bedPlannerWrap').scrollIntoView({behavior:'smooth'});utilClose();utilMobileDrawerClose();" style="width:100%;background:var(--primary-2);font-size:13px;padding:10px;">🪴 Go to Garden Bed Planner</button>`;
+
+          // Render bed planner inline
+          html += `<div style="font-size:12px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px;">🪴 Garden Bed Layout</div>`;
+          const colors = ["#2f5d34","#b8922a","#3d7045","#7a5c48","#5b8e6b","#8fbc8f","#556b2f","#cd853f"];
+          const icons = ["🌿","🍅","🌱","🥬","🌸","🫛","🌾","🥕"];
+          html += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">`;
+          plants.slice(0,9).forEach((p,i) => {
+            html += `<div style="background:${colors[i%colors.length]};border-radius:10px;padding:8px 6px;text-align:center;color:#fff;">
+              <div style="font-size:18px;">${icons[i%icons.length]}</div>
+              <div style="font-size:10px;font-weight:700;margin-top:3px;line-height:1.2;">${(p.common||p.name||'').split(' ').slice(0,2).join(' ')}</div>
+            </div>`;
+          });
+          html += `</div>`;
           targetBody.innerHTML = html;
         }
         if (targetInput) targetInput.style.display = 'none';
