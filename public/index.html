@@ -2814,14 +2814,11 @@ For the plants in this plan, list the 4–5 most likely pests or diseases the ga
 
 Complete ALL 9 sections. Do not stop early.
 
-After section 9, output a JSON block for the calendar — exactly this format, no extra text:
+After section 9, output EXACTLY this block with no markdown fences, no extra text, no code blocks:
 CALENDAR_JSON_START
-[
-  {"plant":"Plant Name","sow_start":3,"sow_end":4,"plant_start":5,"plant_end":6,"harvest_start":7,"harvest_end":9},
-  ...one entry per plant...
-]
+[{"plant":"Plant Name","sow_start":3,"sow_end":4,"plant_start":5,"plant_end":6,"harvest_start":7,"harvest_end":9}]
 CALENDAR_JSON_END
-Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow outdoors, harvest = harvest window. If sowing indoors is not applicable set sow_start and sow_end to 0.
+Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct sow outdoors, harvest = harvest window. Set sow_start and sow_end to 0 if not applicable. Do NOT wrap in backticks or code fences.
       `.trim();
     }
 
@@ -3328,12 +3325,13 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
         // ── Parse & render Gantt calendar + Grid visualizer ─────────────
         let calData = [];
         try {
-          const calMatch = fullText.match(/CALENDAR_JSON_START\s*([\s\S]*?)\s*CALENDAR_JSON_END/);
+          const calMatch = fullText.match(/CALENDAR_JSON_START\s*(?:```json\s*)?([\s\S]*?)(?:\s*```\s*)?CALENDAR_JSON_END/);
           if (calMatch) {
-            calData = JSON.parse(calMatch[1]);
+            const raw = calMatch[1].replace(/```json|```/g, '').trim();
+            calData = JSON.parse(raw);
             renderGantt(calData);
           }
-        } catch(e) { /* skip if parse fails */ }
+        } catch(e) { console.warn('Gantt parse failed:', e); }
         renderGridViz(lastPlants, calData);
         renderBedPlanner(lastPlants);
 
@@ -3350,8 +3348,8 @@ Use month numbers 1–12. sow = start indoors, plant = transplant/direct sow out
 
         // Silently save plant data to database
         try {
-          const calMatch = fullText.match(/CALENDAR_JSON_START\s*([\s\S]*?)\s*CALENDAR_JSON_END/);
-          const calData = calMatch ? JSON.parse(calMatch[1]) : [];
+          const calMatch = fullText.match(/CALENDAR_JSON_START\s*(?:```json\s*)?([\s\S]*?)(?:\s*```\s*)?CALENDAR_JSON_END/);
+          const calData = calMatch ? JSON.parse(calMatch[1].replace(/```json|```/g,'').trim()) : [];
           fetch("/api/save-plants", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
