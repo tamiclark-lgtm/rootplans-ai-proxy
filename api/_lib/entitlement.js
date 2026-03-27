@@ -12,10 +12,8 @@ import { getDb } from './db.js';
 
 // ── Pricing constants ─────────────────────────────────────────────────────────
 export const PRICING = {
-  monthly: { amount: 4.99, currency: 'USD', period: 'month', productId: 'com.rootplans.monthly' },
-  yearly:  { amount: 39.00, currency: 'USD', period: 'year',  productId: 'com.rootplans.yearly'  },
-  // lifetime is one-time; no expiry
-  lifetime: { amount: 99.00, currency: 'USD', period: null,   productId: 'com.rootplans.lifetime' },
+  monthly: { amount: 4.99, currency: 'USD', period: 'month', productId: 'com.rootplans.premium_monthly' },
+  yearly:  { amount: 39.00, currency: 'USD', period: 'year',  productId: 'com.rootplans.premium_yearly'  },
 };
 
 // ── Plan limits ───────────────────────────────────────────────────────────────
