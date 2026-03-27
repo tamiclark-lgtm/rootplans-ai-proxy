@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Books — Little Gem</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/gem.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">✨ Little Gem</a>
+      <div class="nav-links">
+        <a href="/library.html" class="nav-link active">My Books</a>
+        <a href="/pricing.html" class="nav-link">Pricing</a>
+      </div>
+      <div id="navAuth" class="nav-auth">
+        <a href="/login.html" class="nav-link">Sign In</a>
+        <a href="/signup.html" class="btn btn-primary btn-sm">Create Your Book</a>
+      </div>
+      <button class="nav-hamburger" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- LOADING OVERLAY -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="spinner" style="width:36px;height:36px;border-width:3px;border-color:rgba(109,40,217,0.2);border-top-color:var(--primary);"></div>
+  </div>
+
+  <main style="max-width:var(--max);margin:0 auto;padding:48px 24px 80px;">
+
+    <!-- HEADER -->
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:36px;">
+      <div>
+        <h1 style="font-family:'Playfair Display',serif;font-size:clamp(24px,3vw,32px);color:var(--text);margin-bottom:6px;">My Books</h1>
+        <p id="bookCountLabel" style="font-size:14px;color:var(--muted);">Your personalized book collection</p>
+      </div>
+      <a href="/create.html" class="btn btn-primary">✨ Create New Book</a>
+    </div>
+
+    <!-- SUBSCRIPTION STATUS BANNER -->
+    <div id="subBanner" class="hidden" style="margin-bottom:28px;"></div>
+
+    <!-- BOOKS GRID -->
+    <div id="booksContainer">
+      <!-- Empty state (default until JS runs) -->
+      <div id="emptyState" class="empty-state">
+        <div class="empty-state-icon">📚</div>
+        <h2 class="empty-state-title">No books yet</h2>
+        <p class="empty-state-text">
+          Your personalized books will appear here once you create them.<br />
+          It only takes a few minutes to make your first one.
+        </p>
+        <a href="/create.html" class="btn btn-primary btn-lg">✨ Create Your First Book</a>
+      </div>
+
+      <!-- Books grid (shown when books exist) -->
+      <div id="bookGrid" class="book-grid hidden"></div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-brand">✨ Little Gem</p>
+      <div class="footer-links">
+        <a href="/">Home</a>
+        <a href="/create.html">Create Book</a>
+        <a href="/account.html">Account</a>
+      </div>
+      <p class="footer-copy">© 2025 Little Gem · All rights reserved</p>
+    </div>
+  </footer>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function () {
+      if (!LG.requireAuth()) return;
+
+      const { user, subscription } = await LG.init();
+      document.getElementById('loadingOverlay').classList.add('hidden');
+
+      if (!user) {
+        window.location.href = '/signup.html?next=/library.html';
+        return;
+      }
+
+      // Show subscription banner if needed
+      renderSubBanner(subscription);
+
+      // Load books (placeholder — replace with real API call)
+      loadBooks(user);
+    });
+
+    function renderSubBanner(subscription) {
+      const el = document.getElementById('subBanner');
+      if (!subscription) {
+        el.innerHTML = '<div class="alert alert-info">You don\'t have an active subscription. <a href="/pricing.html">Choose a plan</a> to create and access your books.</div>';
+        el.classList.remove('hidden');
+        return;
+      }
+      if (subscription.status === 'trialing' && subscription.trialEnd) {
+        const end = new Date(subscription.trialEnd).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        el.innerHTML = '<div class="alert alert-warn">⏱ Your free trial ends on <strong>' + end + '</strong>. <a href="/pricing.html">Choose a plan</a> to keep your access.</div>';
+        el.classList.remove('hidden');
+      } else if (subscription.status === 'past_due') {
+        el.innerHTML = '<div class="alert alert-error">⚠ Your payment failed. <a href="/account.html">Update your payment method</a> to restore access.</div>';
+        el.classList.remove('hidden');
+      } else if (subscription.cancelAtPeriodEnd && subscription.renewalDate) {
+        const end = new Date(subscription.renewalDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        el.innerHTML = '<div class="alert alert-warn">Your subscription ends on <strong>' + end + '</strong>. <a href="/account.html">Renew your plan</a> to keep creating books.</div>';
+        el.classList.remove('hidden');
+      }
+    }
+
+    function loadBooks(user) {
+      // Placeholder: in production, fetch from /api/books?userId=...
+      // For now, show empty state
+      const books = [];
+
+      if (books.length === 0) {
+        document.getElementById('emptyState').classList.remove('hidden');
+        return;
+      }
+
+      const grid = document.getElementById('bookGrid');
+      grid.classList.remove('hidden');
+      document.getElementById('emptyState').classList.add('hidden');
+      document.getElementById('bookCountLabel').textContent = books.length + ' book' + (books.length !== 1 ? 's' : '');
+
+      grid.innerHTML = books.map(book => `
+        <div class="book-card" onclick="openBook('${book.id}')">
+          <div class="book-thumb">${book.icon || '📖'}</div>
+          <div class="book-card-title">${book.title}</div>
+          <div class="book-card-meta">${book.theme} · ${new Date(book.createdAt).toLocaleDateString()}</div>
+        </div>
+      `).join('');
+    }
+
+    function openBook(id) {
+      window.location.href = '/read.html?id=' + id;
+    }
+  </script>
+</body>
+</html>

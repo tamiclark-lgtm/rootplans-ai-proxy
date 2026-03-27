@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { validTokens } from "./auth.js";
+import { getSessionUser, getUserSubscription } from "./_lib/helpers.js";
 
 const client = new Anthropic();
 
@@ -52,18 +52,16 @@ function getIp(req) {
   );
 }
 
-const ALLOWED_ORIGINS = new Set([
-  "https://rootplans.com",
-  "https://www.rootplans.com"
-]);
+const APP_URL = process.env.APP_URL || "";
 
 function setCors(req, res) {
   const origin = req.headers.origin || "";
-  if (ALLOWED_ORIGINS.has(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
+  const allowed = new Set([APP_URL, "http://localhost:3000"].filter(Boolean));
+  if (!APP_URL || allowed.has(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin || "*");
   }
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type,X-Session-Token");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
 }
 
 export default async function handler(req, res) {
@@ -71,11 +69,18 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method !== "POST") return res.status(405).send("Method not allowed");
 
-  // ── Token validation ──────────────────────────────────────────────────────
-  const token = (req.headers["x-session-token"] || "").trim();
-  if (!token || !validTokens().has(token)) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
+  // ── Auth + subscription check ─────────────────────────────────────────────
+  const user = await getSessionUser(req);
+  if (!user) return res.status(401).json({ error: "Sign in to continue." });
+
+  const sub = await getUserSubscription(user.id);
+  const now = new Date();
+  const canAccess = sub && (
+    sub.status === "trialing" ||
+    sub.status === "active" ||
+    (sub.status === "canceled" && sub.current_period_end && new Date(sub.current_period_end) > now)
+  );
+  if (!canAccess) return res.status(403).json({ error: "An active subscription is required." });
 
   // ── Rate limiting ─────────────────────────────────────────────────────────
   const ip = getIp(req);
@@ -109,7 +114,7 @@ export default async function handler(req, res) {
     res.flushHeaders();
 
     const stream = client.messages.stream({
-      model: "claude-haiku-4-5",
+      model: "claude-haiku-4-5-20251001",
       max_tokens: 3500,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: userMessage }]

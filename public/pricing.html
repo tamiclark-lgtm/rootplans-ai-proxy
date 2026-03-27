@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pricing — Little Gem</title>
+  <meta name="description" content="Choose your Little Gem plan. Start with a free 14-day trial, or go straight to monthly or annual access." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/gem.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">✨ Little Gem</a>
+      <div class="nav-links">
+        <a href="/pricing.html" class="nav-link active">Pricing</a>
+        <a href="/sample.html" class="nav-link">Sample Book</a>
+      </div>
+      <div id="navAuth" class="nav-auth">
+        <a href="/login.html" class="nav-link">Sign In</a>
+        <a href="#" class="btn btn-primary btn-sm" onclick="LG.goToCreate(event)">Create Your Book</a>
+      </div>
+      <button class="nav-hamburger" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- CANCELLED NOTICE -->
+  <div id="cancelledNotice" class="hidden" style="background:var(--warn-bg);border-bottom:1px solid #FDE68A;padding:12px 24px;text-align:center;">
+    <p style="font-size:14px;color:#92400E;">Checkout was cancelled — no charge was made. Choose a plan below whenever you're ready.</p>
+  </div>
+
+  <!-- HEADER -->
+  <div style="text-align:center;padding:72px 24px 0;background:#fff;">
+    <span class="section-eyebrow">Simple, Honest Pricing</span>
+    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(32px,4vw,48px);color:var(--text);margin:12px 0 16px;">Choose Your Plan</h1>
+    <p style="font-size:17px;color:var(--muted);max-width:520px;margin:0 auto 16px;line-height:1.6;">
+      Start free for 14 days. No charge until your trial ends. Cancel any time.
+    </p>
+    <!-- Subscription already active notice -->
+    <div id="alreadyActiveNotice" class="hidden" style="margin:0 auto 0;max-width:480px;">
+      <div class="alert alert-success" style="text-align:left;">
+        ✓ You already have an active subscription. <a href="/account.html">Manage your plan →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICING GRID -->
+  <section class="pricing-section">
+
+    <!-- ── iOS App Store subscription UI (shown only inside the Capacitor app) ── -->
+    <div id="iosPricingSection" class="hidden">
+      <div class="pricing-grid" id="iosOfferingsGrid">
+        <!-- Populated at runtime from RevenueCat offerings -->
+        <div class="pricing-card" style="grid-column:1/-1;text-align:center;padding:40px;">
+          <p style="color:var(--muted);font-size:15px;">Loading plans…</p>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:28px;">
+        <button class="btn btn-ghost btn-sm" onclick="handleIosRestore()" id="btnRestore">
+          <span class="btn-text">Restore Purchases</span>
+          <span class="spinner spinner-dark"></span>
+        </button>
+        <p style="font-size:12px;color:var(--muted);margin-top:8px;">
+          Previously purchased? Tap above to restore your subscription.
+        </p>
+      </div>
+      <div style="max-width:480px;margin:24px auto 0;text-align:center;">
+        <p style="font-size:12px;color:var(--muted);line-height:1.7;">
+          Payment will be charged to your Apple ID account at confirmation of purchase.
+          Subscriptions automatically renew unless auto-renew is turned off at least 24 hours before the end of the current period.
+          You can manage and cancel your subscriptions in your App Store account settings.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── Web / Stripe pricing grid (hidden inside native iOS app) ── -->
+    <div id="webPricingSection">
+    <div class="pricing-grid">
+
+      <!-- FREE TRIAL -->
+      <div class="pricing-card">
+        <p class="pricing-name">Free Trial</p>
+        <p class="pricing-tagline">Try everything free for 14 days</p>
+        <div class="pricing-price">
+          <span class="amount">$0</span>
+          <span class="period">for 14 days</span>
+          <span class="original">then $9.99 / month</span>
+        </div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li>Create your first personalized book</li>
+          <li>Full digital preview &amp; reading</li>
+          <li>Access to all story themes</li>
+          <li>Enter payment method to start</li>
+          <li>Cancel before billing starts — no charge</li>
+          <li class="muted">3 books / month after trial</li>
+        </ul>
+        <button class="btn btn-secondary btn-block" onclick="handlePlan('trial')" id="btnTrial">
+          <span class="btn-text">Start Free Trial</span>
+          <span class="spinner"></span>
+        </button>
+      </div>
+
+      <!-- ANNUAL — FEATURED -->
+      <div class="pricing-card pricing-card--featured">
+        <div class="pricing-badge">⭐ Best Value</div>
+        <p class="pricing-name">Annual</p>
+        <p class="pricing-tagline">The most for your family, year-round</p>
+        <div class="pricing-price">
+          <span class="amount">$6.67</span>
+          <span class="period">/ month</span>
+          <span class="original">billed $79.99 / year · save 33%</span>
+        </div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li><strong>12 books included per year</strong></li>
+          <li>Full digital library access</li>
+          <li>All story themes &amp; styles</li>
+          <li>Priority support</li>
+          <li>20% off printed book orders</li>
+          <li>Exclusive seasonal story themes</li>
+        </ul>
+        <button class="btn btn-primary btn-block" onclick="handlePlan('annual')" id="btnAnnual">
+          <span class="btn-text">Choose Annual</span>
+          <span class="spinner"></span>
+        </button>
+      </div>
+
+      <!-- MONTHLY -->
+      <div class="pricing-card">
+        <p class="pricing-name">Monthly</p>
+        <p class="pricing-tagline">Flexible month-to-month access</p>
+        <div class="pricing-price">
+          <span class="amount">$9.99</span>
+          <span class="period">/ month</span>
+        </div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li><strong>3 books per month</strong></li>
+          <li>Full digital library access</li>
+          <li>All story themes &amp; styles</li>
+          <li>Cancel any time</li>
+          <li class="muted">Printed books at standard price</li>
+          <li class="muted">No priority support</li>
+        </ul>
+        <button class="btn btn-secondary btn-block" onclick="handlePlan('monthly')" id="btnMonthly">
+          <span class="btn-text">Choose Monthly</span>
+          <span class="spinner"></span>
+        </button>
+      </div>
+
+    </div>
+    </div><!-- /webPricingSection -->
+
+    <!-- FAQ / TRUST -->
+    <div style="max-width:640px;margin:64px auto 0;text-align:center;">
+      <h2 style="font-family:'Playfair Display',serif;font-size:26px;color:var(--text);margin-bottom:32px;">Common Questions</h2>
+      <div style="text-align:left;display:flex;flex-direction:column;gap:20px;">
+        <div style="border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 24px;background:#fff;">
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">When does my free trial start?</p>
+          <p style="font-size:14px;color:var(--muted);line-height:1.6;">Your 14-day trial begins the moment you complete checkout. You'll need to enter a payment method, but you won't be charged until after the trial ends.</p>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 24px;background:#fff;">
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">What happens when my trial ends?</p>
+          <p style="font-size:14px;color:var(--muted);line-height:1.6;">If you don't cancel before the trial ends, you'll be automatically moved to the Monthly plan at $9.99/month. You can cancel at any time from your account settings.</p>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 24px;background:#fff;">
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">Can I switch plans?</p>
+          <p style="font-size:14px;color:var(--muted);line-height:1.6;">Yes — upgrade to Annual or downgrade to Monthly any time from your account settings. Changes take effect at the next billing period.</p>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 24px;background:#fff;">
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">Are the printed books extra?</p>
+          <p style="font-size:14px;color:var(--muted);line-height:1.6;">Yes. Your subscription gives you digital access and book creation credits. Printed hardcovers are ordered separately — Annual members get 20% off every order.</p>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-brand">✨ Little Gem</p>
+      <p class="footer-tagline">Magical personalized books for every child.</p>
+      <div class="footer-links">
+        <a href="/">Home</a>
+        <a href="/sample.html">Sample Book</a>
+        <a href="/login.html">Sign In</a>
+      </div>
+      <p class="footer-copy">© 2025 Little Gem · All rights reserved</p>
+    </div>
+  </footer>
+
+  <div id="globalAlert" class="hidden" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:200;min-width:300px;max-width:480px;padding:0 16px;"></div>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/iap.js"></script>
+  <script>
+    // Holds RevenueCat Package objects keyed by plan type (monthly / annual)
+    var _iosPackages = {};
+
+    document.addEventListener('DOMContentLoaded', async function () {
+      const { user, subscription } = await LG.init();
+
+      // Show cancelled notice (web flow only)
+      const params = new URLSearchParams(location.search);
+      if (params.get('checkout') === 'cancelled') {
+        document.getElementById('cancelledNotice').classList.remove('hidden');
+      }
+
+      // Already active?
+      const isActive = subscription &&
+        (subscription.status === 'trialing' || subscription.status === 'active');
+      if (isActive) {
+        document.getElementById('alreadyActiveNotice').classList.remove('hidden');
+      }
+
+      // iOS: show App Store UI, hide web UI
+      if (LG.isNativeIOS()) {
+        document.getElementById('webPricingSection').classList.add('hidden');
+        document.getElementById('iosPricingSection').classList.remove('hidden');
+        await loadIosOfferings();
+      }
+    });
+
+    // ── iOS: load offerings from RevenueCat and render cards ─────────────────
+    async function loadIosOfferings() {
+      if (!window.LG_IAP?.isAvailable()) {
+        document.getElementById('iosOfferingsGrid').innerHTML =
+          '<div class="pricing-card" style="grid-column:1/-1;text-align:center;padding:40px;">' +
+          '<p style="color:var(--muted)">App Store unavailable. Please try again later.</p></div>';
+        return;
+      }
+
+      const offering = await LG_IAP.getOfferings();
+      if (!offering?.availablePackages?.length) {
+        document.getElementById('iosOfferingsGrid').innerHTML =
+          '<div class="pricing-card" style="grid-column:1/-1;text-align:center;padding:40px;">' +
+          '<p style="color:var(--muted)">No plans available right now. Please try again later.</p></div>';
+        return;
+      }
+
+      const packages = offering.availablePackages;
+      let html = '';
+
+      packages.forEach(function (pkg) {
+        const p = pkg.product;
+        const isAnnual = pkg.packageType === 'ANNUAL' || (p.subscriptionPeriod || '').includes('Y');
+        const planKey = isAnnual ? 'annual' : 'monthly';
+        _iosPackages[planKey] = pkg;
+
+        const featured = isAnnual ? ' pricing-card--featured' : '';
+        const badge    = isAnnual ? '<div class="pricing-badge">⭐ Best Value</div>' : '';
+        const label    = isAnnual ? 'Annual' : 'Monthly';
+        const btnLabel = isAnnual ? 'Choose Annual' : 'Choose Monthly';
+        const btnId    = isAnnual ? 'iosBtnAnnual' : 'iosBtnMonthly';
+        const tagline  = isAnnual
+          ? 'The most for your family, year-round'
+          : 'Flexible month-to-month access';
+
+        const periodNote = isAnnual
+          ? '<span class="original">billed ' + p.priceString + ' / year</span>'
+          : '';
+
+        const features = isAnnual
+          ? '<li><strong>12 books included per year</strong></li>' +
+            '<li>Full digital library access</li>' +
+            '<li>All story themes &amp; styles</li>' +
+            '<li>Priority support</li>' +
+            '<li>20% off printed book orders</li>' +
+            '<li>Exclusive seasonal story themes</li>'
+          : '<li><strong>3 books per month</strong></li>' +
+            '<li>Full digital library access</li>' +
+            '<li>All story themes &amp; styles</li>' +
+            '<li>Cancel any time</li>';
+
+        html +=
+          '<div class="pricing-card' + featured + '">' +
+            badge +
+            '<p class="pricing-name">' + label + '</p>' +
+            '<p class="pricing-tagline">' + tagline + '</p>' +
+            '<div class="pricing-price">' +
+              '<span class="amount">' + p.priceString + '</span>' +
+              '<span class="period">' + (isAnnual ? '/ year' : '/ month') + '</span>' +
+              periodNote +
+            '</div>' +
+            '<div class="pricing-divider"></div>' +
+            '<ul class="pricing-features">' + features + '</ul>' +
+            '<button class="btn ' + (isAnnual ? 'btn-primary' : 'btn-secondary') +
+              ' btn-block" id="' + btnId + '" onclick="handleIosPurchase(\'' + planKey + '\')">' +
+              '<span class="btn-text">' + btnLabel + '</span>' +
+              '<span class="spinner"></span>' +
+            '</button>' +
+          '</div>';
+      });
+
+      document.getElementById('iosOfferingsGrid').innerHTML = html;
+    }
+
+    // ── iOS: trigger App Store purchase sheet ─────────────────────────────────
+    async function handleIosPurchase(planKey) {
+      if (!LG.isLoggedIn()) {
+        window.location.href = '/signup.html?next=/pricing.html';
+        return;
+      }
+
+      const pkg = _iosPackages[planKey];
+      if (!pkg) { showAlert('Plan not available. Please try again.', 'error'); return; }
+
+      const btnId = planKey === 'annual' ? 'iosBtnAnnual' : 'iosBtnMonthly';
+      const btn = document.getElementById(btnId);
+      if (btn) { btn.classList.add('loading'); btn.disabled = true; }
+
+      const result = await LG_IAP.purchasePackage(pkg);
+
+      if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
+
+      if (result.ok) {
+        // Refresh session so canAccessCreator() reflects the new subscription
+        await LG.init();
+        showAlert('Subscription activated! You now have full access.', 'success');
+        setTimeout(function () { window.location.href = '/create.html'; }, 1500);
+      } else if (!result.cancelled) {
+        showAlert(result.error || 'Purchase could not be completed. Please try again.', 'error');
+      }
+    }
+
+    // ── iOS: restore purchases ────────────────────────────────────────────────
+    async function handleIosRestore() {
+      if (!LG.isLoggedIn()) {
+        window.location.href = '/signup.html?next=/pricing.html';
+        return;
+      }
+
+      const btn = document.getElementById('btnRestore');
+      if (btn) { btn.classList.add('loading'); btn.disabled = true; }
+
+      const result = await LG_IAP.restorePurchases();
+
+      if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
+
+      if (!result.ok) {
+        showAlert(result.error || 'Restore failed. Please try again.', 'error');
+        return;
+      }
+
+      if (result.isEntitled) {
+        await LG.init();
+        showAlert('Subscription restored! Welcome back.', 'success');
+        setTimeout(function () { window.location.href = '/create.html'; }, 1500);
+      } else {
+        showAlert('No active subscription found on this Apple ID.', 'info');
+      }
+    }
+
+    // ── Web: Stripe checkout ──────────────────────────────────────────────────
+    async function handlePlan(plan) {
+      if (!LG.isLoggedIn()) {
+        window.location.href = '/signup.html?next=/pricing.html&plan=' + plan;
+        return;
+      }
+
+      const btnId = plan === 'trial' ? 'btnTrial' : plan === 'annual' ? 'btnAnnual' : 'btnMonthly';
+      const btn = document.getElementById(btnId);
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      const result = await LG.startCheckout(plan);
+
+      if (result && !result.ok) {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        showAlert(result.data?.error || 'Something went wrong. Please try again.', 'error');
+      }
+    }
+
+    function showAlert(msg, type) {
+      type = type || 'info';
+      const el = document.getElementById('globalAlert');
+      el.innerHTML = '<div class="alert alert-' + type + '">' + msg + '</div>';
+      el.classList.remove('hidden');
+      setTimeout(function () { el.classList.add('hidden'); }, 5000);
+    }
+  </script>
+</body>
+</html>

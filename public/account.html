@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account — Little Gem</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/gem.css" />
+  <style>
+    .info-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { color: var(--muted); font-weight: 500; }
+    .info-value { color: var(--text); font-weight: 600; }
+    .plan-card {
+      background: linear-gradient(135deg, #4C1D95 0%, #2D1B69 100%);
+      border-radius: var(--r-xl);
+      padding: 28px;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    .plan-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+    .plan-status { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 16px; }
+    .plan-detail { font-size: 14px; color: rgba(255,255,255,0.85); margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">✨ Little Gem</a>
+      <div class="nav-links">
+        <a href="/library.html" class="nav-link">My Books</a>
+      </div>
+      <div id="navAuth" class="nav-auth">
+        <a href="/login.html" class="nav-link">Sign In</a>
+        <a href="/signup.html" class="btn btn-primary btn-sm">Create Your Book</a>
+      </div>
+      <button class="nav-hamburger" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- LOADING OVERLAY -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="spinner" style="width:36px;height:36px;border-width:3px;border-color:rgba(109,40,217,0.2);border-top-color:var(--primary);"></div>
+  </div>
+
+  <div class="account-grid">
+
+    <!-- SIDEBAR NAV -->
+    <aside class="account-sidebar">
+      <button class="account-nav-item active" onclick="showSection('subscription')">📋 Subscription</button>
+      <button class="account-nav-item" onclick="showSection('profile')">👤 Profile</button>
+      <button class="account-nav-item" onclick="showSection('security')">🔒 Security</button>
+      <button class="account-nav-item" onclick="LG.logout()" style="color:var(--error);">Sign Out</button>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="account-content">
+
+      <!-- GLOBAL ALERT -->
+      <div id="accountAlert" class="alert hidden"></div>
+
+      <!-- ── SUBSCRIPTION SECTION ─────────────────────────────────────── -->
+      <section id="sectionSubscription">
+        <h2 class="account-section-title">Subscription &amp; Billing</h2>
+
+        <!-- Plan card -->
+        <div id="planCard" class="plan-card hidden">
+          <p class="plan-name" id="planName">—</p>
+          <p class="plan-status" id="planStatus">—</p>
+          <p class="plan-detail" id="planDetail1">—</p>
+          <p class="plan-detail" id="planDetail2" class="hidden">—</p>
+        </div>
+
+        <!-- No plan -->
+        <div id="noPlanCard" class="card hidden">
+          <p style="font-size:15px;color:var(--text);font-weight:600;margin-bottom:8px;">No active subscription</p>
+          <p style="font-size:14px;color:var(--muted);margin-bottom:20px;">Choose a plan to start creating personalized books for your child.</p>
+          <a href="/pricing.html" class="btn btn-primary">Choose Your Plan →</a>
+        </div>
+
+        <!-- Billing actions: Stripe (web) -->
+        <div id="billingActions" class="card hidden" style="margin-top:0;">
+          <h3 style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px;">Manage Billing</h3>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <button class="btn btn-ghost" onclick="openPortal()" id="portalBtn">
+              <span class="btn-text">Open Billing Portal</span>
+              <span class="spinner spinner-dark"></span>
+            </button>
+            <p style="font-size:12px;color:var(--muted);">Update payment method, download invoices, change or cancel your plan — all from the secure Stripe billing portal.</p>
+          </div>
+        </div>
+
+        <!-- Billing actions: Apple IAP (iOS only) -->
+        <div id="appleBillingActions" class="card hidden" style="margin-top:0;">
+          <h3 style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px;">Manage Subscription</h3>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <p style="font-size:14px;color:var(--muted);line-height:1.6;">
+              Your subscription is managed through Apple. To change or cancel, go to
+              <strong>Settings → Apple ID → Subscriptions</strong> on your device.
+            </p>
+            <button class="btn btn-ghost" onclick="handleRestorePurchases()" id="restoreBtn">
+              <span class="btn-text">Restore Purchases</span>
+              <span class="spinner spinner-dark"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Trial notice -->
+        <div id="trialNotice" class="hidden" style="margin-top:0;"></div>
+      </section>
+
+      <!-- ── PROFILE SECTION ──────────────────────────────────────────── -->
+      <section id="sectionProfile" class="hidden">
+        <h2 class="account-section-title">Profile</h2>
+        <div class="card">
+          <div id="profileInfo">
+            <div class="info-row">
+              <span class="info-label">Name</span>
+              <span class="info-value" id="profileName">—</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Email</span>
+              <span class="info-value" id="profileEmail">—</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Member since</span>
+              <span class="info-value" id="profileJoined">—</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── SECURITY SECTION ─────────────────────────────────────────── -->
+      <section id="sectionSecurity" class="hidden">
+        <h2 class="account-section-title">Security</h2>
+        <div class="card">
+          <h3 style="font-size:16px;font-weight:700;margin-bottom:6px;">Change Password</h3>
+          <p style="font-size:14px;color:var(--muted);margin-bottom:20px;">We'll send a password reset link to your email address.</p>
+          <button class="btn btn-secondary" onclick="sendPasswordReset()" id="resetBtn">
+            <span class="btn-text">Send Reset Link</span>
+            <span class="spinner spinner-dark"></span>
+          </button>
+          <div id="resetMsg" class="alert hidden" style="margin-top:16px;"></div>
+        </div>
+
+        <div class="card" style="margin-top:16px;border-color:var(--error);">
+          <h3 style="font-size:16px;font-weight:700;color:var(--error);margin-bottom:6px;">Sign Out</h3>
+          <p style="font-size:14px;color:var(--muted);margin-bottom:16px;">This will sign you out on this device.</p>
+          <button class="btn btn-ghost" onclick="LG.logout()">Sign Out</button>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-brand">✨ Little Gem</p>
+      <div class="footer-links">
+        <a href="/">Home</a>
+        <a href="/library.html">My Books</a>
+        <a href="/create.html">Create Book</a>
+      </div>
+      <p class="footer-copy">© 2025 Little Gem · All rights reserved</p>
+    </div>
+  </footer>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/iap.js"></script>
+  <script>
+    let currentUser = null;
+
+    document.addEventListener('DOMContentLoaded', async function () {
+      if (!LG.requireAuth()) return;
+
+      const { user, subscription } = await LG.init();
+      document.getElementById('loadingOverlay').classList.add('hidden');
+
+      if (!user) {
+        window.location.href = '/signup.html?next=/account.html';
+        return;
+      }
+
+      currentUser = user;
+      renderProfile(user);
+      renderSubscription(subscription);
+    });
+
+    function renderProfile(user) {
+      document.getElementById('profileName').textContent = user.name || '—';
+      document.getElementById('profileEmail').textContent = user.email || '—';
+      document.getElementById('profileJoined').textContent = '—'; // Would come from user.createdAt
+    }
+
+    function renderSubscription(sub) {
+      const planCard          = document.getElementById('planCard');
+      const noPlanCard        = document.getElementById('noPlanCard');
+      const billingActs       = document.getElementById('billingActions');
+      const appleBillingActs  = document.getElementById('appleBillingActions');
+      const trialNotice       = document.getElementById('trialNotice');
+
+      if (!sub) {
+        noPlanCard.classList.remove('hidden');
+        return;
+      }
+
+      planCard.classList.remove('hidden');
+
+      // Show billing controls based on subscription source
+      if (sub.source === 'apple') {
+        appleBillingActs.classList.remove('hidden');
+      } else {
+        billingActs.classList.remove('hidden');
+      }
+
+      const planLabels = { trial: 'Free Trial', monthly: 'Monthly Plan', annual: 'Annual Plan' };
+      const planLabel  = planLabels[sub.plan] || sub.plan || 'Plan';
+      const sourceNote = sub.source === 'apple' ? ' (App Store)' : '';
+      document.getElementById('planName').textContent = planLabel + sourceNote;
+
+      const statusLabels = {
+        trialing: '✓ Active — Free Trial',
+        active:   '✓ Active',
+        canceled: 'Cancelled',
+        past_due: '⚠ Payment Failed',
+        expired:  'Expired',
+      };
+      document.getElementById('planStatus').textContent = statusLabels[sub.status] || sub.status;
+
+      if (sub.status === 'trialing' && sub.trialEnd) {
+        const end = new Date(sub.trialEnd).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        document.getElementById('planDetail1').textContent = 'Trial ends: ' + end;
+        trialNotice.innerHTML = '<div class="alert alert-warn" style="margin-top:0;">Your free trial ends on <strong>' + end + '</strong>. After that, you\'ll be billed at your plan\'s regular rate. <a href="/pricing.html">Manage plan</a></div>';
+        trialNotice.classList.remove('hidden');
+      } else if (sub.renewalDate) {
+        const date = new Date(sub.renewalDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        if (sub.cancelAtPeriodEnd) {
+          document.getElementById('planDetail1').textContent = 'Access until: ' + date;
+        } else {
+          document.getElementById('planDetail1').textContent = 'Renews: ' + date;
+        }
+      }
+
+      if (sub.status === 'past_due') {
+        document.getElementById('accountAlert').textContent = '⚠ Your payment failed. Please update your payment method in the billing portal to restore full access.';
+        document.getElementById('accountAlert').className = 'alert alert-error';
+      }
+    }
+
+    async function handleRestorePurchases() {
+      const btn = document.getElementById('restoreBtn');
+      if (btn) { btn.classList.add('loading'); btn.disabled = true; }
+
+      const result = await LG_IAP.restorePurchases();
+
+      if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
+
+      if (!result.ok) {
+        showAlert(result.error || 'Restore failed. Please try again.', 'error');
+        return;
+      }
+
+      if (result.isEntitled) {
+        // Re-fetch session so subscription display updates
+        const { subscription } = await LG.init();
+        renderSubscription(subscription);
+        showAlert('Subscription restored successfully.', 'success');
+      } else {
+        showAlert('No active subscription found on this Apple ID.', 'info');
+      }
+    }
+
+    function showSection(name) {
+      ['subscription', 'profile', 'security'].forEach(s => {
+        document.getElementById('section' + s.charAt(0).toUpperCase() + s.slice(1)).classList.toggle('hidden', s !== name);
+      });
+      document.querySelectorAll('.account-nav-item').forEach((el, i) => {
+        el.classList.toggle('active', el.textContent.toLowerCase().includes(name));
+      });
+    }
+
+    async function openPortal() {
+      const btn = document.getElementById('portalBtn');
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      const result = await LG.openBillingPortal();
+      if (result && !result.ok) {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        showAlert(result.data?.error || 'Could not open billing portal. Please try again.', 'error');
+      }
+      // If redirect succeeded, page will navigate away
+    }
+
+    async function sendPasswordReset() {
+      if (!currentUser?.email) return;
+      const btn = document.getElementById('resetBtn');
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      try {
+        await fetch('/api/auth/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: currentUser.email }),
+        });
+        const msg = document.getElementById('resetMsg');
+        msg.textContent = '✓ Reset link sent to ' + currentUser.email + '. Check your inbox.';
+        msg.className = 'alert alert-success';
+      } catch {
+        const msg = document.getElementById('resetMsg');
+        msg.textContent = 'Could not send reset email. Please try again.';
+        msg.className = 'alert alert-error';
+      } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      }
+    }
+
+    function showAlert(msg, type) {
+      const el = document.getElementById('accountAlert');
+      el.textContent = msg;
+      el.className = 'alert alert-' + type;
+    }
+  </script>
+</body>
+</html>

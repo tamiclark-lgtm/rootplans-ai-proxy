@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Your Book — Little Gem</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/gem.css" />
+  <style>
+    .creator-page { max-width: 680px; margin: 0 auto; padding: 48px 24px 80px; }
+    .creator-header { margin-bottom: 36px; }
+    .creator-header h1 { font-size: clamp(26px, 3vw, 34px); color: var(--text); margin-bottom: 8px; }
+    .creator-header p { font-size: 15px; color: var(--muted); }
+    .step-panel { display: none; }
+    .step-panel.active { display: block; }
+    .theme-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 8px; }
+    .theme-option {
+      border: 2px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 20px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .theme-option:hover { border-color: var(--primary); background: var(--primary-soft); }
+    .theme-option.selected { border-color: var(--primary); background: var(--primary-soft); }
+    .theme-icon { font-size: 36px; margin-bottom: 8px; }
+    .theme-name { font-size: 14px; font-weight: 600; color: var(--text); }
+    .step-actions { display: flex; gap: 12px; margin-top: 32px; }
+    .checkout-success-banner {
+      background: var(--success-bg);
+      border: 1px solid #A7F3D0;
+      border-radius: var(--r);
+      padding: 14px 20px;
+      font-size: 14px;
+      color: #065F46;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .subscription-gate {
+      text-align: center;
+      padding: 80px 24px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">✨ Little Gem</a>
+      <div class="nav-links">
+        <a href="/library.html" class="nav-link">My Books</a>
+        <a href="/pricing.html" class="nav-link">Pricing</a>
+      </div>
+      <div id="navAuth" class="nav-auth">
+        <a href="/login.html" class="nav-link">Sign In</a>
+        <a href="/signup.html" class="btn btn-primary btn-sm">Create Your Book</a>
+      </div>
+      <button class="nav-hamburger" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- LOADING OVERLAY -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="spinner" style="width:36px;height:36px;border-width:3px;border-color:rgba(109,40,217,0.2);border-top-color:var(--primary);"></div>
+    <p style="font-size:14px;color:var(--muted);">Loading your account…</p>
+  </div>
+
+  <!-- SUBSCRIPTION GATE (shown when no active subscription) -->
+  <div id="subscriptionGate" class="subscription-gate hidden">
+    <div style="font-size:56px;margin-bottom:20px;">📚</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:28px;color:var(--text);margin-bottom:12px;">Start Your Free Trial</h2>
+    <p style="font-size:16px;color:var(--muted);max-width:420px;margin:0 auto 28px;line-height:1.6;">
+      To create your personalized book, you need an active subscription. Start your 14-day free trial — no charge until it ends.
+    </p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="/pricing.html" class="btn btn-primary btn-lg">Choose Your Plan</a>
+      <a href="/sample.html" class="btn btn-ghost btn-lg">View Sample Book</a>
+    </div>
+  </div>
+
+  <!-- BOOK CREATOR (shown when authenticated + subscribed) -->
+  <main id="creatorMain" class="creator-page hidden">
+
+    <div id="checkoutSuccess" class="checkout-success-banner hidden">
+      ✓ Your subscription is active! Time to create your first book.
+    </div>
+
+    <div class="creator-header">
+      <h1>Create Your Book</h1>
+      <p>Tell us about your child and we'll craft a story just for them.</p>
+    </div>
+
+    <!-- STEPPER -->
+    <div class="stepper" id="stepper">
+      <div class="stepper-step active" data-step="0">
+        <div class="stepper-dot">1</div>
+        <span>Child</span>
+        <div style="flex:1;height:2px;background:var(--border);margin:0 8px;"></div>
+      </div>
+      <div class="stepper-step" data-step="1">
+        <div class="stepper-dot">2</div>
+        <span>Story</span>
+        <div style="flex:1;height:2px;background:var(--border);margin:0 8px;"></div>
+      </div>
+      <div class="stepper-step" data-step="2">
+        <div class="stepper-dot">3</div>
+        <span>Finishing Touches</span>
+        <div style="flex:1;height:2px;background:var(--border);margin:0 8px;"></div>
+      </div>
+      <div class="stepper-step" data-step="3">
+        <div class="stepper-dot">4</div>
+        <span>Preview</span>
+      </div>
+    </div>
+
+    <!-- STEP 1: Child's Details -->
+    <div class="step-panel active card" id="step0">
+      <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:6px;">About Your Child</h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:24px;">This is how they'll appear as the hero of their story.</p>
+
+      <div class="auth-form">
+        <div class="form-group">
+          <label class="form-label" for="childName">Child's First Name</label>
+          <input class="form-input" type="text" id="childName" placeholder="e.g. Emma" maxlength="30" />
+          <p class="form-hint">This name will appear throughout the entire book.</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="childAge">Child's Age</label>
+          <select class="form-input" id="childAge">
+            <option value="">Select age…</option>
+            <option>2</option><option>3</option><option>4</option><option>5</option>
+            <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="childPronoun">Pronoun</label>
+          <select class="form-input" id="childPronoun">
+            <option value="she/her">She / Her</option>
+            <option value="he/him">He / Him</option>
+            <option value="they/them">They / Them</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="childDescription">Describe Your Child (optional)</label>
+          <input class="form-input" type="text" id="childDescription" placeholder="e.g. brown curly hair, loves dinosaurs and space" maxlength="120" />
+          <p class="form-hint">Any detail helps make the story feel truly personal.</p>
+        </div>
+      </div>
+
+      <div class="step-actions">
+        <button class="btn btn-primary" onclick="goToStep(1)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Story Theme -->
+    <div class="step-panel card" id="step1">
+      <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:6px;">Choose a Story Theme</h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:24px;">What kind of adventure should your child go on?</p>
+
+      <div class="theme-grid">
+        <div class="theme-option" data-theme="enchanted-forest" onclick="selectTheme(this)">
+          <div class="theme-icon">🌲</div>
+          <div class="theme-name">Enchanted Forest</div>
+        </div>
+        <div class="theme-option" data-theme="space-explorer" onclick="selectTheme(this)">
+          <div class="theme-icon">🚀</div>
+          <div class="theme-name">Space Explorer</div>
+        </div>
+        <div class="theme-option" data-theme="under-the-sea" onclick="selectTheme(this)">
+          <div class="theme-icon">🌊</div>
+          <div class="theme-name">Under the Sea</div>
+        </div>
+        <div class="theme-option" data-theme="magical-kingdom" onclick="selectTheme(this)">
+          <div class="theme-icon">🏰</div>
+          <div class="theme-name">Magical Kingdom</div>
+        </div>
+        <div class="theme-option" data-theme="dinosaur-adventure" onclick="selectTheme(this)">
+          <div class="theme-icon">🦕</div>
+          <div class="theme-name">Dinosaur Adventure</div>
+        </div>
+        <div class="theme-option" data-theme="superheroes" onclick="selectTheme(this)">
+          <div class="theme-icon">⚡</div>
+          <div class="theme-name">Superhero Story</div>
+        </div>
+      </div>
+
+      <div class="step-actions">
+        <button class="btn btn-ghost" onclick="goToStep(0)">← Back</button>
+        <button class="btn btn-primary" onclick="goToStep(2)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Finishing Touches -->
+    <div class="step-panel card" id="step2">
+      <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:6px;">Finishing Touches</h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:24px;">A few final details to make it perfect.</p>
+
+      <div class="auth-form">
+        <div class="form-group">
+          <label class="form-label" for="dedication">Dedication Message (optional)</label>
+          <textarea class="form-input" id="dedication" rows="3" placeholder="e.g. For Emma, who makes every day magical. With all our love." maxlength="200" style="resize:vertical;"></textarea>
+          <p class="form-hint">Printed on the inside front cover.</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="sidekickName">Sidekick Character Name (optional)</label>
+          <input class="form-input" type="text" id="sidekickName" placeholder="e.g. a dog named Biscuit, a talking star named Luna" maxlength="80" />
+          <p class="form-hint">A special friend who joins your child on their adventure.</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="bookFormat">Book Format</label>
+          <select class="form-input" id="bookFormat">
+            <option value="digital">Digital Only (instant access)</option>
+            <option value="print-digital">Hardcover + Digital (ships in 5–7 days)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="step-actions">
+        <button class="btn btn-ghost" onclick="goToStep(1)">← Back</button>
+        <button class="btn btn-primary" onclick="generateBook()">
+          <span id="generateBtnText">✨ Generate My Book</span>
+          <span class="spinner spinner-dark hidden" id="generateSpinner"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 4: Preview / Generating -->
+    <div class="step-panel card" id="step3" style="text-align:center;padding:48px 32px;">
+      <div id="generatingState">
+        <div style="font-size:56px;margin-bottom:20px;">✨</div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:24px;color:var(--text);margin-bottom:12px;">Creating Your Book…</h2>
+        <p style="font-size:15px;color:var(--muted);margin-bottom:28px;line-height:1.6;">
+          We're crafting a one-of-a-kind story for <strong id="previewChildName">your child</strong>.<br />
+          This usually takes about 30 seconds.
+        </p>
+        <div style="display:flex;justify-content:center;">
+          <div class="spinner spinner-dark" style="width:36px;height:36px;border-width:3px;"></div>
+        </div>
+      </div>
+      <div id="doneState" class="hidden">
+        <div style="font-size:56px;margin-bottom:20px;">🎉</div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:24px;color:var(--text);margin-bottom:12px;">Your Book Is Ready!</h2>
+        <p style="font-size:15px;color:var(--muted);margin-bottom:28px;">Your personalized story has been created. You can read it now or order a printed copy.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <a href="/library.html" class="btn btn-primary btn-lg">📚 Read My Book</a>
+          <button class="btn btn-ghost btn-lg" onclick="goToStep(0)">Create Another</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-brand">✨ Little Gem</p>
+      <div class="footer-links">
+        <a href="/">Home</a>
+        <a href="/library.html">My Books</a>
+        <a href="/account.html">Account</a>
+      </div>
+      <p class="footer-copy">© 2025 Little Gem · All rights reserved</p>
+    </div>
+  </footer>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    let selectedThemeValue = '';
+    let currentStep = 0;
+
+    document.addEventListener('DOMContentLoaded', async function () {
+      // Require authentication
+      if (!LG.requireAuth()) return;
+
+      const { user, subscription } = await LG.init();
+      document.getElementById('loadingOverlay').classList.add('hidden');
+
+      if (!user) {
+        window.location.href = '/signup.html?next=/create.html';
+        return;
+      }
+
+      if (!LG.canAccessCreator()) {
+        document.getElementById('subscriptionGate').classList.remove('hidden');
+        return;
+      }
+
+      document.getElementById('creatorMain').classList.remove('hidden');
+
+      // Show checkout success banner
+      const params = new URLSearchParams(location.search);
+      if (params.get('checkout') === 'success') {
+        document.getElementById('checkoutSuccess').classList.remove('hidden');
+        history.replaceState({}, '', '/create.html');
+      }
+    });
+
+    function goToStep(step) {
+      // Validate current step before advancing
+      if (step > currentStep) {
+        if (currentStep === 0) {
+          const name = document.getElementById('childName').value.trim();
+          if (!name) { alert('Please enter your child\'s name.'); return; }
+        }
+        if (currentStep === 1 && !selectedThemeValue) {
+          alert('Please choose a story theme.'); return;
+        }
+      }
+
+      document.getElementById('step' + currentStep).classList.remove('active');
+      document.querySelectorAll('.stepper-step')[currentStep].classList.remove('active');
+      if (step < currentStep) {
+        // going back
+      } else {
+        document.querySelectorAll('.stepper-step')[currentStep].classList.add('done');
+      }
+
+      currentStep = step;
+      document.getElementById('step' + currentStep).classList.add('active');
+      document.querySelectorAll('.stepper-step')[currentStep].classList.add('active');
+      document.querySelectorAll('.stepper-step')[currentStep].classList.remove('done');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function selectTheme(el) {
+      document.querySelectorAll('.theme-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedThemeValue = el.dataset.theme;
+    }
+
+    function generateBook() {
+      const childName = document.getElementById('childName').value.trim();
+      document.getElementById('previewChildName').textContent = childName || 'your child';
+
+      goToStep(3);
+
+      // Simulate generation (replace with real API call)
+      setTimeout(function () {
+        document.getElementById('generatingState').classList.add('hidden');
+        document.getElementById('doneState').classList.remove('hidden');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

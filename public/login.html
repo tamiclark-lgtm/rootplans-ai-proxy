@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — Little Gem</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/gem.css" />
+</head>
+<body>
+
+  <div class="auth-page">
+    <div class="auth-card">
+      <a href="/" class="auth-logo">✨ Little Gem</a>
+
+      <h1 class="auth-title">Sign In to Continue</h1>
+      <p class="auth-subtitle">Welcome back. Sign in to access your books and account.</p>
+
+      <div id="formAlert" class="alert hidden"></div>
+
+      <form class="auth-form" id="loginForm" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <input class="form-input" type="email" id="email" name="email" placeholder="jane@example.com" autocomplete="email" required />
+          <p class="form-error" id="emailErr"></p>
+        </div>
+
+        <div class="form-group">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <label class="form-label" for="password" style="margin:0;">Password</label>
+            <a href="/forgot-password.html" style="font-size:13px;color:var(--primary);font-weight:500;">Forgot password?</a>
+          </div>
+          <input class="form-input" type="password" id="password" name="password" placeholder="Your password" autocomplete="current-password" required />
+          <p class="form-error" id="passwordErr"></p>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="submitBtn">
+          <span class="btn-text">Sign In →</span>
+          <span class="spinner"></span>
+        </button>
+      </form>
+
+      <div class="auth-divider">or</div>
+
+      <div class="auth-footer">
+        Don't have an account? <a href="/signup.html">Create an Account</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function () {
+      const s = LG.getSession();
+      if (s?.token) {
+        const data = await LG.init();
+        if (data.user) {
+          redirectAfterAuth(data.subscription);
+          return;
+        }
+      }
+    });
+
+    function redirectAfterAuth(subscription) {
+      const params = new URLSearchParams(location.search);
+      const next = params.get('next');
+      if (next) {
+        window.location.href = decodeURIComponent(next);
+      } else if (subscription && (subscription.status === 'trialing' || subscription.status === 'active')) {
+        window.location.href = '/create.html';
+      } else {
+        window.location.href = '/pricing.html';
+      }
+    }
+
+    function setFieldError(field, msg) {
+      const input = document.getElementById(field);
+      const err   = document.getElementById(field + 'Err');
+      input?.classList.toggle('error', !!msg);
+      if (err) err.textContent = msg || '';
+    }
+
+    function clearErrors() {
+      ['email', 'password'].forEach(f => setFieldError(f, ''));
+      const a = document.getElementById('formAlert');
+      a.textContent = '';
+      a.className = 'alert hidden';
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      clearErrors();
+
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      let valid = true;
+      if (!email)    { setFieldError('email', 'Email is required'); valid = false; }
+      if (!password) { setFieldError('password', 'Password is required'); valid = false; }
+      if (!valid) return;
+
+      const btn = document.getElementById('submitBtn');
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      const { ok, data } = await LG.login(email, password);
+
+      btn.classList.remove('loading');
+      btn.disabled = false;
+
+      if (ok) {
+        redirectAfterAuth(data.subscription);
+      } else {
+        if (data.field) {
+          setFieldError(data.field, data.error);
+        } else {
+          const a = document.getElementById('formAlert');
+          a.textContent = data.error || 'Sign in failed. Please try again.';
+          a.className = 'alert alert-error';
+        }
+      }
+    });
+
+    ['email', 'password'].forEach(id => {
+      document.getElementById(id)?.addEventListener('input', () => setFieldError(id, ''));
+    });
+  </script>
+</body>
+</html>

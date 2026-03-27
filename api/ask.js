@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { validTokens } from "./auth.js";
+import { getSessionUser, getUserSubscription } from "./_lib/helpers.js";
 
 const client = new Anthropic();
 
@@ -20,8 +20,17 @@ Keep answers clear, actionable, and beginner-friendly.`;
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
 
-  const token = req.headers["x-session-token"] || "";
-  if (!validTokens().has(token)) return res.status(401).json({ error: "Unauthorized" });
+  const user = await getSessionUser(req);
+  if (!user) return res.status(401).json({ error: "Sign in to continue." });
+
+  const sub = await getUserSubscription(user.id);
+  const now = new Date();
+  const canAccess = sub && (
+    sub.status === "trialing" ||
+    sub.status === "active" ||
+    (sub.status === "canceled" && sub.current_period_end && new Date(sub.current_period_end) > now)
+  );
+  if (!canAccess) return res.status(403).json({ error: "An active subscription is required." });
 
   const { messages } = req.body || {};
   if (!messages || !Array.isArray(messages)) return res.status(400).json({ error: "Missing messages" });

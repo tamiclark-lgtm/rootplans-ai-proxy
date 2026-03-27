@@ -2051,16 +2051,29 @@
   </script>
   <script>
     const AI_PROXY_URL = "/api/holistic";
-    const AUTH_URL = "/api/auth";
+    // ── Session helpers ────────────────────────────────────────────────────
+    const SESSION_KEY = "lg_session";
 
-    // ── Free/Pro tier ──────────────────────────────────────────────────────
-    const FREE_PLAN_LIMIT = 5;
-    const BYPASS_CODES = ["ROOTS2024", "GARDENPRO", "FRIENDPASS"]; // share these with friends
-    const PRO_STORAGE_KEY = "rp_pro";
+    function getSession() {
+      try { return JSON.parse(localStorage.getItem(SESSION_KEY) || "null"); }
+      catch { return null; }
+    }
+    function getToken() {
+      return getSession()?.token || "";
+    }
+
+    // ── Subscription / Pro tier ────────────────────────────────────────────
     const PLANS_USED_KEY = "rp_plans_used";
 
     function isPro() {
-      return localStorage.getItem(PRO_STORAGE_KEY) === "true";
+      const sub = getSession()?.subscription;
+      if (!sub) return false;
+      const now = new Date();
+      return (
+        sub.status === "trialing" ||
+        sub.status === "active" ||
+        (sub.status === "canceled" && sub.renewalDate && new Date(sub.renewalDate) > now)
+      );
     }
     function plansUsed() {
       return parseInt(localStorage.getItem(PLANS_USED_KEY) || "0");
@@ -2118,99 +2131,67 @@
       if (fab) fab.style.display = "none";
     }
 
-    // Handle upgrade button
+    // Handle upgrade button — redirect to Stripe checkout
     document.getElementById("upgradePayBtn").addEventListener("click", async () => {
       const btn = document.getElementById("upgradePayBtn");
       btn.textContent = "Loading..."; btn.disabled = true;
       try {
-        const r = await fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
-        const { url } = await r.json();
-        window.location.href = url;
-      } catch { btn.textContent = "Upgrade for $4.99/month"; btn.disabled = false; }
+        const r = await fetch("/api/subscription/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": "Bearer " + getToken() },
+          body: JSON.stringify({ plan: "monthly" })
+        });
+        const { url, error } = await r.json();
+        if (url) { window.location.href = url; }
+        else { btn.textContent = "Upgrade to Pro"; btn.disabled = false; }
+      } catch { btn.textContent = "Upgrade to Pro"; btn.disabled = false; }
     });
 
-    // Bypass code
-    document.getElementById("bypassBtn").addEventListener("click", () => {
-      const code = document.getElementById("bypassInput").value.trim().toUpperCase();
-      if (BYPASS_CODES.includes(code)) {
-        activatePro();
-        alert("✅ Code accepted! You now have Pro access.");
-      } else {
-        document.getElementById("bypassInput").style.borderColor = "#e05050";
-        setTimeout(() => document.getElementById("bypassInput").style.borderColor = "", 1500);
-      }
-    });
     document.getElementById("upgradeCloseBtn").addEventListener("click", () => {
       document.getElementById("upgradeModal").style.display = "none";
     });
 
-    // Handle return from Stripe
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get("upgraded") === "true") {
-      const sid = urlParams.get("session_id");
-      if (sid) {
-        fetch(`/api/verify-session?session_id=${sid}`)
-          .then(r => r.json())
-          .then(d => { if (d.success) { activatePro(); if (d.email) localStorage.setItem("rp_email", d.email); } });
+    // ── Auth gate: validate session on load ────────────────────────────────
+    (async function initAuth() {
+      const session = getSession();
+
+      if (!session?.token) {
+        // Not logged in — redirect to login
+        window.location.href = "/login.html?next=" + encodeURIComponent(window.location.pathname);
+        return;
       }
-      window.history.replaceState({}, "", window.location.pathname);
-    }
 
-    // Check existing subscription on load
-    const savedEmail = localStorage.getItem("rp_email");
-    if (savedEmail && !isPro()) {
-      fetch(`/api/check-subscription?email=${encodeURIComponent(savedEmail)}`)
-        .then(r => r.json())
-        .then(d => { if (d.active) activatePro(); });
-    }
+      // Validate token with server
+      try {
+        const r = await fetch("/api/auth/me", {
+          headers: { "Authorization": "Bearer " + session.token }
+        });
+        if (!r.ok) {
+          localStorage.removeItem(SESSION_KEY);
+          window.location.href = "/login.html?next=" + encodeURIComponent(window.location.pathname);
+          return;
+        }
+        const data = await r.json();
+        // Refresh session with latest subscription data
+        localStorage.setItem(SESSION_KEY, JSON.stringify({ ...session, user: data.user, subscription: data.subscription }));
+      } catch { /* network error — allow cached session */ }
 
-    // Check session — both auth and disclaimer must be accepted
-    if (sessionStorage.getItem("rp_auth") === "1") {
+      // Hide access gate and show app
       $("accessGate").style.display = "none";
+
+      // Show disclaimer if not yet acknowledged this session
       if (sessionStorage.getItem("rp_disc") !== "1") {
         $("disclaimerModal").style.display = "flex";
       }
-    }
 
-    async function submitAccessCode() {
-      const code = $("accessInput").value.trim();
-      if (!code) return;
-      $("accessBtn").disabled = true;
-      $("accessBtn").textContent = "Checking...";
-      $("gateError").textContent = "";
-
-      try {
-        const res = await fetch(AUTH_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ code })
-        });
-        const data = await res.json();
-        if (data.ok) {
-          sessionStorage.setItem("rp_auth", "1");
-          if (data.token) sessionStorage.setItem("rp_token", data.token);
-          $("accessGate").style.display = "none";
-          // Show disclaimer if not yet acknowledged this session
-          if (sessionStorage.getItem("rp_disc") !== "1") {
-            $("disclaimerModal").style.display = "flex";
-          }
-        } else {
-          $("gateError").textContent = "Incorrect code. Try again.";
-          $("accessInput").value = "";
-          $("accessInput").focus();
-        }
-      } catch {
-        $("gateError").textContent = "Connection error. Please try again.";
-      } finally {
-        $("accessBtn").disabled = false;
-        $("accessBtn").textContent = "Enter";
+      // Apply pro/free UI
+      if (isPro()) {
+        unlockProUI();
+      } else {
+        lockFreeUI();
       }
-    }
-
-    $("accessBtn").addEventListener("click", submitAccessCode);
-    $("accessInput").addEventListener("keydown", e => {
-      if (e.key === "Enter") submitAccessCode();
-    });
+      updatePlanCounter();
+    })();
 
     // Disclaimer logic
     $("discCheck").addEventListener("change", () => {
@@ -2821,8 +2802,8 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
     }
 
     function authHeaders() {
-      const token = sessionStorage.getItem("rp_token") || "";
-      return { "Content-Type": "application/json", "X-Session-Token": token };
+      const token = getToken();
+      return { "Content-Type": "application/json", "Authorization": "Bearer " + token };
     }
 
     async function callAIProxy(payload) {
@@ -3504,10 +3485,7 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
 
     $("pdfBtnBottom").addEventListener("click", () => $("pdfBtn").click());
 
-    // Init free/pro UI on load
-    updatePlanCounter();
-    if (!isPro()) lockFreeUI();
-    else unlockProUI();
+    // Pro/free UI is applied by initAuth() after session validation
 
     // ── Garden Bed Planner ──────────────────────────────────────────────────
     let bedW = 4, bedL = 4;
@@ -3881,12 +3859,11 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
       body.scrollTop = body.scrollHeight;
       body.scrollTop = body.scrollHeight;
 
-      const token = sessionStorage.getItem('rp_token') || '';
       let fullText = '';
       try {
         const res = await fetch('/api/ask', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-Session-Token': token },
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() },
           body: JSON.stringify({ messages: [{ role: 'user', content: question }] })
         });
         if (!res.ok) { answerDiv.innerHTML = `<em style="color:#c0392b;">Error ${res.status} — try refreshing the page and logging in again.</em>`; return; }
