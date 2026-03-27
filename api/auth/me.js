@@ -1,4 +1,8 @@
-import { getSessionUser, getUserSubscription, formatSubscription, setCors } from '../_lib/helpers.js';
+// GET /api/auth/me
+// Returns authenticated user + entitlement (plan tier, limits, status).
+
+import { getSessionUser, setCors } from '../_lib/helpers.js';
+import { getEntitlement, formatEntitlement } from '../_lib/entitlement.js';
 
 export default async function handler(req, res) {
   setCors(req, res, 'GET,OPTIONS');
@@ -8,9 +12,12 @@ export default async function handler(req, res) {
   const user = await getSessionUser(req);
   if (!user) return res.status(401).json({ error: 'Not authenticated' });
 
-  const sub = await getUserSubscription(user.id);
+  const ent = await getEntitlement(user.id);
+  const formatted = formatEntitlement(ent);
+
   return res.status(200).json({
-    user: { id: user.id, name: user.name, email: user.email },
-    subscription: formatSubscription(sub),
+    user:         { id: user.id, name: user.name, email: user.email },
+    subscription: formatted,   // legacy key — keeps auth.js session working
+    entitlement:  formatted,   // explicit key for new code
   });
 }

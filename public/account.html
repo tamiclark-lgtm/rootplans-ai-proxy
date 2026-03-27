@@ -88,22 +88,21 @@
           <p class="plan-detail" id="planDetail2" class="hidden">—</p>
         </div>
 
-        <!-- No plan -->
+        <!-- Free tier -->
         <div id="noPlanCard" class="card hidden">
-          <p style="font-size:15px;color:var(--text);font-weight:600;margin-bottom:8px;">No active subscription</p>
-          <p style="font-size:14px;color:var(--muted);margin-bottom:20px;">Choose a plan to start creating personalized books for your child.</p>
-          <a href="/pricing.html" class="btn btn-primary">Choose Your Plan →</a>
+          <p style="font-size:15px;color:var(--text);font-weight:600;margin-bottom:8px;">Free Plan</p>
+          <p style="font-size:14px;color:var(--muted);margin-bottom:20px;">You have 1 active garden plan. Upgrade to Premium for up to 7 plans, advanced AI, pest diagnosis, and more.</p>
+          <a href="/pricing.html" class="btn btn-primary">Upgrade to Premium →</a>
         </div>
 
-        <!-- Billing actions: Stripe (web) -->
+        <!-- Billing actions: web RC users -->
         <div id="billingActions" class="card hidden" style="margin-top:0;">
-          <h3 style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px;">Manage Billing</h3>
+          <h3 style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px;">Manage Subscription</h3>
           <div style="display:flex;flex-direction:column;gap:10px;">
-            <button class="btn btn-ghost" onclick="openPortal()" id="portalBtn">
-              <span class="btn-text">Open Billing Portal</span>
-              <span class="spinner spinner-dark"></span>
-            </button>
-            <p style="font-size:12px;color:var(--muted);">Update payment method, download invoices, change or cancel your plan — all from the secure Stripe billing portal.</p>
+            <p style="font-size:14px;color:var(--muted);line-height:1.6;">
+              To manage or cancel your subscription, contact us at <strong>hello@rootplans.com</strong> or manage via your App Store account settings.
+            </p>
+            <a href="/pricing.html" class="btn btn-ghost">View Plans</a>
           </div>
         </div>
 
@@ -211,57 +210,31 @@
     }
 
     function renderSubscription(sub) {
-      const planCard          = document.getElementById('planCard');
-      const noPlanCard        = document.getElementById('noPlanCard');
-      const billingActs       = document.getElementById('billingActions');
-      const appleBillingActs  = document.getElementById('appleBillingActions');
-      const trialNotice       = document.getElementById('trialNotice');
+      const planCard         = document.getElementById('planCard');
+      const noPlanCard       = document.getElementById('noPlanCard');
+      const billingActs      = document.getElementById('billingActions');
+      const appleBillingActs = document.getElementById('appleBillingActions');
 
-      if (!sub) {
+      if (!sub || !sub.isPremium) {
+        // Free tier
         noPlanCard.classList.remove('hidden');
         return;
       }
 
       planCard.classList.remove('hidden');
 
-      // Show billing controls based on subscription source
-      if (sub.source === 'apple') {
+      if (sub.subscriptionSource === 'revenuecat') {
         appleBillingActs.classList.remove('hidden');
       } else {
         billingActs.classList.remove('hidden');
       }
 
-      const planLabels = { trial: 'Free Trial', monthly: 'Monthly Plan', annual: 'Annual Plan' };
-      const planLabel  = planLabels[sub.plan] || sub.plan || 'Plan';
-      const sourceNote = sub.source === 'apple' ? ' (App Store)' : '';
-      document.getElementById('planName').textContent = planLabel + sourceNote;
+      document.getElementById('planName').textContent = 'Premium Plan';
+      document.getElementById('planStatus').textContent = '✓ Active';
 
-      const statusLabels = {
-        trialing: '✓ Active — Free Trial',
-        active:   '✓ Active',
-        canceled: 'Cancelled',
-        past_due: '⚠ Payment Failed',
-        expired:  'Expired',
-      };
-      document.getElementById('planStatus').textContent = statusLabels[sub.status] || sub.status;
-
-      if (sub.status === 'trialing' && sub.trialEnd) {
-        const end = new Date(sub.trialEnd).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-        document.getElementById('planDetail1').textContent = 'Trial ends: ' + end;
-        trialNotice.innerHTML = '<div class="alert alert-warn" style="margin-top:0;">Your free trial ends on <strong>' + end + '</strong>. After that, you\'ll be billed at your plan\'s regular rate. <a href="/pricing.html">Manage plan</a></div>';
-        trialNotice.classList.remove('hidden');
-      } else if (sub.renewalDate) {
-        const date = new Date(sub.renewalDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-        if (sub.cancelAtPeriodEnd) {
-          document.getElementById('planDetail1').textContent = 'Access until: ' + date;
-        } else {
-          document.getElementById('planDetail1').textContent = 'Renews: ' + date;
-        }
-      }
-
-      if (sub.status === 'past_due') {
-        document.getElementById('accountAlert').textContent = '⚠ Your payment failed. Please update your payment method in the billing portal to restore full access.';
-        document.getElementById('accountAlert').className = 'alert alert-error';
+      if (sub.expiresAt) {
+        const date = new Date(sub.expiresAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        document.getElementById('planDetail1').textContent = 'Renews: ' + date;
       }
     }
 

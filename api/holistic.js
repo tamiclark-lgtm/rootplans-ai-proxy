@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { getSessionUser, getUserSubscription } from "./_lib/helpers.js";
+import { getSessionUser } from "./_lib/helpers.js";
+import { getEntitlement, canAccess } from "./_lib/entitlement.js";
 
 const client = new Anthropic();
 
@@ -35,7 +36,6 @@ function isRateLimited(ip) {
 
 function sanitizeString(val, maxLen) {
   if (typeof val !== "string") return "";
-  // Strip control characters and known injection sequences
   return val
     .replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "")
     .replace(/\bignore\s+(?:previous|above|all|prior)\b/gi, "")
@@ -69,18 +69,12 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method !== "POST") return res.status(405).send("Method not allowed");
 
-  // ── Auth + subscription check ─────────────────────────────────────────────
+  // ── Auth ──────────────────────────────────────────────────────────────────
   const user = await getSessionUser(req);
   if (!user) return res.status(401).json({ error: "Sign in to continue." });
 
-  const sub = await getUserSubscription(user.id);
-  const now = new Date();
-  const canAccess = sub && (
-    sub.status === "trialing" ||
-    sub.status === "active" ||
-    (sub.status === "canceled" && sub.current_period_end && new Date(sub.current_period_end) > now)
-  );
-  if (!canAccess) return res.status(403).json({ error: "An active subscription is required." });
+  // ── Entitlement check ─────────────────────────────────────────────────────
+  const ent = await getEntitlement(user.id);
 
   // ── Rate limiting ─────────────────────────────────────────────────────────
   const ip = getIp(req);
@@ -91,31 +85,37 @@ export default async function handler(req, res) {
   try {
     const body = req.body || {};
 
-    // ── Input sanitization ────────────────────────────────────────────────
-    const prompt = sanitizeString(body.prompt || "", 4000);
-    const zone = sanitizeString(String(body.zone || "7"), 10);
-    const location = sanitizeString(String(body.location || ""), 100);
-    const theme = sanitizeString(String(body.theme || ""), 60);
+    const prompt     = sanitizeString(body.prompt || "", 4000);
+    const zone       = sanitizeString(String(body.zone || "7"), 10);
+    const location   = sanitizeString(String(body.location || ""), 100);
+    const theme      = sanitizeString(String(body.theme || ""), 60);
     const nativeOnly = body.nativeOnly === true;
-    const holisticHealing = body.holisticHealing === true;
-    const conditions = Array.isArray(body.conditions)
-      ? body.conditions
-          .slice(0, 10)
-          .map(c => sanitizeString(String(c), 60))
-          .filter(Boolean)
+
+    // ── Premium-only feature flags ────────────────────────────────────────
+    // holisticHealing and conditions are premium features.
+    // Free users get the flag silently stripped — no error, just ignored.
+    const holisticHealing = body.holisticHealing === true && canAccess(ent, 'healthFunctional');
+    const conditions = canAccess(ent, 'healthFunctional') && Array.isArray(body.conditions)
+      ? body.conditions.slice(0, 10).map(c => sanitizeString(String(c), 60)).filter(Boolean)
       : [];
 
-    const userMessage = prompt || buildFallbackPrompt({ zone, location, nativeOnly, theme, holisticHealing, conditions });
+    const userMessage = prompt || buildFallbackPrompt({
+      zone, location, nativeOnly, theme, holisticHealing, conditions,
+      isPremium: ent.isPremium,
+    });
 
-    // ── Stream the response ───────────────────────────────────────────────
+    // ── Stream ────────────────────────────────────────────────────────────
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("X-Accel-Buffering", "no");
     res.flushHeaders();
 
+    // Send entitlement tier so client can show upsell if needed
+    res.write(`data: ${JSON.stringify({ planTier: ent.planTier })}\n\n`);
+
     const stream = client.messages.stream({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 3500,
+      max_tokens: ent.isPremium ? 3500 : 1800,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: userMessage }]
     });
@@ -136,14 +136,15 @@ export default async function handler(req, res) {
   }
 }
 
-function buildFallbackPrompt({ zone = "7", nativeOnly = false, theme = "", holisticHealing = false, conditions = [] }) {
-  const nativeLine = nativeOnly ? "only native plants" : "plants suitable for the zone";
-  const themeLine = theme ? `Garden theme: ${theme}.` : "";
-  const holisticLine = holisticHealing
+function buildFallbackPrompt({ zone = "7", nativeOnly = false, theme = "", holisticHealing = false, conditions = [], isPremium = false }) {
+  const nativeLine    = nativeOnly ? "only native plants" : "plants suitable for the zone";
+  const themeLine     = theme ? `Garden theme: ${theme}.` : "";
+  const holisticLine  = holisticHealing
     ? "Include a short traditional-use note for each plant using cautious, non-medical language."
     : "";
-  const conditionLine = conditions.length
-    ? `Functional focus: ${conditions.join(", ")}.`
+  const conditionLine = conditions.length ? `Functional focus: ${conditions.join(", ")}.` : "";
+  const scopeLine     = isPremium
+    ? "Include pest resistance notes and advanced companion planting."
     : "";
 
   return [
@@ -151,6 +152,7 @@ function buildFallbackPrompt({ zone = "7", nativeOnly = false, theme = "", holis
     themeLine,
     holisticLine,
     conditionLine,
+    scopeLine,
     "Return: 1. Garden Concept  2. Recommended Plants  3. Simple Layout  4. Seasonal Care  5. Beginner Tips  6. Safety Note"
   ].filter(Boolean).join(" ");
 }

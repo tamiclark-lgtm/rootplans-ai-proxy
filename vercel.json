@@ -3,10 +3,9 @@
     { "source": "/api/(.*)", "destination": "/api/$1" }
   ],
   "functions": {
-    "api/holistic.js":               { "maxDuration": 60 },
-    "api/webhooks/stripe.js":        { "maxDuration": 30 },
-    "api/webhooks/revenuecat.js":    { "maxDuration": 15 },
-    "api/apple/verify.js":           { "maxDuration": 15 }
+    "api/holistic.js":            { "maxDuration": 60 },
+    "api/webhooks/revenuecat.js": { "maxDuration": 15 },
+    "api/apple/verify.js":        { "maxDuration": 15 }
   },
   "headers": [
     {

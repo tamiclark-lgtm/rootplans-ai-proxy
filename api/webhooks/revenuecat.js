@@ -86,7 +86,7 @@ export default async function handler(req, res) {
   const purchaseDate = purchased_at_ms ? new Date(Number(purchased_at_ms)) : new Date();
   const expiresAt    = expiration_at_ms ? new Date(Number(expiration_at_ms)) : null;
   const env          = (environment || '').toLowerCase() === 'production' ? 'production' : 'sandbox';
-  const entId        = (entitlement_ids && entitlement_ids[0]) || 'root_plans_pro';
+  const entId        = (entitlement_ids && entitlement_ids[0]) || 'premium';
 
   let newStatus;
   if (ACTIVE_TYPES.has(type))   newStatus = 'active';

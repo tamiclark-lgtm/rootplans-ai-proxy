@@ -12,7 +12,7 @@ import { getSessionUser } from '../_lib/helpers.js';
 import { getDb } from '../_lib/db.js';
 
 const RC_API_BASE = 'https://api.revenuecat.com/v1';
-const ENTITLEMENT_ID = 'root_plans_pro';
+const ENTITLEMENT_ID = 'premium';
 
 function derivePlan(productId) {
   if (!productId) return 'monthly';

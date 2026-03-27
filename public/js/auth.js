@@ -1,6 +1,6 @@
 /* ============================================================
-   Little Gem — Auth & Session Utility
-   Loaded on every page. Sets window.LG.
+   RootPlans — Auth & Session Utility  (window.LG)
+   Loaded on every page.
    ============================================================ */
 (function () {
   'use strict';
@@ -12,24 +12,28 @@
     try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); }
     catch { return null; }
   }
-  function setSession(data) {
-    localStorage.setItem(SESSION_KEY, JSON.stringify(data));
-  }
-  function clearSession() {
-    localStorage.removeItem(SESSION_KEY);
-  }
-  function isLoggedIn() {
-    return !!getSession()?.token;
+  function setSession(data) { localStorage.setItem(SESSION_KEY, JSON.stringify(data)); }
+  function clearSession()   { localStorage.removeItem(SESSION_KEY); }
+  function isLoggedIn()     { return !!getSession()?.token; }
+
+  // ── PLATFORM ───────────────────────────────────────────────────────────────
+  function isNativeIOS() {
+    try {
+      return window.Capacitor?.getPlatform?.() === 'ios' &&
+             !!window.Capacitor?.isNativePlatform?.();
+    } catch { return false; }
   }
 
   // ── API HELPER ─────────────────────────────────────────────────────────────
   function authHeaders() {
     const s = getSession();
-    return s?.token ? { Authorization: 'Bearer ' + s.token, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+    return s?.token
+      ? { Authorization: 'Bearer ' + s.token, 'Content-Type': 'application/json' }
+      : { 'Content-Type': 'application/json' };
   }
 
   async function apiFetch(path, opts = {}) {
-    const r = await fetch(path, { headers: authHeaders(), ...opts });
+    const r    = await fetch(path, { headers: authHeaders(), ...opts });
     const json = await r.json().catch(() => ({}));
     return { ok: r.ok, status: r.status, data: json };
   }
@@ -73,56 +77,55 @@
           method: 'POST',
           headers: { Authorization: 'Bearer ' + s.token },
         });
-      } catch { /* ignore network errors on logout */ }
+      } catch { /* ignore */ }
     }
     clearSession();
     window.location.href = '/';
   }
 
-  // ── PLATFORM DETECTION ─────────────────────────────────────────────────────
-  function isNativeIOS() {
-    try {
-      return window.Capacitor?.getPlatform?.() === 'ios' &&
-             !!window.Capacitor?.isNativePlatform?.();
-    } catch { return false; }
+  // ── ENTITLEMENT ────────────────────────────────────────────────────────────
+  // The server returns:
+  //   { planTier, subscriptionStatus, subscriptionSource, planLimit, isPremium }
+  // stored under session.subscription for backward compatibility.
+
+  function getEntitlement() {
+    return getSession()?.subscription || null;
   }
 
-  // ── SUBSCRIPTION ───────────────────────────────────────────────────────────
+  function isPremium() {
+    const ent = getEntitlement();
+    return !!ent?.isPremium;
+  }
+
+  /** True if user can access the app at all (free tier always can). */
   function canAccessCreator() {
-    const s = getSession();
-    const sub = s?.subscription;
-    if (!sub) return false;
-    const now = new Date();
-    // Apple IAP subscriptions come back with source:'apple', status:'active'
-    if (sub.source === 'apple') {
-      return sub.status === 'active' &&
-             (!sub.renewalDate || new Date(sub.renewalDate) > now);
+    return isLoggedIn();
+  }
+
+  /** True if the named premium feature is unlocked. */
+  function canAccess(feature) {
+    if (isPremium()) return true;
+    const freeFeatures = ['basicAI', 'basicPlan'];
+    return freeFeatures.includes(feature);
+  }
+
+  function getPlanLimit() {
+    return getEntitlement()?.planLimit || 1;
+  }
+
+  // ── PAYWALL TRIGGER (web) ──────────────────────────────────────────────────
+  function requirePremium(featureName) {
+    if (isPremium()) return true;
+    // On iOS show the native paywall; on web redirect to pricing
+    if (isNativeIOS() && window.LG_IAP) {
+      window.LG_IAP.presentPaywallIfNeeded();
+    } else {
+      window.location.href = '/pricing.html?upgrade=1&feature=' + (featureName || '');
     }
-    // Stripe subscriptions
-    return (
-      sub.status === 'trialing' ||
-      sub.status === 'active' ||
-      (sub.status === 'canceled' && sub.renewalDate && new Date(sub.renewalDate) > now)
-    );
-  }
-
-  async function startCheckout(plan) {
-    const { ok, data } = await apiFetch('/api/subscription/checkout', {
-      method: 'POST',
-      body: JSON.stringify({ plan }),
-    });
-    if (ok && data.url) { window.location.href = data.url; return true; }
-    return { ok, data };
-  }
-
-  async function openBillingPortal() {
-    const { ok, data } = await apiFetch('/api/subscription/portal', { method: 'POST' });
-    if (ok && data.url) { window.location.href = data.url; return true; }
-    return { ok, data };
+    return false;
   }
 
   // ── ROUTE GUARDS ───────────────────────────────────────────────────────────
-  /** Redirect to signup if not authenticated, preserving intended destination */
   function requireAuth() {
     if (!isLoggedIn()) {
       const next = encodeURIComponent(window.location.pathname + window.location.search);
@@ -132,7 +135,6 @@
     return true;
   }
 
-  /** Redirect to pricing if no active subscription */
   function requireSubscription() {
     if (!canAccessCreator()) {
       window.location.href = '/pricing.html';
@@ -141,13 +143,10 @@
     return true;
   }
 
-  /** Smart CTA: Create Your Book */
   function goToCreate(e) {
     if (e) e.preventDefault();
     if (!isLoggedIn()) {
       window.location.href = '/signup.html?next=/create.html';
-    } else if (!canAccessCreator()) {
-      window.location.href = '/pricing.html';
     } else {
       window.location.href = '/create.html';
     }
@@ -160,47 +159,42 @@
     if (user) {
       const firstName = (user.name || '').split(' ')[0];
       el.innerHTML =
-        '<a href="/library.html" class="nav-link">My Books</a>' +
         '<a href="/account.html" class="nav-link">' + escHtml(firstName) + '</a>' +
         '<button class="btn btn-ghost btn-sm" onclick="LG.logout()">Sign Out</button>';
     } else {
       el.innerHTML =
         '<a href="/login.html" class="nav-link">Sign In</a>' +
-        '<a href="/signup.html" class="btn btn-primary btn-sm" onclick="LG.goToCreate(event)">Create Your Book</a>';
+        '<a href="/signup.html" class="btn btn-primary btn-sm">Get Started</a>';
     }
   }
 
   function escHtml(str) {
-    return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+    return String(str).replace(/[&<>"']/g, c =>
+      ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]);
   }
 
   // ── INIT ───────────────────────────────────────────────────────────────────
-  /**
-   * Call on every page load. Validates session, updates nav.
-   * Returns { user, subscription } or { user: null, subscription: null }
-   */
   async function init() {
     const s = getSession();
-    let user = s?.user || null;
+    let user         = s?.user         || null;
     let subscription = s?.subscription || null;
 
     if (s?.token) {
       const data = await validateSession();
       if (data) {
-        user = data.user;
+        user         = data.user;
         subscription = data.subscription;
       } else {
-        user = null;
-        subscription = null;
+        user = null; subscription = null;
       }
     }
 
     updateNav(user);
-    // Store on LG for page scripts to access
-    window.LG.user = user;
+    window.LG.user         = user;
     window.LG.subscription = subscription;
+    window.LG.entitlement  = subscription; // alias
 
-    // Initialise RevenueCat IAP on iOS once we know the user ID
+    // Initialise RevenueCat IAP on iOS once we know the user
     if (isNativeIOS() && window.LG_IAP && user) {
       window.LG_IAP.init(user.id).catch(() => {});
     }
@@ -223,30 +217,18 @@
 
   // ── EXPORT ─────────────────────────────────────────────────────────────────
   window.LG = {
-    // State (populated after init)
-    user: null,
-    subscription: null,
+    user: null, subscription: null, entitlement: null,
     // Session
-    getSession,
-    setSession,
-    clearSession,
-    isLoggedIn,
-    // Actions
-    signup,
-    login,
-    logout,
-    startCheckout,
-    openBillingPortal,
-    canAccessCreator,
+    getSession, setSession, clearSession, isLoggedIn,
+    // Entitlement
+    getEntitlement, isPremium, canAccess, canAccessCreator, getPlanLimit, requirePremium,
+    // Auth
+    signup, login, logout,
     // Navigation
-    requireAuth,
-    requireSubscription,
-    goToCreate,
-    init,
-    // Utils
-    authHeaders,
-    apiFetch,
+    requireAuth, requireSubscription, goToCreate, init,
     // Platform
     isNativeIOS,
+    // Utils
+    authHeaders, apiFetch,
   };
 })();

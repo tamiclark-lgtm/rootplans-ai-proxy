@@ -30,7 +30,7 @@
 
   // Must match the Identifier (not display name) of your entitlement in RC dashboard.
   // Dashboard → Entitlements → "Root Plans Pro" → check the Identifier field.
-  var ENTITLEMENT_ID = 'root_plans_pro';
+  var ENTITLEMENT_ID = 'premium';
 
   // ── Plugin accessors ───────────────────────────────────────────────────────
   function _plugin()   { return window.Capacitor?.Plugins?.Purchases    || null; }
