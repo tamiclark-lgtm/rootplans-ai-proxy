@@ -1053,48 +1053,6 @@
       }
     }
 
-    /* ── Access gate ───────────────────────── */
-    #accessGate {
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(31,59,43,0.97), rgba(54,92,69,0.95));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-
-    .gateBox {
-      background: #fff;
-      border-radius: 24px;
-      padding: 48px 40px;
-      max-width: 400px;
-      width: 90%;
-      text-align: center;
-      box-shadow: 0 32px 80px rgba(0,0,0,0.25);
-    }
-
-    .gateBox h2 {
-      margin: 16px 0 8px;
-      font-size: 26px;
-      letter-spacing: -0.02em;
-      color: var(--text);
-    }
-
-    .gateBox p {
-      margin: 0 0 28px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .gateError {
-      margin-top: 12px;
-      font-size: 14px;
-      color: #c0392b;
-      font-weight: 700;
-      min-height: 20px;
-    }
-
     /* ── Disclaimer modal ───────────────────── */
     #disclaimerModal {
       position: fixed;
@@ -1187,23 +1145,6 @@
   </style>
 </head>
 <body>
-
-  <!-- Access gate -->
-  <div id="accessGate">
-    <div class="gateBox">
-      <div style="width:72px;height:72px;margin:0 auto 16px;background:linear-gradient(135deg,#2d6a4f,#52b788);border-radius:20px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(45,106,79,0.35);">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="8" r="4"/>
-          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-        </svg>
-      </div>
-      <h2>RootPlans</h2>
-      <p>Enter your access code to continue.</p>
-      <input id="accessInput" class="input" type="password" placeholder="Access code" maxlength="20" style="text-align:center;letter-spacing:0.2em;" />
-      <button id="accessBtn" class="btn" type="button" style="width:100%;margin-top:12px;">Enter</button>
-      <div class="gateError" id="gateError"></div>
-    </div>
-  </div>
 
   <!-- Disclaimer modal -->
   <div id="disclaimerModal" style="display:none;">
@@ -2175,9 +2116,6 @@
         // Refresh session with latest subscription data
         localStorage.setItem(SESSION_KEY, JSON.stringify({ ...session, user: data.user, subscription: data.subscription }));
       } catch { /* network error — allow cached session */ }
-
-      // Hide access gate and show app
-      $("accessGate").style.display = "none";
 
       // Show disclaimer if not yet acknowledged this session
       if (sessionStorage.getItem("rp_disc") !== "1") {
