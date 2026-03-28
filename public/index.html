@@ -1276,8 +1276,8 @@
           </div>
 
           <div class="pillRow" id="themeRow">
-            <button class="pill" type="button" data-theme="Ailment Support" aria-pressed="false">Ailment Support</button>
-            <button class="pill" type="button" data-theme="Pollinator Paradise" aria-pressed="false">Pollinator Paradise</button>
+            <button class="pill" type="button" data-theme="Ailment Support" aria-pressed="false">Ailment Support<span class="lock-badge">🔒</span></button>
+            <button class="pill" type="button" data-theme="Pollinator Paradise" aria-pressed="false">Pollinator Paradise<span class="lock-badge">🔒</span></button>
             <button class="pill" type="button" data-theme="Low-Maintenance Beauty" aria-pressed="false">Low-Maintenance Beauty</button>
           </div>
 
@@ -2082,6 +2082,7 @@
       unlockProUI();
     }
     function unlockProUI() {
+      document.querySelectorAll("#themeRow .pill").forEach(b => b.classList.remove("is-locked"));
       document.querySelectorAll("#plantCountRow .pill[data-count='10']").forEach(b => b.classList.remove("is-locked"));
       document.querySelectorAll("#rarityRow .pill[data-rarity='unique']").forEach(b => b.classList.remove("is-locked"));
       document.getElementById("holisticHealingCheckbox")?.closest(".checkboxCard")?.classList.remove("is-locked");
@@ -2093,6 +2094,13 @@
       if (fab) fab.style.display = "flex";
     }
     function lockFreeUI() {
+      // Premium garden themes
+      ["Ailment Support", "Pollinator Paradise"].forEach(theme => {
+        document.querySelectorAll(`#themeRow .pill[data-theme="${theme}"]`).forEach(b => {
+          b.classList.add("is-locked");
+          b.addEventListener("click", e => { e.stopPropagation(); showUpgrade(`${theme} is a Premium feature.`); }, true);
+        });
+      });
       // 10 plants — show lock, intercept click
       document.querySelectorAll("#plantCountRow .pill[data-count='10']").forEach(b => {
         b.classList.add("is-locked");
