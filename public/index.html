@@ -514,6 +514,17 @@
     .checkboxCard.is-locked input[type="checkbox"] {
       pointer-events: none;
     }
+    .util-rail-btn.is-locked,
+    .util-bar-btn.is-locked,
+    .util-menu-card.is-locked {
+      opacity: 0.5;
+      cursor: pointer;
+    }
+    .util-rail-btn.is-locked .lock-badge,
+    .util-bar-btn.is-locked .lock-badge,
+    .util-menu-card.is-locked .lock-badge {
+      display: inline;
+    }
 
     .chip {
       border: 1px solid #2563eb;
@@ -1987,7 +1998,7 @@
       <p style="font-size:14px;color:#6a7b6b;margin-bottom:20px;" id="upgradeReason">Unlock the full experience.</p>
       <div style="background:#f7faf7;border-radius:14px;padding:16px;margin-bottom:24px;text-align:left;">
         <p style="margin:0 0 8px;font-size:13px;font-weight:700;color:#274c38;">Pro includes:</p>
-        <p style="margin:3px 0;font-size:13px;color:#4a5e50;">✅ Unlimited garden plans</p>
+        <p style="margin:3px 0;font-size:13px;color:#4a5e50;">✅ Up to 10 garden plans per month</p>
         <p style="margin:3px 0;font-size:13px;color:#4a5e50;">✅ 3–10 plants per plan</p>
         <p style="margin:3px 0;font-size:13px;color:#4a5e50;">✅ Mixed, unique & rare varieties</p>
         <p style="margin:3px 0;font-size:13px;color:#4a5e50;">✅ PDF downloads</p>
@@ -2073,7 +2084,11 @@
     function unlockProUI() {
       document.querySelectorAll("#plantCountRow .pill[data-count='10']").forEach(b => b.classList.remove("is-locked"));
       document.querySelectorAll("#rarityRow .pill[data-rarity='unique']").forEach(b => b.classList.remove("is-locked"));
-      document.querySelectorAll("#holisticHealingCheckbox").forEach(b => b.closest(".checkboxCard")?.classList.remove("is-locked"));
+      document.getElementById("holisticHealingCheckbox")?.closest(".checkboxCard")?.classList.remove("is-locked");
+      ["railPest", "barPest"].forEach(id => document.getElementById(id)?.classList.remove("is-locked"));
+      document.querySelectorAll(".util-menu-card").forEach(card => {
+        if (card.querySelector(".util-menu-card-title")?.textContent.includes("Pest")) card.classList.remove("is-locked");
+      });
       const fab = document.querySelector(".chat-fab");
       if (fab) fab.style.display = "flex";
     }
@@ -2096,6 +2111,19 @@
           e.preventDefault(); showUpgrade("Holistic healing notes are a Premium feature.");
         }, true);
       }
+      // Pest buttons
+      ["railPest", "barPest"].forEach(id => {
+        const b = document.getElementById(id);
+        if (!b) return;
+        b.classList.add("is-locked");
+        b.addEventListener("click", e => { e.stopPropagation(); showUpgrade("Pest diagnosis is a Premium feature."); }, true);
+      });
+      document.querySelectorAll(".util-menu-card").forEach(card => {
+        if (card.querySelector(".util-menu-card-title")?.textContent.includes("Pest")) {
+          card.classList.add("is-locked");
+          card.addEventListener("click", e => { e.stopPropagation(); utilMobileMenuClose(); showUpgrade("Pest diagnosis is a Premium feature."); }, true);
+        }
+      });
       // Chat FAB
       const fab = document.querySelector(".chat-fab");
       if (fab) fab.style.display = "none";
@@ -4083,7 +4111,7 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
 <div id="utilRail">
   <button class="util-rail-btn" id="railPest" onclick="utilOpen('pest')" title="Pest Help">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
-    <span class="util-rail-label">Pests</span>
+    <span class="util-rail-label">Pests<span class="lock-badge">🔒</span></span>
   </button>
   <button class="util-rail-btn" id="railHealth" onclick="utilOpen('health')" title="Plant Health">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/></svg>
@@ -4124,7 +4152,7 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
 <div id="utilBottomBar">
   <button class="util-bar-btn" id="barPest" onclick="utilMobileOpenTool('pest')">
     <span class="util-bar-icon">🐛</span>
-    <span class="util-bar-label">Pests</span>
+    <span class="util-bar-label">Pests<span class="lock-badge">🔒</span></span>
   </button>
   <button class="util-bar-btn" id="barHealth" onclick="utilMobileOpenTool('health')">
     <span class="util-bar-icon">🌿</span>
@@ -4152,7 +4180,7 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
       <div class="util-menu-card-icon" style="background:#edf4ef;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4a7a5a" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
       </div>
-      <div class="util-menu-card-title">Pest Help</div>
+      <div class="util-menu-card-title">Pest Help<span class="lock-badge">🔒</span></div>
       <div class="util-menu-card-sub">Identify & treat garden pests</div>
     </button>
     <button class="util-menu-card" onclick="utilMobileOpen('health')">

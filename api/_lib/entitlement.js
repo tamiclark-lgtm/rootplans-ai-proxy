@@ -19,7 +19,7 @@ export const PRICING = {
 // ── Plan limits ───────────────────────────────────────────────────────────────
 export const PLAN_LIMITS = {
   free:    1,
-  premium: 7,
+  premium: 10,
 };
 
 // ── Feature flags ─────────────────────────────────────────────────────────────
