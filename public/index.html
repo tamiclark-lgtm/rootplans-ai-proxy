@@ -2121,6 +2121,49 @@
       document.getElementById("upgradeModal").style.display = "none";
     });
 
+    // ── Promo code ─────────────────────────────────────────────────────────
+    document.getElementById("bypassBtn").addEventListener("click", async () => {
+      const input = document.getElementById("bypassInput");
+      const code  = (input.value || "").trim();
+      if (!code) { input.focus(); return; }
+
+      const btn = document.getElementById("bypassBtn");
+      btn.textContent = "Checking…"; btn.disabled = true;
+
+      try {
+        const r = await fetch("/api/promo/redeem", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": "Bearer " + getToken() },
+          body: JSON.stringify({ code }),
+        });
+        const data = await r.json();
+
+        if (r.ok && data.ok) {
+          // Save updated subscription to session
+          const session = getSession();
+          localStorage.setItem(SESSION_KEY, JSON.stringify({ ...session, subscription: data.subscription }));
+          document.getElementById("upgradeModal").style.display = "none";
+          input.value = "";
+          unlockProUI();
+          updatePlanCounter();
+          // Brief success flash
+          const flash = document.createElement("div");
+          flash.textContent = "✓ " + data.message;
+          flash.style.cssText = "position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#2d6a4f;color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.2);";
+          document.body.appendChild(flash);
+          setTimeout(() => flash.remove(), 3500);
+        } else {
+          btn.textContent = "Apply Code"; btn.disabled = false;
+          input.style.border = "1.5px solid #c0392b";
+          input.placeholder = data.error || "Invalid code";
+          input.value = "";
+          setTimeout(() => { input.style.border = ""; input.placeholder = "Have a code? Enter it here"; }, 3000);
+        }
+      } catch {
+        btn.textContent = "Apply Code"; btn.disabled = false;
+      }
+    });
+
     // ── Auth gate: validate session on load ────────────────────────────────
     (async function initAuth() {
       const session = getSession();
