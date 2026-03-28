@@ -1,5 +1,6 @@
 import { getDb } from '../_lib/db.js';
-import { verifyPassword, generateToken, getUserSubscription, formatSubscription, setCors } from '../_lib/helpers.js';
+import { verifyPassword, generateToken, setCors } from '../_lib/helpers.js';
+import { getEntitlement, formatEntitlement } from '../_lib/entitlement.js';
 
 export default async function handler(req, res) {
   setCors(req, res, 'POST,OPTIONS');
@@ -32,11 +33,11 @@ export default async function handler(req, res) {
     const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
     await sql`INSERT INTO lg_sessions (user_id, token, expires_at) VALUES (${user.id}, ${token}, ${expires.toISOString()})`;
 
-    const sub = await getUserSubscription(user.id);
+    const ent = await getEntitlement(user.id);
     return res.status(200).json({
       user: { id: user.id, name: user.name, email: user.email },
       token,
-      subscription: formatSubscription(sub),
+      subscription: formatEntitlement(ent),
     });
   } catch (e) {
     console.error('login error:', e);
