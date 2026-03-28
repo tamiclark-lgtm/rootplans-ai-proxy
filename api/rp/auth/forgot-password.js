@@ -14,7 +14,7 @@ async function sendResetEmail(email, name, resetUrl) {
     method: 'POST',
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      from: `Root Plans <noreply@rootplans.com>`,
+      from: `Root Plans <onboarding@resend.dev>`,
       to: email,
       subject: 'Reset your Root Plans password',
       html: `
