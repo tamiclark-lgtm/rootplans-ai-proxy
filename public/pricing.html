@@ -187,19 +187,19 @@
 
   <div id="globalAlert" class="hidden" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:200;min-width:300px;max-width:480px;padding:0 16px;"></div>
 
-  <script src="/js/auth.js"></script>
+  <script src="/js/rp-auth.js"></script>
   <script src="/js/iap.js"></script>
   <script>
     var _iosPackages = {};
 
     document.addEventListener('DOMContentLoaded', async function () {
-      const { user, subscription } = await LG.init();
+      const { user, subscription } = await RP.init();
 
       if (subscription?.isPremium) {
         document.getElementById('alreadyPremiumNotice').classList.remove('hidden');
       }
 
-      if (LG.isNativeIOS()) {
+      if (RP.isNativeIOS()) {
         document.getElementById('webPricingSection').classList.add('hidden');
         document.getElementById('iosPricingSection').classList.remove('hidden');
         await loadIosOfferings();
@@ -262,7 +262,7 @@
     }
 
     async function handleIosPurchase(planKey) {
-      if (!LG.isLoggedIn()) { window.location.href = '/signup.html?next=/pricing.html'; return; }
+      if (!RP.isLoggedIn()) { window.location.href = '/rp-signup.html?next=/pricing.html'; return; }
       var pkg = _iosPackages[planKey];
       if (!pkg) { showAlert('Plan not available. Please try again.', 'error'); return; }
       var btnId = planKey === 'yearly' ? 'iosBtnAnnual' : 'iosBtnMonthly';
@@ -271,43 +271,42 @@
       var result = await LG_IAP.purchasePackage(pkg);
       if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
       if (result.ok) {
-        await LG.init();
+        await RP.init();
         showAlert('Welcome to Premium! 🌱', 'success');
-        setTimeout(function () { window.location.href = '/create.html'; }, 1500);
+        setTimeout(function () { window.location.href = '/'; }, 1500);
       } else if (!result.cancelled) {
         showAlert(result.error || 'Purchase could not be completed.', 'error');
       }
     }
 
     async function handleIosRestore() {
-      if (!LG.isLoggedIn()) { window.location.href = '/signup.html?next=/pricing.html'; return; }
+      if (!RP.isLoggedIn()) { window.location.href = '/rp-signup.html?next=/pricing.html'; return; }
       var btn = document.getElementById('btnRestore');
       if (btn) { btn.classList.add('loading'); btn.disabled = true; }
       var result = await LG_IAP.restorePurchases();
       if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
       if (!result.ok) { showAlert(result.error || 'Restore failed.', 'error'); return; }
       if (result.isEntitled) {
-        await LG.init();
+        await RP.init();
         showAlert('Subscription restored!', 'success');
-        setTimeout(function () { window.location.href = '/create.html'; }, 1500);
+        setTimeout(function () { window.location.href = '/'; }, 1500);
       } else {
         showAlert('No active subscription found on this Apple ID.', 'info');
       }
     }
 
     function handleFreePlan() {
-      if (LG.isLoggedIn()) { window.location.href = '/create.html'; return; }
-      window.location.href = '/signup.html';
+      if (RP.isLoggedIn()) { window.location.href = '/'; return; }
+      window.location.href = '/rp-signup.html';
     }
 
     async function handleUpgrade(plan) {
-      if (!LG.isLoggedIn()) {
-        window.location.href = '/signup.html?next=/pricing.html&plan=' + plan;
+      if (!RP.isLoggedIn()) {
+        window.location.href = '/rp-signup.html?next=/pricing.html&plan=' + plan;
         return;
       }
-      // Web billing: RC Billing URL (configure REVENUECAT_BILLING_URL in env)
-      // For now, show a message directing to the iOS app
-      showAlert('To subscribe, download the RootPlans iOS app or contact us at hello@rootplans.com.', 'info');
+      // Web: show promo code option or iOS app link
+      showAlert('Have a promo code? Enter it in the app. Or download the RootPlans iOS app to subscribe.', 'info');
     }
 
     function showAlert(msg, type) {

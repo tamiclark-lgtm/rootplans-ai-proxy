@@ -2138,19 +2138,8 @@
     }
 
     // Handle upgrade button — redirect to Stripe checkout
-    document.getElementById("upgradePayBtn").addEventListener("click", async () => {
-      const btn = document.getElementById("upgradePayBtn");
-      btn.textContent = "Loading..."; btn.disabled = true;
-      try {
-        const r = await fetch("/api/subscription/checkout", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "Authorization": "Bearer " + getToken() },
-          body: JSON.stringify({ plan: "monthly" })
-        });
-        const { url, error } = await r.json();
-        if (url) { window.location.href = url; }
-        else { btn.textContent = "Upgrade to Pro"; btn.disabled = false; }
-      } catch { btn.textContent = "Upgrade to Pro"; btn.disabled = false; }
+    document.getElementById("upgradePayBtn").addEventListener("click", () => {
+      window.location.href = "/pricing.html";
     });
 
     document.getElementById("upgradeCloseBtn").addEventListener("click", () => {
