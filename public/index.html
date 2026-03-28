@@ -493,6 +493,28 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
+    /* ── Premium lock indicators ──────────────────── */
+    .lock-badge {
+      display: none;
+      font-size: 11px;
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+    .pill.is-locked {
+      opacity: 0.55;
+      cursor: pointer;
+    }
+    .pill.is-locked .lock-badge,
+    .checkboxCard.is-locked .lock-badge {
+      display: inline;
+    }
+    .checkboxCard.is-locked {
+      opacity: 0.6;
+    }
+    .checkboxCard.is-locked input[type="checkbox"] {
+      pointer-events: none;
+    }
+
     .chip {
       border: 1px solid #2563eb;
       background: #eff6ff;
@@ -1303,7 +1325,7 @@
             <button class="pill" type="button" data-count="3" aria-pressed="false">3</button>
             <button class="pill" type="button" data-count="5" aria-pressed="false">5</button>
             <button class="pill" type="button" data-count="7" aria-pressed="true">7</button>
-            <button class="pill" type="button" data-count="10" aria-pressed="false">10</button>
+            <button class="pill" type="button" data-count="10" aria-pressed="false">10<span class="lock-badge">🔒</span></button>
           </div>
 
           <!-- Garden Grid Size -->
@@ -1319,7 +1341,7 @@
           <div class="pillRow" id="rarityRow" style="margin-bottom:20px;">
             <button class="pill" type="button" data-rarity="common" aria-pressed="false">🌱 Common &amp; Reliable</button>
             <button class="pill" type="button" data-rarity="mixed" aria-pressed="true">🌿 Mixed</button>
-            <button class="pill" type="button" data-rarity="unique" aria-pressed="false">✨ Unique &amp; Rare</button>
+            <button class="pill" type="button" data-rarity="unique" aria-pressed="false">✨ Unique &amp; Rare<span class="lock-badge">🔒</span></button>
           </div>
 
           <div id="staplesCard" style="display:none;margin-bottom:14px;padding:14px 16px;background:rgba(74,122,90,0.07);border:1px solid rgba(74,122,90,0.22);border-radius:14px;">
@@ -1361,7 +1383,7 @@
             <label class="checkboxCard">
               <input type="checkbox" id="holisticHealingCheckbox" />
               <div>
-                <p class="checkboxLabel">Include holistic healing powers</p>
+                <p class="checkboxLabel">Include holistic healing powers<span class="lock-badge">🔒</span></p>
                 <p class="checkboxHelp">Adds traditional uses and “power” notes for each plant using cautious, non-medical language.</p>
               </div>
             </label>
@@ -2049,25 +2071,32 @@
       unlockProUI();
     }
     function unlockProUI() {
-      // Show all plant count options
-      document.querySelectorAll("#plantCountRow .pill[data-count='10']").forEach(b => b.style.display = "");
-      // Show all rarity options
-      document.querySelectorAll("#rarityRow .pill[data-rarity='unique']").forEach(b => b.style.display = "");
-      // Show chat
-      document.querySelector(".chat-fab").style.display = "flex";
+      document.querySelectorAll("#plantCountRow .pill[data-count='10']").forEach(b => b.classList.remove("is-locked"));
+      document.querySelectorAll("#rarityRow .pill[data-rarity='unique']").forEach(b => b.classList.remove("is-locked"));
+      document.querySelectorAll("#holisticHealingCheckbox").forEach(b => b.closest(".checkboxCard")?.classList.remove("is-locked"));
+      const fab = document.querySelector(".chat-fab");
+      if (fab) fab.style.display = "flex";
     }
     function lockFreeUI() {
-      // Hide 10 plant option
+      // 10 plants — show lock, intercept click
       document.querySelectorAll("#plantCountRow .pill[data-count='10']").forEach(b => {
-        b.textContent = "10 🔒"; b.style.opacity = "0.5";
-        b.addEventListener("click", e => { e.stopPropagation(); showUpgrade("10 plants per plan is a Pro feature."); }, true);
+        b.classList.add("is-locked");
+        b.addEventListener("click", e => { e.stopPropagation(); showUpgrade("10 plants per plan is a Premium feature."); }, true);
       });
-      // Hide unique rarity
+      // Unique & Rare — show lock, intercept click
       document.querySelectorAll("#rarityRow .pill[data-rarity='unique']").forEach(b => {
-        b.textContent = "🌟 Unique & Rare 🔒"; b.style.opacity = "0.6";
-        b.addEventListener("click", e => { e.stopPropagation(); showUpgrade("Unique & Rare varieties are a Pro feature."); }, true);
+        b.classList.add("is-locked");
+        b.addEventListener("click", e => { e.stopPropagation(); showUpgrade("Unique & Rare varieties are a Premium feature."); }, true);
       });
-      // Hide chat
+      // Holistic healing — show lock, intercept checkbox
+      const holisticCard = document.getElementById("holisticHealingCheckbox")?.closest(".checkboxCard");
+      if (holisticCard) {
+        holisticCard.classList.add("is-locked");
+        document.getElementById("holisticHealingCheckbox").addEventListener("click", e => {
+          e.preventDefault(); showUpgrade("Holistic healing notes are a Premium feature.");
+        }, true);
+      }
+      // Chat FAB
       const fab = document.querySelector(".chat-fab");
       if (fab) fab.style.display = "none";
     }
