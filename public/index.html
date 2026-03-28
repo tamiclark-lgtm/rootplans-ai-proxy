@@ -1993,7 +1993,7 @@
   <script>
     const AI_PROXY_URL = "/api/holistic";
     // ── Session helpers ────────────────────────────────────────────────────
-    const SESSION_KEY = "lg_session";
+    const SESSION_KEY = "rp_session";
 
     function getSession() {
       try { return JSON.parse(localStorage.getItem(SESSION_KEY) || "null"); }
@@ -2097,8 +2097,8 @@
       const session = getSession();
 
       if (!session?.token) {
-        // Not logged in — redirect to login
-        window.location.href = "/login.html?next=" + encodeURIComponent(window.location.pathname);
+        // Not logged in — redirect to RootPlans login
+        window.location.href = "/rp-login.html?next=" + encodeURIComponent(window.location.pathname);
         return;
       }
 
@@ -2109,7 +2109,7 @@
         });
         if (!r.ok) {
           localStorage.removeItem(SESSION_KEY);
-          window.location.href = "/login.html?next=" + encodeURIComponent(window.location.pathname);
+          window.location.href = "/rp-login.html?next=" + encodeURIComponent(window.location.pathname);
           return;
         }
         const data = await r.json();
