@@ -7,17 +7,17 @@
   <meta name="description" content="Create your free RootPlans account and start planning your garden with AI." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --green:       #2d6a4f;
-      --green-light: #52b788;
-      --text:        #1a2e1e;
-      --muted:       #5a7360;
-      --border:      #d4e6da;
-      --bg:          #f4faf6;
-      --error:       #c0392b;
+      --primary:  #2f5d34;
+      --primary2: #3d7045;
+      --text:     #1a1a1a;
+      --muted:    #4a4a4a;
+      --border:   rgba(0,0,0,0.12);
+      --bg:       #f0ece0;
+      --error:    #c0392b;
     }
     body {
       font-family: 'Inter', sans-serif;
@@ -31,7 +31,7 @@
     .card {
       background: #fff;
       border-radius: 20px;
-      box-shadow: 0 8px 40px rgba(45,106,79,0.12);
+      box-shadow: 0 8px 48px rgba(0,0,0,0.10);
       padding: 48px 40px;
       width: 100%;
       max-width: 420px;
@@ -43,7 +43,8 @@
       margin-bottom: 28px;
     }
     h1 {
-      font-size: 24px;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 28px;
       font-weight: 700;
       color: var(--text);
       margin-bottom: 6px;
@@ -75,7 +76,7 @@
       outline: none;
       transition: border-color 0.2s;
     }
-    input:focus { border-color: var(--green-light); }
+    input:focus { border-color: var(--primary2); }
     input.error { border-color: var(--error); }
     .field-error {
       font-size: 12px;
@@ -94,7 +95,7 @@
     .btn {
       width: 100%;
       padding: 13px;
-      background: linear-gradient(135deg, #2d6a4f, #52b788);
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
       color: #fff;
       border: none;
       border-radius: 10px;
@@ -133,7 +134,7 @@
       font-size: 14px;
       color: var(--muted);
     }
-    .footer a { color: var(--green); font-weight: 600; text-decoration: none; }
+    .footer a { color: var(--primary); font-weight: 600; text-decoration: none; }
     .footer a:hover { text-decoration: underline; }
   </style>
 </head>
