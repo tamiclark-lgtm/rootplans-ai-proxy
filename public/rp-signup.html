@@ -32,7 +32,7 @@
     .card {
       background: #fff;
       border-radius: 16px;
-      box-shadow: 0 4px 24px rgba(47,93,52,0.10), 0 1px 4px rgba(0,0,0,0.06);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05), 0 1px 4px rgba(0,0,0,0.06);
       padding: 40px 36px;
       width: 100%;
       max-width: 400px;
@@ -61,7 +61,7 @@
     label {
       display: block;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 500;
       color: var(--text);
       margin-bottom: 7px;
     }
@@ -70,7 +70,7 @@
     input[type="password"] {
       width: 100%;
       padding: 13px 14px;
-      border: 1.5px solid var(--border);
+      border: 1px solid #dcdcdc;
       border-radius: 10px;
       font-size: 16px;
       font-family: inherit;
@@ -82,7 +82,7 @@
     }
     input:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(47,93,52,0.12);
+      box-shadow: 0 0 0 2px rgba(47,93,52,0.15);
     }
     input.error { border-color: var(--error); }
     .field-error {
@@ -155,7 +155,7 @@
   <div class="card">
 
     <a href="/" class="logo">
-      <img src="/rootplans.png" alt="Root Plans" style="width:140px;height:auto;display:block;margin:0 auto;" />
+      <img src="/rootplans.png" alt="Root Plans" style="width:160px;height:auto;display:block;margin:0 auto;object-fit:contain;" />
     </a>
 
     <h1>Create Account</h1>
@@ -191,7 +191,7 @@
         <p class="field-error" id="confirmPasswordErr"></p>
       </div>
 
-      <button type="submit" id="submitBtn">Create Account →</button>
+      <button type="submit" id="submitBtn" class="btn">Create Account →</button>
 
       <p class="terms">By creating an account you agree to our terms of service.</p>
     </form>
