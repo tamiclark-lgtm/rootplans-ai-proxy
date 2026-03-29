@@ -1203,9 +1203,14 @@
 
       <!-- Center text only -->
       <div class="hero-inner">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:4px;">
-          <div class="eyebrow"><span class="eyebrow-dot"></span>RootPlans &bull; Intelligent Garden Planning</div>
-          <a href="/guide.html" target="_blank" style="color:#fff;font-size:13px;font-weight:600;text-decoration:none;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:999px;padding:7px 16px;white-space:nowrap;letter-spacing:0.03em;font-family:'Inter',sans-serif;">📖 User Guide</a>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:8px;margin-bottom:4px;width:100%;">
+          <div class="eyebrow" style="flex-shrink:0;"><span class="eyebrow-dot"></span>RootPlans &bull; Intelligent Garden Planning</div>
+          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+            <button id="navProBtn" onclick="handleNavPro()" style="display:none;font-size:12px;font-weight:700;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,0.25);font-family:'Inter',sans-serif;cursor:pointer;white-space:nowrap;letter-spacing:0.03em;transition:opacity 0.15s;"></button>
+            <a href="/guide.html" target="_blank" style="color:#fff;font-size:13px;font-weight:600;text-decoration:none;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:999px;padding:7px 16px;white-space:nowrap;letter-spacing:0.03em;font-family:'Inter',sans-serif;">📖 User Guide</a>
+            <a id="navLoginBtn" href="/rp-login.html" style="display:none;color:#fff;font-size:13px;font-weight:600;text-decoration:none;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:999px;padding:7px 16px;white-space:nowrap;letter-spacing:0.03em;font-family:'Inter',sans-serif;">Login</a>
+            <button id="navLogoutBtn" onclick="navLogout()" style="display:none;color:#fff;font-size:13px;font-weight:600;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:999px;padding:7px 16px;white-space:nowrap;letter-spacing:0.03em;font-family:'Inter',sans-serif;cursor:pointer;transition:opacity 0.15s;">Logout</button>
+          </div>
         </div>
         <h1>Grow something <em>beautiful</em> — a garden shaped to your zone, your goals, and your table.</h1>
         <p>
@@ -2036,6 +2041,37 @@
       return getSession()?.token || "";
     }
 
+    function navLogout() {
+      localStorage.removeItem(SESSION_KEY);
+      window.location.href = "/rp-login.html";
+    }
+
+    function handleNavPro() {
+      if (!isPro()) showUpgrade("Upgrade to Pro Unlimited.");
+    }
+
+    function updateNavAuth() {
+      const loggedIn = !!getSession()?.token;
+      const pro = isPro();
+      const navProBtn    = document.getElementById("navProBtn");
+      const navLoginBtn  = document.getElementById("navLoginBtn");
+      const navLogoutBtn = document.getElementById("navLogoutBtn");
+      if (navProBtn) {
+        navProBtn.style.display = "inline-block";
+        if (pro) {
+          navProBtn.textContent = "✨ Pro Unlimited";
+          navProBtn.style.background = "linear-gradient(135deg,#2f5d34,#4e8b54)";
+          navProBtn.style.color = "#fff";
+        } else {
+          navProBtn.textContent = "Pro Unlimited";
+          navProBtn.style.background = "rgba(255,255,255,0.10)";
+          navProBtn.style.color = "rgba(255,255,255,0.85)";
+        }
+      }
+      if (navLoginBtn)  navLoginBtn.style.display  = loggedIn ? "none"         : "inline-block";
+      if (navLogoutBtn) navLogoutBtn.style.display = loggedIn ? "inline-block" : "none";
+    }
+
     // ── Subscription / Pro tier ────────────────────────────────────────────
     const PLANS_USED_KEY = "rp_plans_used";
 
@@ -2058,18 +2094,20 @@
     }
     function updatePlanCounter() {
       const el = document.getElementById("planCounterBadge");
-      if (!el) return;
-      if (isPro()) {
-        el.textContent = "✨ Pro — Unlimited";
-        el.style.background = "linear-gradient(135deg,#2d6a4f,#52b788)";
-        el.style.color = "#fff";
-      } else {
-        const used = plansUsed();
-        const left = Math.max(0, FREE_PLAN_LIMIT - used);
-        el.textContent = `${left} free plan${left !== 1 ? "s" : ""} remaining`;
-        el.style.background = left <= 1 ? "#ffe0e0" : "#edf4ef";
-        el.style.color = left <= 1 ? "#8b1a1a" : "#274c38";
+      if (el) {
+        if (isPro()) {
+          el.textContent = "✨ Pro — Unlimited";
+          el.style.background = "linear-gradient(135deg,#2d6a4f,#52b788)";
+          el.style.color = "#fff";
+        } else {
+          const used = plansUsed();
+          const left = Math.max(0, FREE_PLAN_LIMIT - used);
+          el.textContent = `${left} free plan${left !== 1 ? "s" : ""} remaining`;
+          el.style.background = left <= 1 ? "#ffe0e0" : "#edf4ef";
+          el.style.color = left <= 1 ? "#8b1a1a" : "#274c38";
+        }
       }
+      updateNavAuth();
     }
     function showUpgrade(reason) {
       document.getElementById("upgradeReason").textContent = reason || "Unlock the full RootPlans experience.";
