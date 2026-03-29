@@ -12,11 +12,12 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --primary:  #2f5d34;
-      --primary2: #3d7045;
-      --text:     #1a1a1a;
-      --muted:    #4a4a4a;
-      --border:   rgba(0,0,0,0.12);
-      --bg:       #f0ece0;
+      --primary2: #4e8b54;
+      --primary-dark: #244a29;
+      --text:     #2c3e2f;
+      --muted:    #5a7260;
+      --border:   #d4e0d6;
+      --bg:       #f6f8f5;
       --error:    #c0392b;
     }
     body {
@@ -30,83 +31,91 @@
     }
     .card {
       background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 8px 48px rgba(0,0,0,0.10);
-      padding: 48px 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(47,93,52,0.10), 0 1px 4px rgba(0,0,0,0.06);
+      padding: 40px 36px;
       width: 100%;
-      max-width: 420px;
+      max-width: 400px;
     }
     .logo {
       display: block;
       text-align: center;
       text-decoration: none;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
     h1 {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 700;
       color: var(--text);
       margin-bottom: 6px;
+      text-align: center;
     }
     .subtitle {
       font-size: 14px;
       color: var(--muted);
       margin-bottom: 28px;
+      text-align: center;
     }
-    .form-group { margin-bottom: 18px; }
+    .form-group { margin-bottom: 20px; }
     label {
       display: block;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
       color: var(--text);
-      margin-bottom: 6px;
+      margin-bottom: 7px;
     }
     input[type="text"],
     input[type="email"],
     input[type="password"] {
       width: 100%;
-      padding: 11px 14px;
+      padding: 13px 14px;
       border: 1.5px solid var(--border);
       border-radius: 10px;
-      font-size: 15px;
+      font-size: 16px;
       font-family: inherit;
       color: var(--text);
       background: #fff;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      min-height: 48px;
     }
-    input:focus { border-color: var(--primary2); }
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(47,93,52,0.12);
+    }
     input.error { border-color: var(--error); }
     .field-error {
       font-size: 12px;
       color: var(--error);
-      margin-top: 4px;
+      margin-top: 5px;
       min-height: 16px;
     }
     .alert {
       padding: 12px 14px;
       border-radius: 10px;
       font-size: 14px;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
     .alert-error { background: #fef2f2; color: var(--error); border: 1px solid #fecaca; }
     .hidden { display: none !important; }
     .btn {
       width: 100%;
-      padding: 13px;
+      padding: 14px;
       background: linear-gradient(135deg, var(--primary), var(--primary2));
       color: #fff;
       border: none;
       border-radius: 10px;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
       font-family: inherit;
       cursor: pointer;
       margin-top: 4px;
-      transition: opacity 0.2s;
+      min-height: 48px;
+      transition: background 0.2s, box-shadow 0.2s;
     }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn:hover { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); box-shadow: 0 4px 12px rgba(47,93,52,0.25); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
     .pw-strength {
       height: 4px;
       border-radius: 2px;
@@ -120,7 +129,7 @@
       transition: width 0.3s, background 0.3s;
       width: 0;
     }
-    .pw-label { font-size: 11px; margin-top: 4px; font-weight: 500; color: var(--muted); }
+    .pw-label { font-size: 12px; margin-top: 4px; font-weight: 500; color: var(--muted); }
     .terms {
       font-size: 12px;
       color: var(--muted);
@@ -136,6 +145,9 @@
     }
     .footer a { color: var(--primary); font-weight: 600; text-decoration: none; }
     .footer a:hover { text-decoration: underline; }
+    @media (max-width: 480px) {
+      .card { padding: 32px 24px; }
+    }
   </style>
 </head>
 <body>
@@ -143,7 +155,7 @@
   <div class="card">
 
     <a href="/" class="logo">
-      <img src="/rootplans.png" alt="Root Plans" style="height:80px;width:auto;display:block;margin:0 auto 8px;" />
+      <img src="/rootplans.png" alt="Root Plans" style="width:140px;height:auto;display:block;margin:0 auto;" />
     </a>
 
     <h1>Create Account</h1>
