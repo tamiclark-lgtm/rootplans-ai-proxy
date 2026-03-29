@@ -25,41 +25,6 @@
       background: var(--bg);
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
-    }
-    .site-header {
-      width: 100%;
-      height: 64px;
-      background: #fff;
-      border-bottom: 1px solid #eee;
-      padding: 0 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-shrink: 0;
-    }
-    .header-logo img {
-      height: 40px;
-      width: auto;
-      object-fit: contain;
-      display: block;
-    }
-    .sign-out-btn {
-      background: transparent;
-      border: none;
-      color: var(--primary);
-      font-size: 14px;
-      font-weight: 500;
-      font-family: inherit;
-      cursor: pointer;
-      padding: 8px 12px;
-      border-radius: 8px;
-      transition: background 0.15s;
-    }
-    .sign-out-btn:hover { background: rgba(47,93,52,0.08); }
-    .page-content {
-      flex: 1;
-      display: flex;
       align-items: center;
       justify-content: center;
       padding: 24px 16px;
@@ -71,6 +36,12 @@
       padding: 40px 36px;
       width: 100%;
       max-width: 400px;
+    }
+    .logo {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      margin-bottom: 24px;
     }
     h1 {
       font-family: 'Cormorant Garamond', Georgia, serif;
@@ -181,15 +152,11 @@
 </head>
 <body>
 
-  <header class="site-header">
-    <a href="/" class="header-logo">
-      <img src="/rootplans.png" alt="Root Plans" />
-    </a>
-    <button id="signOutBtn" class="sign-out-btn hidden" onclick="RP.logout()">Sign Out</button>
-  </header>
-
-  <div class="page-content">
   <div class="card">
+
+    <a href="/" class="logo">
+      <img src="/rootplans.png" alt="Root Plans" style="width:160px;height:auto;display:block;margin:0 auto;object-fit:contain;" />
+    </a>
 
     <h1>Create Account</h1>
     <p class="subtitle">Start planning your garden — free forever.</p>
@@ -234,13 +201,11 @@
     </div>
 
   </div>
-  </div><!-- /page-content -->
 
   <script src="/js/rp-auth.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async function () {
       if (RP.isLoggedIn()) {
-        document.getElementById('signOutBtn')?.classList.remove('hidden');
         const data = await RP.init();
         if (data.user) { redirect(); return; }
       }
