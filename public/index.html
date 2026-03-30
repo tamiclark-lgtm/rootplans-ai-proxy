@@ -1356,7 +1356,7 @@
           <p style="font-size:13px;color:var(--muted);margin-bottom:10px;">How adventurous should your plant list be?</p>
           <div class="pillRow" id="rarityRow" style="margin-bottom:20px;">
             <button class="pill" type="button" data-rarity="common" aria-pressed="false">🌱 Common &amp; Reliable</button>
-            <button class="pill" type="button" data-rarity="mixed" aria-pressed="true">🌿 Mixed</button>
+            <button class="pill" type="button" data-rarity="mixed" aria-pressed="true">🌿 Mixed<span class="lock-badge">🔒</span></button>
             <button class="pill" type="button" data-rarity="unique" aria-pressed="false">✨ Unique &amp; Rare<span class="lock-badge">🔒</span></button>
           </div>
 
@@ -2107,6 +2107,7 @@
       document.querySelectorAll("#themeRow .pill").forEach(b => b.classList.remove("is-locked"));
       document.querySelectorAll("#plantCountRow .pill[data-count='10']").forEach(b => b.classList.remove("is-locked"));
       document.querySelectorAll("#rarityRow .pill[data-rarity='unique']").forEach(b => b.classList.remove("is-locked"));
+      document.querySelectorAll("#rarityRow .pill[data-rarity='mixed']").forEach(b => b.classList.remove("is-locked"));
       document.getElementById("holisticHealingCheckbox")?.closest(".checkboxCard")?.classList.remove("is-locked");
       ["railPest", "barPest"].forEach(id => document.getElementById(id)?.classList.remove("is-locked"));
       document.querySelectorAll(".util-menu-card").forEach(card => {
@@ -2128,11 +2129,17 @@
         b.classList.add("is-locked");
         b.addEventListener("click", e => { e.stopPropagation(); showUpgrade("10 plants per plan is a Premium feature."); }, true);
       });
-      // Unique & Rare — show lock, intercept click
-      document.querySelectorAll("#rarityRow .pill[data-rarity='unique']").forEach(b => {
-        b.classList.add("is-locked");
-        b.addEventListener("click", e => { e.stopPropagation(); showUpgrade("Unique & Rare varieties are a Premium feature."); }, true);
+      // Mixed & Unique — both locked for free users; auto-select Common
+      ["mixed", "unique"].forEach(rarity => {
+        document.querySelectorAll(`#rarityRow .pill[data-rarity='${rarity}']`).forEach(b => {
+          b.classList.add("is-locked");
+          b.setAttribute("aria-pressed", "false");
+          b.addEventListener("click", e => { e.stopPropagation(); showUpgrade("Mixed and Unique varieties are a Premium feature."); }, true);
+        });
       });
+      // Auto-select Common for free users
+      const commonPill = document.querySelector("#rarityRow .pill[data-rarity='common']");
+      if (commonPill) { commonPill.setAttribute("aria-pressed", "true"); selectedRarity = "common"; }
       // Holistic healing — show lock, intercept checkbox
       const holisticCard = document.getElementById("holisticHealingCheckbox")?.closest(".checkboxCard");
       if (holisticCard) {
