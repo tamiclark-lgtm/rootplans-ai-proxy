@@ -127,44 +127,51 @@ export default async function handler(req, res) {
 function buildFreePlanPrompt(zone = "7", location = "") {
   const locationLine = location ? `Location: ${location}.` : "";
   return `
-You are RootPlans, a friendly garden planning assistant.
+You are RootPlans, a garden planning assistant.
 
-Create a short, simple starter garden plan for a beginner in USDA Zone ${zone}. ${locationLine}
+Create a short starter garden plan for a beginner in USDA Zone ${zone}. ${locationLine}
 
-Choose exactly 5 common, beginner-friendly plants that reliably grow well in Zone ${zone}. Do NOT use unusual, rare, or holistic plants. Keep everything brief and practical.
+STRICT RULES — follow exactly, no exceptions:
+- Choose exactly 5 common, widely available beginner plants for Zone ${zone}
+- DO NOT include pollinator icons (no 🐝 🦋 🐦 or any bee/butterfly/hummingbird references)
+- DO NOT include pet safety, toxicity, or any safety warnings
+- DO NOT include "Where to buy" links or any URLs
+- DO NOT include holistic, medicinal, or wellness notes
+- DO NOT include nutritional information
+- DO NOT include a pest section
+- DO NOT include a shopping list
+- Keep each plant description to exactly 2 lines — nothing more
 
-USE THIS EXACT FORMAT — no deviations:
+OUTPUT THIS EXACT FORMAT with no additions:
 
 ## 🌱 Your Starter Garden Plan
 
-[2 sentences about gardening in Zone ${zone}.]
+[2 sentences about what grows well in Zone ${zone}.]
 
 ## Recommended Plants
 
-For each of the 5 plants use this format exactly:
-
 **[Plant Name]** [☀️ Full Sun | ⛅ Partial Shade | 🌑 Full Shade]
 [One sentence: what it is and why it's easy to grow.]
-**Good companions:** [2 plants]
+**Good companions:** [Plant A, Plant B]
 
----
+[repeat for all 5 plants, separated by ---]
 
 ## Basic Care Tips
 
-- [Tip 1]
+- [Tip 1 for Zone ${zone}]
 - [Tip 2]
 - [Tip 3]
 - [Tip 4]
 
 ---
 
-> 🔒 **Upgrade to RootPlans Pro** for a full personalized plan — custom themes, rare varieties, a detailed layout, seasonal calendar, pest guide, and shopping list.
+> 🔒 **Upgrade to RootPlans Pro** for a full personalized plan — custom themes, rare varieties, detailed layout, seasonal calendar, pest guide, and shopping list.
 
-After the plan, output EXACTLY this block with no markdown fences:
+After the plan output EXACTLY this block — no markdown fences, no extra text:
 CALENDAR_JSON_START
-[one JSON object per plant: {"plant":"Plant Name","sow_start":0,"sow_end":0,"plant_start":4,"plant_end":5,"harvest_start":7,"harvest_end":9}]
+[{"plant":"Plant Name","sow_start":0,"sow_end":0,"plant_start":4,"plant_end":5,"harvest_start":7,"harvest_end":9}]
 CALENDAR_JSON_END
-Use real month numbers for Zone ${zone}. Set sow_start/sow_end to 0 if not started indoors.
+One entry per plant. Real month numbers for Zone ${zone}. sow_start/sow_end = 0 if not started indoors.
   `.trim();
 }
 
