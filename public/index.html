@@ -3312,19 +3312,6 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
         return;
       }
 
-      $("aiOutput").style.display = "none";
-      $("aiOutput").innerHTML = "";
-      $("gardenMap").style.display = "none";
-      $("gardenMap").innerHTML = "";
-      $("ganttWrap").style.display = "none";
-      $("ganttWrap").innerHTML = "";
-      $("gridVizWrap").style.display = "none";
-      $("gridVizWrap").innerHTML = "";
-      $("bedPlannerWrap").style.display = "none";
-      $("planEnd").style.display = "none";
-      $("proExampleWrap").style.display = "none";
-      $("copyBtn").style.display = "none";
-
       const zip = cleanZip($("zipInput").value);
       if (zip.length !== 5) {
         $("aiStatus").textContent = "Please enter a valid ZIP code first.";
@@ -3349,6 +3336,19 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
       $("generateBtn").textContent = "Working...";
 
       try {
+        // Reset output area
+        $("aiOutput").style.display = "none";
+        $("aiOutput").innerHTML = "";
+        $("gardenMap").style.display = "none";
+        $("gardenMap").innerHTML = "";
+        $("ganttWrap").style.display = "none";
+        $("ganttWrap").innerHTML = "";
+        $("gridVizWrap").style.display = "none";
+        $("gridVizWrap").innerHTML = "";
+        $("bedPlannerWrap").style.display = "none";
+        $("planEnd").style.display = "none";
+        if ($("proExampleWrap")) $("proExampleWrap").style.display = "none";
+        $("copyBtn").style.display = "none";
         const resp = await fetch(AI_PROXY_URL, {
           method: "POST",
           headers: authHeaders(),
