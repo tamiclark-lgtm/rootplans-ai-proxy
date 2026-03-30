@@ -1206,9 +1206,9 @@
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:8px;margin-bottom:4px;width:100%;">
           <div class="eyebrow" style="flex-shrink:0;"><span class="eyebrow-dot"></span>RootPlans &bull; Intelligent Garden Planning</div>
           <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-            <button id="navProBtn" onclick="handleNavPro()" style="display:none;font-size:12px;font-weight:700;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,0.25);font-family:'Inter',sans-serif;cursor:pointer;white-space:nowrap;letter-spacing:0.03em;transition:opacity 0.15s;"></button>
             <a href="/guide.html" target="_blank" style="color:#fff;font-size:13px;font-weight:600;text-decoration:none;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:999px;padding:7px 16px;white-space:nowrap;letter-spacing:0.03em;font-family:'Inter',sans-serif;">📖 User Guide</a>
-            <a id="navLoginBtn" href="/rp-login.html" style="display:none;color:#fff;font-size:13px;font-weight:600;text-decoration:none;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:999px;padding:7px 16px;white-space:nowrap;letter-spacing:0.03em;font-family:'Inter',sans-serif;">Login</a>
+            <a id="navSignupBtn" href="/rp-signup.html" style="display:none;color:#2f5d34;font-size:13px;font-weight:700;text-decoration:none;background:#fff;border:1px solid rgba(255,255,255,0.9);border-radius:999px;padding:7px 16px;white-space:nowrap;letter-spacing:0.03em;font-family:'Inter',sans-serif;">Sign Up</a>
+            <a id="navLoginBtn" href="/rp-login.html" style="display:none;color:rgba(255,255,255,0.85);font-size:13px;font-weight:500;text-decoration:none;white-space:nowrap;font-family:'Inter',sans-serif;padding:7px 4px;">Login</a>
             <button id="navLogoutBtn" onclick="navLogout()" style="display:none;color:#fff;font-size:13px;font-weight:600;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:999px;padding:7px 16px;white-space:nowrap;letter-spacing:0.03em;font-family:'Inter',sans-serif;cursor:pointer;transition:opacity 0.15s;">Logout</button>
           </div>
         </div>
@@ -2042,30 +2042,14 @@
       window.location.href = "/rp-login.html";
     }
 
-    function handleNavPro() {
-      if (!isPro()) showUpgrade("Upgrade to Pro Unlimited.");
-    }
-
     function updateNavAuth() {
       const loggedIn = !!getSession()?.token;
-      const pro = isPro();
-      const navProBtn    = document.getElementById("navProBtn");
+      const navSignupBtn = document.getElementById("navSignupBtn");
       const navLoginBtn  = document.getElementById("navLoginBtn");
       const navLogoutBtn = document.getElementById("navLogoutBtn");
-      if (navProBtn) {
-        navProBtn.style.display = "inline-block";
-        if (pro) {
-          navProBtn.textContent = "✨ Pro Unlimited";
-          navProBtn.style.background = "linear-gradient(135deg,#2f5d34,#4e8b54)";
-          navProBtn.style.color = "#fff";
-        } else {
-          navProBtn.textContent = "Pro Unlimited";
-          navProBtn.style.background = "rgba(255,255,255,0.10)";
-          navProBtn.style.color = "rgba(255,255,255,0.85)";
-        }
-      }
-      if (navLoginBtn)  navLoginBtn.style.display  = loggedIn ? "none"         : "inline-block";
-      if (navLogoutBtn) navLogoutBtn.style.display = loggedIn ? "inline-block" : "none";
+      if (navSignupBtn)  navSignupBtn.style.display  = loggedIn ? "none"         : "inline-block";
+      if (navLoginBtn)   navLoginBtn.style.display   = loggedIn ? "none"         : "inline-block";
+      if (navLogoutBtn)  navLogoutBtn.style.display  = loggedIn ? "inline-block" : "none";
     }
 
     // ── Subscription / Pro tier ────────────────────────────────────────────
@@ -2106,6 +2090,10 @@
       updateNavAuth();
     }
     function showUpgrade(reason) {
+      if (!getSession()?.token) {
+        window.location.href = "/rp-signup.html";
+        return;
+      }
       document.getElementById("upgradeReason").textContent = reason || "Unlock the full RootPlans experience.";
       document.getElementById("upgradeModal").style.display = "flex";
     }
@@ -2223,13 +2211,14 @@
       }
     });
 
-    // ── Auth gate: validate session on load ────────────────────────────────
+    // ── Auth init: validate session, apply UI locks ────────────────────────
     (async function initAuth() {
       const session = getSession();
 
       if (!session?.token) {
-        // Not logged in — redirect to RootPlans login
-        window.location.href = "/rp-login.html?next=" + encodeURIComponent(window.location.pathname);
+        // Not logged in — allow browsing with premium features locked
+        lockFreeUI();
+        updatePlanCounter();
         return;
       }
 
@@ -2239,8 +2228,10 @@
           headers: { "Authorization": "Bearer " + session.token }
         });
         if (!r.ok) {
+          // Invalid/expired session — clear it and treat as logged-out
           localStorage.removeItem(SESSION_KEY);
-          window.location.href = "/rp-login.html?next=" + encodeURIComponent(window.location.pathname);
+          lockFreeUI();
+          updatePlanCounter();
           return;
         }
         const data = await r.json();
@@ -3414,9 +3405,6 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
             })
           });
         } catch(e) { /* non-critical, ignore */ }
-
-        // Auto-download as PDF
-        if (isPro()) $("pdfBtn").click();
       } catch (e) {
         console.error(e);
         $("aiStatus").textContent = `Something went wrong: ${e.message || "Unknown error"}`;
@@ -3519,10 +3507,11 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
 
       const loc = detected.location ? ` · ${detected.location}` : "";
       const meta = `Zone ${detected.zone}${loc} · ${selectedTheme} · Generated ${new Date().toLocaleDateString()}`;
-      const planHtml = marked.parse(lastPlanText || "");
+      const cleanText = (lastPlanText || "").replace(/CALENDAR_JSON_START[\s\S]*?CALENDAR_JSON_END/g, "").trim();
+      const planHtml = marked.parse(cleanText);
 
       const container = document.createElement("div");
-      container.style.cssText = "font-family:Georgia,serif;color:#1f2b22;padding:32px;max-width:760px;line-height:1.7;";
+      container.style.cssText = "position:fixed;left:-10000px;top:0;width:760px;background:#fff;font-family:Georgia,serif;color:#1f2b22;padding:32px;line-height:1.7;z-index:9999;";
       container.innerHTML = `
         <h1 style="font-size:26px;color:#274c38;margin-bottom:4px;">🌿 RootPlans Garden Plan</h1>
         <p style="font-size:12px;color:#6a7b6b;border-bottom:2px solid #dce8de;padding-bottom:10px;margin-bottom:24px;">${escapeHtml(meta)}</p>
@@ -3799,6 +3788,13 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
         hasInput: false,
         custom: true
       },
+      calendar: {
+        title: '📅 Calendar',
+        chips: [],
+        hint: '',
+        hasInput: false,
+        custom: true
+      },
       ask: {
         title: '💬 Ask Anything',
         chips: ['Best soil for raised beds','When to start seeds indoors','Companion planting basics','How to water correctly','Natural fertilizers','Dealing with clay soil','Best plants for shade','Extending the growing season'],
@@ -3818,6 +3814,46 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
     function utilBuildContent(tool, targetBody, targetInput) {
       const def = UTIL_TOOLS[tool];
       if (!def) return;
+
+      if (def.custom && tool === 'calendar') {
+        const calData = (typeof lastCalData !== 'undefined' && lastCalData.length) ? lastCalData : null;
+        if (!calData) {
+          targetBody.innerHTML = `<div class="util-section-hint" style="text-align:center;padding:24px 12px;">📅<br><br>Generate a garden plan first — your month-by-month calendar will appear here.</div>`;
+        } else {
+          const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+          const now = new Date();
+          const curMonth = now.getMonth() + 1; // 1-12
+
+          let html = '';
+          for (let m = 1; m <= 12; m++) {
+            const sow     = calData.filter(r => r.sow_start && r.sow_end && m >= r.sow_start && m <= r.sow_end).map(r => r.plant);
+            const plant   = calData.filter(r => m >= r.plant_start && m <= r.plant_end).map(r => r.plant);
+            const harvest = calData.filter(r => m >= r.harvest_start && m <= r.harvest_end).map(r => r.plant);
+            const hasAny  = sow.length || plant.length || harvest.length;
+            const isCur   = m === curMonth;
+
+            html += `<div style="border-radius:10px;border:1px solid ${isCur ? '#2f5d34' : '#e0e8e2'};background:${isCur ? '#f0f7f1' : '#fff'};padding:10px 12px;margin-bottom:8px;">
+              <div style="font-size:12px;font-weight:700;color:${isCur ? '#2f5d34' : '#4a4a4a'};margin-bottom:${hasAny ? '6px' : '0'};">${MONTH_NAMES[m-1]}${isCur ? ' ← Now' : ''}</div>`;
+            if (!hasAny) {
+              html += `<div style="font-size:11px;color:#9aa8a0;font-style:italic;">Nothing active</div>`;
+            } else {
+              if (sow.length)     html += `<div style="margin-bottom:3px;"><span style="display:inline-block;width:10px;height:10px;background:#a8d5ba;border-radius:2px;vertical-align:middle;margin-right:5px;"></span><span style="font-size:11px;color:#2c3e2f;font-weight:600;">Start indoors:</span> <span style="font-size:11px;color:#4a4a4a;">${sow.join(', ')}</span></div>`;
+              if (plant.length)   html += `<div style="margin-bottom:3px;"><span style="display:inline-block;width:10px;height:10px;background:#2f5d34;border-radius:2px;vertical-align:middle;margin-right:5px;"></span><span style="font-size:11px;color:#2c3e2f;font-weight:600;">Sow/Plant outdoors:</span> <span style="font-size:11px;color:#4a4a4a;">${plant.join(', ')}</span></div>`;
+              if (harvest.length) html += `<div><span style="display:inline-block;width:10px;height:10px;background:#c9a96e;border-radius:2px;vertical-align:middle;margin-right:5px;"></span><span style="font-size:11px;color:#2c3e2f;font-weight:600;">Harvest:</span> <span style="font-size:11px;color:#4a4a4a;">${harvest.join(', ')}</span></div>`;
+            }
+            html += `</div>`;
+          }
+          targetBody.innerHTML = html;
+
+          // Scroll current month into view
+          requestAnimationFrame(() => {
+            const cards = targetBody.querySelectorAll('[style*="border:1px solid #2f5d34"]');
+            if (cards.length) cards[0].scrollIntoView({ block: 'start', behavior: 'smooth' });
+          });
+        }
+        if (targetInput) targetInput.style.display = 'none';
+        return;
+      }
 
       if (def.custom && tool === 'garden') {
         const plants = (typeof lastPlants !== 'undefined' && lastPlants.length) ? lastPlants : null;
@@ -4128,7 +4164,7 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
     function utilMobileOpenTool(tool) {
       // Update active bar button
       document.querySelectorAll('.util-bar-btn').forEach(b => b.classList.remove('active'));
-      const barMap = { pest: 'barPest', health: 'barHealth', garden: 'barGarden', ask: 'barAsk' };
+      const barMap = { pest: 'barPest', health: 'barHealth', garden: 'barGarden', calendar: 'barCalendar', ask: 'barAsk' };
       if (barMap[tool]) { const b = document.getElementById(barMap[tool]); if (b) b.classList.add('active'); }
       // Open drawer with this tool
       utilMobileOpen(tool);
@@ -4151,6 +4187,10 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
   <button class="util-rail-btn" id="railGarden" onclick="utilOpen('garden')" title="Garden Viewer">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
     <span class="util-rail-label">Garden</span>
+  </button>
+  <button class="util-rail-btn" id="railCalendar" onclick="utilOpen('calendar')" title="Planting Calendar">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span class="util-rail-label">Calendar</span>
   </button>
   <button class="util-rail-btn" id="railAsk" onclick="utilOpen('ask')" title="Ask a Question">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -4193,6 +4233,10 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
     <span class="util-bar-icon">🗺</span>
     <span class="util-bar-label">My Garden</span>
   </button>
+  <button class="util-bar-btn" id="barCalendar" onclick="utilMobileOpenTool('calendar')">
+    <span class="util-bar-icon">📅</span>
+    <span class="util-bar-label">Calendar</span>
+  </button>
   <button class="util-bar-btn" id="barAsk" onclick="utilMobileOpenTool('ask')">
     <span class="util-bar-icon">💬</span>
     <span class="util-bar-label">Ask the Gardener</span>
@@ -4227,6 +4271,13 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
       </div>
       <div class="util-menu-card-title">Garden Viewer</div>
       <div class="util-menu-card-sub">View your plan & grid</div>
+    </button>
+    <button class="util-menu-card" onclick="utilMobileOpen('calendar')">
+      <div class="util-menu-card-icon" style="background:#f0f7f1;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2f5d34" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div class="util-menu-card-title">Calendar</div>
+      <div class="util-menu-card-sub">Month-by-month planting schedule</div>
     </button>
     <button class="util-menu-card" onclick="utilMobileOpen('ask')">
       <div class="util-menu-card-icon" style="background:#f5f0fc;">
