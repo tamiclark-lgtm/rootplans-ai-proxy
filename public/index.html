@@ -126,7 +126,7 @@
       100% { opacity: 1.00; transform: translate(-4%, 6%) scale(1.10); }
     }
 
-    .hero-inner { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; background: rgba(0,0,0,0.22); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.10); padding: 40px 48px; }
+    .hero-inner { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; background: rgba(0,0,0,0.22); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.10); padding: 40px 48px; width: 100%; box-sizing: border-box; }
 
     .eyebrow {
       display: inline-flex;
@@ -986,13 +986,20 @@
     }
     .footer a { color: rgba(255,255,255,0.65); }
 
+    /* Hard-stop horizontal overflow on all screen sizes */
+    body { overflow-x: hidden; }
+    .shell { overflow-x: hidden; }
+
     @media (max-width: 720px) {
       /* Shell & hero */
       .shell { padding: 32px 12px 48px; }
-      .hero { padding: 40px 20px 32px; }
+      .hero { padding: 40px 12px 32px; }
+      .hero-inner { padding: 24px 16px; }
       .hero h1 { font-size: 36px; }
       .hero h1 { font-size: 26px; }
       .hero p { font-size: 14px; }
+      /* Hide the User Guide link on small screens to keep nav uncluttered */
+      .nav-guide-link { display: none !important; }
 
       /* Strip the outer app card — let sections be the cards */
       .app {
@@ -1203,10 +1210,10 @@
 
       <!-- Center text only -->
       <div class="hero-inner">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:8px;margin-bottom:4px;width:100%;">
-          <div class="eyebrow" style="flex-shrink:0;"><span class="eyebrow-dot"></span>RootPlans &bull; Intelligent Garden Planning</div>
-          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-            <a href="/guide.html" target="_blank" style="color:#fff;font-size:13px;font-weight:600;text-decoration:none;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:999px;padding:7px 16px;white-space:nowrap;letter-spacing:0.03em;font-family:'Inter',sans-serif;">📖 User Guide</a>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:8px;margin-bottom:4px;width:100%;min-width:0;">
+          <div class="eyebrow" style="flex-shrink:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><span class="eyebrow-dot"></span>RootPlans &bull; Intelligent Garden Planning</div>
+          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:nowrap;">
+            <a href="/guide.html" target="_blank" class="nav-guide-link" style="color:#fff;font-size:13px;font-weight:600;text-decoration:none;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:999px;padding:7px 16px;white-space:nowrap;letter-spacing:0.03em;font-family:'Inter',sans-serif;">📖 User Guide</a>
             <a id="navSignupBtn" href="/rp-signup.html" style="display:none;color:#2f5d34;font-size:13px;font-weight:700;text-decoration:none;background:#fff;border:1px solid rgba(255,255,255,0.9);border-radius:999px;padding:7px 16px;white-space:nowrap;letter-spacing:0.03em;font-family:'Inter',sans-serif;">Sign Up</a>
             <a id="navLoginBtn" href="/rp-login.html" style="display:none;color:rgba(255,255,255,0.85);font-size:13px;font-weight:500;text-decoration:none;white-space:nowrap;font-family:'Inter',sans-serif;padding:7px 4px;">Login</a>
             <button id="navLogoutBtn" onclick="navLogout()" style="display:none;color:#fff;font-size:13px;font-weight:600;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:999px;padding:7px 16px;white-space:nowrap;letter-spacing:0.03em;font-family:'Inter',sans-serif;cursor:pointer;transition:opacity 0.15s;">Logout</button>
