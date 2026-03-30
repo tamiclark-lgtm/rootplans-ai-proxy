@@ -2218,6 +2218,9 @@
       }
     });
 
+    // Render nav immediately so buttons are visible before async init completes
+    updateNavAuth();
+
     // ── Auth init: validate session, apply UI locks ────────────────────────
     (async function initAuth() {
       const session = getSession();
