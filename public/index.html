@@ -2756,7 +2756,56 @@
       $("preferenceCard").style.display = "block";
     }
 
+    function buildFreePrompt() {
+      const zip = detected.zip || cleanZip($("zipInput").value);
+      const zone = detected.zone || "7";
+      const locationLine = detected.location ? `Location: ${detected.location}.` : "";
+
+      return `
+You are RootPlans, a friendly garden planning assistant.
+
+Create a short, simple starter garden plan for a beginner in:
+- ZIP: ${zip}
+- USDA Zone: ${zone}
+${locationLine}
+
+Keep it brief and generic. Choose 5 common, beginner-friendly plants that reliably grow well in this zone. Do NOT include unusual, rare, or holistic plants.
+
+USE THIS EXACT FORMAT:
+
+## 🌱 Your Starter Garden Plan
+
+A short 2-sentence intro about gardening in Zone ${zone}.
+
+## Recommended Plants
+
+For each of the 5 plants, use this format:
+
+**[Plant Name]** [☀️ Full Sun | ⛅ Partial Shade | 🌑 Full Shade]
+[One sentence: what it is and why it's easy to grow.]
+**Good companions:** [2 plants]
+
+---
+
+## Basic Care Tips
+
+3–4 bullet points of simple beginner advice for Zone ${zone}.
+
+---
+
+> 🔒 **Upgrade to RootPlans Pro** for your full personalized plan — including a detailed layout, seasonal care calendar, pest guide, shopping list, and rare plant selections tailored to your exact preferences.
+
+After the plan, output EXACTLY this block:
+CALENDAR_JSON_START
+[{"plant":"Plant Name","sow_start":0,"sow_end":0,"plant_start":4,"plant_end":5,"harvest_start":7,"harvest_end":9}]
+CALENDAR_JSON_END
+Include one entry per plant. Use real month numbers for Zone ${zone}. Set sow_start and sow_end to 0 if not started indoors. Do NOT wrap in backticks.
+      `.trim();
+    }
+
     function buildUserPrompt() {
+      if (!isPro()) return buildFreePrompt();
+
       const zip = detected.zip || cleanZip($("zipInput").value);
       const zone = detected.zone || "";
       const locationLine = detected.location ? `Location: ${detected.location}.` : "Location not specified.";
