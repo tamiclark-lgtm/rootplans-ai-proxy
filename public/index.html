@@ -4365,7 +4365,7 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
     function utilMobileOpenTool(tool) {
       // Update active bar button
       document.querySelectorAll('.util-bar-btn').forEach(b => b.classList.remove('active'));
-      const barMap = { pest: 'barPest', health: 'barHealth', garden: 'barGarden', calendar: 'barCalendar', ask: 'barAsk' };
+      const barMap = { pest: 'barPest', health: 'barHealth', garden: 'barGarden', calendar: 'barCalendar' };
       if (barMap[tool]) { const b = document.getElementById(barMap[tool]); if (b) b.classList.add('active'); }
       // Open drawer with this tool
       utilMobileOpen(tool);
@@ -4392,10 +4392,6 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
   <button class="util-rail-btn" id="railCalendar" onclick="utilOpen('calendar')" title="Planting Calendar">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
     <span class="util-rail-label">Calendar</span>
-  </button>
-  <button class="util-rail-btn" id="railAsk" onclick="utilOpen('ask')" title="Ask a Question">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    <span class="util-rail-label">Ask</span>
   </button>
 </div>
 
@@ -4438,10 +4434,6 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
     <span class="util-bar-icon">📅</span>
     <span class="util-bar-label">Calendar</span>
   </button>
-  <button class="util-bar-btn" id="barAsk" onclick="utilMobileOpenTool('ask')">
-    <span class="util-bar-icon">💬</span>
-    <span class="util-bar-label">Ask the Gardener</span>
-  </button>
 </div>
 
 <!-- Mobile menu bottom sheet -->
@@ -4479,13 +4471,6 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
       </div>
       <div class="util-menu-card-title">Calendar</div>
       <div class="util-menu-card-sub">Month-by-month planting schedule</div>
-    </button>
-    <button class="util-menu-card" onclick="utilMobileOpen('ask')">
-      <div class="util-menu-card-icon" style="background:#f5f0fc;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9b6fd7" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      </div>
-      <div class="util-menu-card-title">Ask Anything</div>
-      <div class="util-menu-card-sub">Any garden question</div>
     </button>
   </div>
 </div>
