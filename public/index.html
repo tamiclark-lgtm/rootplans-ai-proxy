@@ -3308,36 +3308,31 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
     }
 
     $("generateBtn").addEventListener("click", async () => {
-      // Free tier gate
-      if (!isPro() && plansUsed() >= FREE_PLAN_LIMIT) {
-        showUpgrade(`You've used all ${FREE_PLAN_LIMIT} free plans. Upgrade for unlimited plans.`);
-        return;
-      }
-
-      const zip = cleanZip($("zipInput").value);
-      if (zip.length !== 5) {
-        $("aiStatus").textContent = "Please enter a valid ZIP code first.";
-        return;
-      }
-
-      if (!detected.zone) {
-        $("aiStatus").textContent = "Please enter your ZIP code in Step 1 first.";
-        return;
-      }
-
-      if (!selectedTheme) {
-        $("aiStatus").textContent = "Pick a theme first.";
-        return;
-      }
-
-      const { nativeOnly, holisticHealing } = getPreferenceState();
-      const prompt = buildUserPrompt();
-
+      // Show feedback immediately — button disabled before anything else runs
       $("aiStatus").textContent = "Generating...";
       $("generateBtn").disabled = true;
       $("generateBtn").textContent = "Working...";
 
       try {
+        // Validate inputs
+        const zip = cleanZip($("zipInput").value);
+        if (zip.length !== 5) {
+          $("aiStatus").textContent = "Please enter a valid ZIP code first.";
+          return;
+        }
+        if (!detected.zone) {
+          $("aiStatus").textContent = "Please enter your ZIP code in Step 1 first.";
+          return;
+        }
+        if (!selectedTheme) {
+          $("aiStatus").textContent = "Pick a theme first.";
+          return;
+        }
+
+        // Build prompt (inside try so any error is caught)
+        const { nativeOnly, holisticHealing } = getPreferenceState();
+        const prompt = buildUserPrompt();
+
         // Reset output area
         $("aiOutput").style.display = "none";
         $("aiOutput").innerHTML = "";
@@ -3351,6 +3346,7 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
         $("planEnd").style.display = "none";
         if ($("proExampleWrap")) $("proExampleWrap").style.display = "none";
         $("copyBtn").style.display = "none";
+
         const resp = await fetch(AI_PROXY_URL, {
           method: "POST",
           headers: authHeaders(),
