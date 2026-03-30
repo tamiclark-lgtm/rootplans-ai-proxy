@@ -1443,7 +1443,6 @@
           <div class="tinyNote" id="aiStatus" style="margin-top:12px;"></div>
           <div id="zoneBadge" style="display:none;margin-top:12px;padding:10px 14px;background:#edf4ef;border:1px solid #c6dcc9;border-radius:10px;font-size:13px;color:#274c38;font-weight:600;"></div>
           <div id="aiOutput" class="planOutput" style="display:none;"></div>
-          <div id="ganttWrap" style="display:none;margin-top:32px;"></div>
           <div id="bedPlannerWrap" style="display:none;margin-top:32px;">
   <div class="bed-planner">
     <div class="bed-planner-title">🪴 Garden Bed Planner</div>
@@ -1497,6 +1496,7 @@
 </div>
           <div id="gridVizWrap" style="display:none;margin-top:32px;"></div>
           <div id="gardenMap" class="garden-map-wrap" style="display:none;"></div>
+          <div id="calendarSection" style="display:none;margin-top:32px;"></div>
           <div id="planEnd" style="display:none;margin-top:28px;padding-top:20px;border-top:2px solid var(--border);text-align:center;">
             <button id="pdfBtnBottom" class="btn" type="button" style="margin-bottom:16px;font-size:15px;padding:14px 32px;">⬇️ Download My Garden Plan (PDF)</button>
             <p style="font-size:13px;color:#7a8f7e;letter-spacing:0.08em;">— End of Plan —</p>
@@ -2009,22 +2009,22 @@
     .bed-cell.filled { border-style:solid;cursor:pointer; }
     .bed-cell .cell-label { font-size:9px;font-weight:700;color:#fff;text-align:center;line-height:1.2;padding:2px;text-shadow:0 1px 3px rgba(0,0,0,0.8);pointer-events:none; }
     @media(max-width:600px){ .bed-config-row { gap:8px; } .bed-cell { min-width:26px;min-height:26px; } .bed-cell .cell-label { font-size:8px; } }
-    /* ── Gantt Calendar ───────────────────── */
-    .gantt-wrap { font-family:'Inter',sans-serif; }
-    .gantt-title { font-size:17px;font-weight:700;color:#274c38;margin-bottom:4px; }
-    .gantt-sub { font-size:12px;color:#6a7b6b;margin-bottom:16px; }
-    .gantt-legend { display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px; }
-    .gantt-legend span { font-size:11px;color:#555;display:flex;align-items:center;gap:5px; }
-    .gantt-legend i { display:inline-block;width:14px;height:14px;border-radius:3px; }
-    .gantt-table { width:100%;border-collapse:collapse;font-size:12px; }
-    .gantt-table th { background:#f0f4f1;color:#4a7a5a;font-weight:600;text-align:center;padding:6px 2px;font-size:11px;border:1px solid #dce8de; }
-    .gantt-table td.plant-name { font-weight:600;color:#274c38;padding:7px 10px;white-space:nowrap;font-size:12px;border:1px solid #dce8de;background:#fafcfa; }
-    .gantt-table td.month-cell { border:1px solid #dce8de;padding:0;height:28px;min-width:26px; }
-    .gantt-cell-sow { background:#a8d5ba;position:relative; }
-    .gantt-cell-plant { background:#4a7a5a; }
-    .gantt-cell-harvest { background:#c9a96e; }
-    .gantt-cell-both { background:linear-gradient(135deg,#4a7a5a 50%,#c9a96e 50%); }
-    @media(max-width:600px){ .gantt-table th,.gantt-table td.month-cell { min-width:20px;font-size:10px;} .gantt-table td.plant-name{font-size:11px;padding:6px 6px;} }
+    /* ── Inline Calendar Section ───────────────────── */
+    .cal-section-title { font-size:17px;font-weight:700;color:#274c38;margin-bottom:4px;font-family:'Inter',sans-serif; }
+    .cal-section-sub { font-size:12px;color:#6a7b6b;margin-bottom:16px; }
+    .cal-legend { display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px; }
+    .cal-legend span { font-size:11px;color:#555;display:flex;align-items:center;gap:5px; }
+    .cal-legend i { display:inline-block;width:14px;height:14px;border-radius:3px;flex-shrink:0; }
+    .cal-month-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px; }
+    .cal-month-card { border-radius:10px;border:1px solid #e0e8e2;background:#fff;padding:10px 12px; }
+    .cal-month-card.cal-now { border-color:#2f5d34;background:#f0f7f1; }
+    .cal-month-name { font-size:13px;font-weight:700;color:#4a4a4a;margin-bottom:6px; }
+    .cal-month-card.cal-now .cal-month-name { color:#2f5d34; }
+    .cal-month-empty { font-size:11px;color:#9aa8a0;font-style:italic; }
+    .cal-activity { display:flex;align-items:flex-start;gap:6px;font-size:11px;color:#4a4a4a;margin-bottom:3px; }
+    .cal-dot { width:10px;height:10px;border-radius:2px;flex-shrink:0;margin-top:2px; }
+    .cal-activity-label { font-weight:600;color:#2c3e2f; }
+    @media(max-width:600px){ .cal-month-grid { grid-template-columns:1fr 1fr; } }
     .quick-list-wrap { display:flex;flex-wrap:wrap;gap:5px; }
     .quick-list-item { padding:4px 10px;border-radius:14px;border:1px solid #dce8de;background:#f5f9f6;color:#274c38;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:background 0.15s; }
     .quick-list-item:hover { background:#4a7a5a;color:#fff;border-color:#4a7a5a; }
@@ -2403,39 +2403,37 @@
       return String(zip || "").trim().replace(/\D/g, "").slice(0, 5);
     }
 
-    function renderGantt(data) {
-      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      const wrap = $("ganttWrap");
+    function renderInlineCalendar(data) {
+      const wrap = $("calendarSection");
       if (!data || !data.length) { wrap.style.display = "none"; return; }
-      let html = `<div class="gantt-wrap">
-        <div class="gantt-title">📅 Planting & Harvest Calendar</div>
-        <div class="gantt-sub">Based on your USDA zone — adjust by 2–3 weeks for local conditions.</div>
-        <div class="gantt-legend">
+      const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      const curMonth = new Date().getMonth() + 1;
+      let html = `<div class="cal-section-title">📅 Month-by-Month Garden Calendar</div>
+        <div class="cal-section-sub">Based on your USDA zone — adjust by 1–2 weeks for your local microclimate.</div>
+        <div class="cal-legend">
           <span><i style="background:#a8d5ba"></i> Start indoors</span>
-          <span><i style="background:#4a7a5a"></i> Plant outdoors</span>
+          <span><i style="background:#2f5d34"></i> Sow / Plant outdoors</span>
           <span><i style="background:#c9a96e"></i> Harvest window</span>
         </div>
-        <div style="overflow-x:auto;">
-        <table class="gantt-table">
-          <thead><tr><th style="text-align:left;padding:6px 10px;">Plant</th>`;
-      months.forEach(m => html += `<th>${m}</th>`);
-      html += `</tr></thead><tbody>`;
-      data.forEach(row => {
-        html += `<tr><td class="plant-name">${escapeHtml(row.plant)}</td>`;
-        for (let m = 1; m <= 12; m++) {
-          const isSow = row.sow_start && row.sow_end && m >= row.sow_start && m <= row.sow_end;
-          const isPlant = m >= row.plant_start && m <= row.plant_end;
-          const isHarvest = m >= row.harvest_start && m <= row.harvest_end;
-          let cls = "";
-          if (isPlant && isHarvest) cls = "gantt-cell-both";
-          else if (isHarvest) cls = "gantt-cell-harvest";
-          else if (isPlant) cls = "gantt-cell-plant";
-          else if (isSow) cls = "gantt-cell-sow";
-          html += `<td class="month-cell ${cls}"></td>`;
+        <div class="cal-month-grid">`;
+      for (let m = 1; m <= 12; m++) {
+        const sow     = data.filter(r => r.sow_start && r.sow_end && m >= r.sow_start && m <= r.sow_end).map(r => r.plant);
+        const plant   = data.filter(r => m >= r.plant_start && m <= r.plant_end).map(r => r.plant);
+        const harvest = data.filter(r => m >= r.harvest_start && m <= r.harvest_end).map(r => r.plant);
+        const hasAny  = sow.length || plant.length || harvest.length;
+        const isCur   = m === curMonth;
+        html += `<div class="cal-month-card${isCur ? ' cal-now' : ''}">
+          <div class="cal-month-name">${MONTH_NAMES[m-1]}${isCur ? ' ← Now' : ''}</div>`;
+        if (!hasAny) {
+          html += `<div class="cal-month-empty">Nothing active</div>`;
+        } else {
+          if (sow.length)     html += `<div class="cal-activity"><span class="cal-dot" style="background:#a8d5ba"></span><span><span class="cal-activity-label">Start indoors:</span> ${escapeHtml(sow.join(', '))}</span></div>`;
+          if (plant.length)   html += `<div class="cal-activity"><span class="cal-dot" style="background:#2f5d34"></span><span><span class="cal-activity-label">Sow/Plant outdoors:</span> ${escapeHtml(plant.join(', '))}</span></div>`;
+          if (harvest.length) html += `<div class="cal-activity"><span class="cal-dot" style="background:#c9a96e"></span><span><span class="cal-activity-label">Harvest:</span> ${escapeHtml(harvest.join(', '))}</span></div>`;
         }
-        html += `</tr>`;
-      });
-      html += `</tbody></table></div></div>`;
+        html += `</div>`;
+      }
+      html += `</div>`;
       wrap.innerHTML = html;
       wrap.style.display = "block";
     }
@@ -3150,8 +3148,8 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
       $("aiOutput").innerHTML = "";
       $("gardenMap").style.display = "none";
       $("gardenMap").innerHTML = "";
-      $("ganttWrap").style.display = "none";
-      $("ganttWrap").innerHTML = "";
+      $("calendarSection").style.display = "none";
+      $("calendarSection").innerHTML = "";
       $("gridVizWrap").style.display = "none";
       $("gridVizWrap").innerHTML = "";
       $("bedPlannerWrap").style.display = "none";
@@ -3421,8 +3419,8 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
         $("aiOutput").innerHTML = "";
         $("gardenMap").style.display = "none";
         $("gardenMap").innerHTML = "";
-        $("ganttWrap").style.display = "none";
-        $("ganttWrap").innerHTML = "";
+        $("calendarSection").style.display = "none";
+        $("calendarSection").innerHTML = "";
         $("gridVizWrap").style.display = "none";
         $("gridVizWrap").innerHTML = "";
         $("bedPlannerWrap").style.display = "none";
@@ -3554,7 +3552,7 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
               lastCalData = calData;
             }
           }
-          if (isPro() && calData.length) renderGantt(calData);
+          if (calData.length) renderInlineCalendar(calData);
         } catch(e) { console.warn('Calendar parse failed:', e); }
         renderGridViz(lastPlants, calData);
         renderBedPlanner(lastPlants);
@@ -3958,20 +3956,6 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
         hint: 'Tap a symptom to diagnose and fix it:',
         hasInput: false
       },
-      garden: {
-        title: '🗺 Garden Viewer',
-        chips: [],
-        hint: '',
-        hasInput: false,
-        custom: true
-      },
-      calendar: {
-        title: '📅 Calendar',
-        chips: [],
-        hint: '',
-        hasInput: false,
-        custom: true
-      },
       ask: {
         title: '💬 Ask Anything',
         chips: ['Best soil for raised beds','When to start seeds indoors','Companion planting basics','How to water correctly','Natural fertilizers','Dealing with clay soil','Best plants for shade','Extending the growing season'],
@@ -3991,105 +3975,6 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
     function utilBuildContent(tool, targetBody, targetInput) {
       const def = UTIL_TOOLS[tool];
       if (!def) return;
-
-      if (def.custom && tool === 'calendar') {
-        const calData = (typeof lastCalData !== 'undefined' && lastCalData.length) ? lastCalData : null;
-        if (!calData) {
-          const hasPlan = typeof lastPlants !== 'undefined' && lastPlants.length > 0;
-          targetBody.innerHTML = hasPlan
-            ? `<div class="util-section-hint" style="text-align:center;padding:24px 12px;">📅<br><br>Calendar data wasn't generated for this plan. Try regenerating your plan to get the planting calendar.</div>`
-            : `<div class="util-section-hint" style="text-align:center;padding:24px 12px;">📅<br><br>Generate a garden plan first — your month-by-month calendar will appear here.</div>`;
-        } else {
-          const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-          const now = new Date();
-          const curMonth = now.getMonth() + 1; // 1-12
-
-          let html = '';
-          for (let m = 1; m <= 12; m++) {
-            const sow     = calData.filter(r => r.sow_start && r.sow_end && m >= r.sow_start && m <= r.sow_end).map(r => r.plant);
-            const plant   = calData.filter(r => m >= r.plant_start && m <= r.plant_end).map(r => r.plant);
-            const harvest = calData.filter(r => m >= r.harvest_start && m <= r.harvest_end).map(r => r.plant);
-            const hasAny  = sow.length || plant.length || harvest.length;
-            const isCur   = m === curMonth;
-
-            html += `<div style="border-radius:10px;border:1px solid ${isCur ? '#2f5d34' : '#e0e8e2'};background:${isCur ? '#f0f7f1' : '#fff'};padding:10px 12px;margin-bottom:8px;">
-              <div style="font-size:12px;font-weight:700;color:${isCur ? '#2f5d34' : '#4a4a4a'};margin-bottom:${hasAny ? '6px' : '0'};">${MONTH_NAMES[m-1]}${isCur ? ' ← Now' : ''}</div>`;
-            if (!hasAny) {
-              html += `<div style="font-size:11px;color:#9aa8a0;font-style:italic;">Nothing active</div>`;
-            } else {
-              if (sow.length)     html += `<div style="margin-bottom:3px;"><span style="display:inline-block;width:10px;height:10px;background:#a8d5ba;border-radius:2px;vertical-align:middle;margin-right:5px;"></span><span style="font-size:11px;color:#2c3e2f;font-weight:600;">Start indoors:</span> <span style="font-size:11px;color:#4a4a4a;">${sow.join(', ')}</span></div>`;
-              if (plant.length)   html += `<div style="margin-bottom:3px;"><span style="display:inline-block;width:10px;height:10px;background:#2f5d34;border-radius:2px;vertical-align:middle;margin-right:5px;"></span><span style="font-size:11px;color:#2c3e2f;font-weight:600;">Sow/Plant outdoors:</span> <span style="font-size:11px;color:#4a4a4a;">${plant.join(', ')}</span></div>`;
-              if (harvest.length) html += `<div><span style="display:inline-block;width:10px;height:10px;background:#c9a96e;border-radius:2px;vertical-align:middle;margin-right:5px;"></span><span style="font-size:11px;color:#2c3e2f;font-weight:600;">Harvest:</span> <span style="font-size:11px;color:#4a4a4a;">${harvest.join(', ')}</span></div>`;
-            }
-            html += `</div>`;
-          }
-          targetBody.innerHTML = html;
-
-          // Scroll current month into view
-          requestAnimationFrame(() => {
-            const cards = targetBody.querySelectorAll('[style*="border:1px solid #2f5d34"]');
-            if (cards.length) cards[0].scrollIntoView({ block: 'start', behavior: 'smooth' });
-          });
-        }
-        if (targetInput) targetInput.style.display = 'none';
-        return;
-      }
-
-      if (def.custom && tool === 'garden') {
-        const plants = (typeof lastPlants !== 'undefined' && lastPlants.length) ? lastPlants : null;
-        const calData = (typeof lastCalData !== 'undefined' && lastCalData.length) ? lastCalData : null;
-        if (!plants) {
-          targetBody.innerHTML = `<div class="util-section-hint" style="text-align:center;padding:24px 12px;">🌱<br><br>Generate a garden plan first — your planting calendar and bed layout will appear here.</div>`;
-        } else {
-          // Render Gantt inline
-          const months = ['J','F','M','A','M','J','J','A','S','O','N','D'];
-          let html = `<div style="font-size:12px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px;">📅 Planting Calendar</div>`;
-          if (calData && calData.length) {
-            html += `<div style="overflow-x:auto;margin-bottom:20px;"><table style="width:100%;border-collapse:collapse;font-size:11px;font-family:'Inter',sans-serif;">`;
-            html += `<thead><tr><th style="text-align:left;padding:4px 6px;color:#4a4a4a;font-weight:600;">Plant</th>`;
-            months.forEach(m => html += `<th style="padding:3px 2px;color:#4a4a4a;font-weight:600;text-align:center;">${m}</th>`);
-            html += `</tr></thead><tbody>`;
-            calData.forEach(row => {
-              html += `<tr><td style="padding:4px 6px;font-weight:600;color:#1a1a1a;white-space:nowrap;max-width:90px;overflow:hidden;text-overflow:ellipsis;">${row.plant}</td>`;
-              for (let m = 1; m <= 12; m++) {
-                const isSow = row.sow_start && row.sow_end && m >= row.sow_start && m <= row.sow_end;
-                const isPlant = m >= row.plant_start && m <= row.plant_end;
-                const isHarvest = m >= row.harvest_start && m <= row.harvest_end;
-                let bg = 'transparent';
-                if (isHarvest) bg = '#c9a96e';
-                else if (isPlant) bg = '#2f5d34';
-                else if (isSow) bg = '#a8d5ba';
-                html += `<td style="padding:3px 2px;text-align:center;"><div style="width:14px;height:14px;border-radius:3px;background:${bg};margin:0 auto;"></div></td>`;
-              }
-              html += `</tr>`;
-            });
-            html += `</tbody></table>`;
-            html += `<div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;">
-              <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:#4a4a4a;"><span style="width:10px;height:10px;background:#a8d5ba;border-radius:2px;display:inline-block;"></span>Indoors</span>
-              <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:#4a4a4a;"><span style="width:10px;height:10px;background:#2f5d34;border-radius:2px;display:inline-block;"></span>Outdoors</span>
-              <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:#4a4a4a;"><span style="width:10px;height:10px;background:#c9a96e;border-radius:2px;display:inline-block;"></span>Harvest</span>
-            </div></div>`;
-          } else {
-            html += `<div style="color:#4a4a4a;font-size:12px;margin-bottom:16px;">Regenerate your plan to load calendar data.</div>`;
-          }
-
-          // Render bed planner inline
-          html += `<div style="font-size:12px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px;">🪴 Garden Bed Layout</div>`;
-          const colors = ["#2f5d34","#b8922a","#3d7045","#7a5c48","#5b8e6b","#8fbc8f","#556b2f","#cd853f"];
-          const icons = ["🌿","🍅","🌱","🥬","🌸","🫛","🌾","🥕"];
-          html += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">`;
-          plants.slice(0,9).forEach((p,i) => {
-            html += `<div style="background:${colors[i%colors.length]};border-radius:10px;padding:8px 6px;text-align:center;color:#fff;">
-              <div style="font-size:18px;">${icons[i%icons.length]}</div>
-              <div style="font-size:10px;font-weight:700;margin-top:3px;line-height:1.2;">${(p.common||p.name||'').split(' ').slice(0,2).join(' ')}</div>
-            </div>`;
-          });
-          html += `</div>`;
-          targetBody.innerHTML = html;
-        }
-        if (targetInput) targetInput.style.display = 'none';
-        return;
-      }
 
       let html = `<div class="util-section-hint">${def.hint}</div><div class="util-chips" id="utilChipRow_${tool}">`;
       def.chips.forEach((chip, i) => {
@@ -4374,7 +4259,7 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
     function utilMobileOpenTool(tool) {
       // Update active bar button
       document.querySelectorAll('.util-bar-btn').forEach(b => b.classList.remove('active'));
-      const barMap = { pest: 'barPest', health: 'barHealth', garden: 'barGarden', calendar: 'barCalendar', ask: 'barAsk' };
+      const barMap = { pest: 'barPest', health: 'barHealth', ask: 'barAsk' };
       if (barMap[tool]) { const b = document.getElementById(barMap[tool]); if (b) b.classList.add('active'); }
       // Open drawer with this tool
       utilMobileOpen(tool);
@@ -4393,14 +4278,6 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
   <button class="util-rail-btn" id="railHealth" onclick="utilOpen('health')" title="Plant Health">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/></svg>
     <span class="util-rail-label">Health</span>
-  </button>
-  <button class="util-rail-btn" id="railGarden" onclick="utilOpen('garden')" title="Garden Viewer">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-    <span class="util-rail-label">Garden</span>
-  </button>
-  <button class="util-rail-btn" id="railCalendar" onclick="utilOpen('calendar')" title="Planting Calendar">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-    <span class="util-rail-label">Calendar</span>
   </button>
   <button class="util-rail-btn" id="railAsk" onclick="utilOpen('ask')" title="Ask a Question">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -4439,14 +4316,6 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
     <span class="util-bar-icon">🌿</span>
     <span class="util-bar-label">Plant Health</span>
   </button>
-  <button class="util-bar-btn" id="barGarden" onclick="utilMobileOpenTool('garden')">
-    <span class="util-bar-icon">🗺</span>
-    <span class="util-bar-label">My Garden</span>
-  </button>
-  <button class="util-bar-btn" id="barCalendar" onclick="utilMobileOpenTool('calendar')">
-    <span class="util-bar-icon">📅</span>
-    <span class="util-bar-label">Calendar</span>
-  </button>
   <button class="util-bar-btn" id="barAsk" onclick="utilMobileOpenTool('ask')">
     <span class="util-bar-icon">💬</span>
     <span class="util-bar-label">Ask the Gardener</span>
@@ -4474,20 +4343,6 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
       </div>
       <div class="util-menu-card-title">Plant Health</div>
       <div class="util-menu-card-sub">Benefits & wellness plants</div>
-    </button>
-    <button class="util-menu-card" onclick="utilMobileOpen('garden')">
-      <div class="util-menu-card-icon" style="background:#eef4ff;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6b7fd7" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      </div>
-      <div class="util-menu-card-title">Garden Viewer</div>
-      <div class="util-menu-card-sub">View your plan & grid</div>
-    </button>
-    <button class="util-menu-card" onclick="utilMobileOpen('calendar')">
-      <div class="util-menu-card-icon" style="background:#f0f7f1;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2f5d34" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      </div>
-      <div class="util-menu-card-title">Calendar</div>
-      <div class="util-menu-card-sub">Month-by-month planting schedule</div>
     </button>
     <button class="util-menu-card" onclick="utilMobileOpen('ask')">
       <div class="util-menu-card-icon" style="background:#f5f0fc;">
