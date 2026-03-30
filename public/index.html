@@ -1494,6 +1494,43 @@
             <button id="pdfBtnBottom" class="btn" type="button" style="margin-bottom:16px;font-size:15px;padding:14px 32px;">⬇️ Download My Garden Plan (PDF)</button>
             <p style="font-size:13px;color:#7a8f7e;letter-spacing:0.08em;">— End of Plan —</p>
           </div>
+
+          <!-- Premium example teaser — shown to free users after plan generates -->
+          <div id="proExampleWrap" style="display:none;margin-top:40px;border-radius:18px;overflow:hidden;border:2px solid #2f5d34;box-shadow:0 8px 40px rgba(47,93,52,0.15);">
+            <div style="background:linear-gradient(135deg,#2f5d34,#4e8b54);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+              <div>
+                <div style="font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:4px;">Pro Unlimited — Example Plan</div>
+                <div style="font-size:18px;font-weight:800;color:#fff;">This is what your full plan looks like ✨</div>
+              </div>
+              <button onclick="showUpgrade('Upgrade to get your full personalized plan.')" style="background:#fff;color:#2f5d34;font-size:13px;font-weight:800;padding:10px 20px;border-radius:999px;border:none;cursor:pointer;white-space:nowrap;">Upgrade to Pro →</button>
+            </div>
+            <div style="background:#f8fbf8;padding:24px;font-family:'Inter',sans-serif;font-size:14px;color:#1f2b22;line-height:1.7;position:relative;">
+              <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(248,251,248,0.97) 75%);pointer-events:none;z-index:1;"></div>
+              <div style="font-size:16px;font-weight:800;color:#2f5d34;margin-bottom:4px;">## 1. Garden Concept</div>
+              <p style="margin:0 0 16px;">This Zone 7 pollinator and edible garden blends heritage vegetables with native flowering plants to create a productive, beautiful space that works through three seasons. The design layers tall sunflowers and pole beans at the back, mid-height tomatoes and peppers in the center, and cascading nasturtiums and herbs along the front edge — maximizing yield in as little as 4×8 ft.</p>
+              <div style="font-size:16px;font-weight:800;color:#2f5d34;margin-bottom:8px;">## 2. Recommended Plants</div>
+              <div style="background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:10px;border:1px solid #dce8dc;">
+                <div style="font-weight:800;">🍅 Brandywine Tomato ☀️ 🐝🦋</div>
+                <div style="color:#4a6a50;margin:4px 0;">A rich, complex heirloom prized for its meaty texture and sweet-acidic flavor — one of the most rewarding plants for a Zone 7 summer garden.</div>
+                <div style="font-size:12px;color:#7a8f7e;"><strong>Good companions:</strong> Basil, Marigolds, Carrots &nbsp;·&nbsp; <strong>Nutrition:</strong> Vitamin C, Lycopene, Potassium &nbsp;·&nbsp; <strong>🐾 Pet Safety:</strong> ⚠️ Toxic to dogs and cats</div>
+              </div>
+              <div style="background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:10px;border:1px solid #dce8dc;">
+                <div style="font-weight:800;">🌿 Purple Basil ☀️ 🐝</div>
+                <div style="color:#4a6a50;margin:4px 0;">A stunning deep-purple aromatic herb that doubles as an ornamental, repels aphids, and produces intensely flavored leaves ideal for pestos and salads.</div>
+                <div style="font-size:12px;color:#7a8f7e;"><strong>Good companions:</strong> Tomatoes, Peppers, Zucchini &nbsp;·&nbsp; <strong>Nutrition:</strong> Vitamin K, Antioxidants, Iron &nbsp;·&nbsp; <strong>🐾 Pet Safety:</strong> ✅ Safe for pets</div>
+              </div>
+              <div style="background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:16px;border:1px solid #dce8dc;filter:blur(3px);user-select:none;">
+                <div style="font-weight:800;">🫛 Dragon Tongue Bean ☀️ 🦋</div>
+                <div style="color:#4a6a50;margin:4px 0;">A striking yellow-and-purple streaked wax bean that produces abundantly and needs no staking — one of the most beautiful and productive beans for a home garden.</div>
+                <div style="font-size:12px;color:#7a8f7e;"><strong>Good companions:</strong> Squash, Carrots, Nasturtiums &nbsp;·&nbsp; <strong>Nutrition:</strong> Fiber, Folate, Vitamin A &nbsp;·&nbsp; <strong>🐾 Pet Safety:</strong> ✅ Safe for pets</div>
+              </div>
+              <div style="font-size:13px;color:#7a8f7e;font-style:italic;text-align:center;position:relative;z-index:2;">+ 6 more plants, seasonal care calendar, bed layout, pest guide & shopping list...</div>
+            </div>
+            <div style="background:#fff;padding:20px 24px;text-align:center;border-top:1px solid #dce8dc;">
+              <div style="font-size:15px;font-weight:700;color:#1f2b22;margin-bottom:12px;">Get your full personalized plan — tailored to your ZIP, theme, and preferences.</div>
+              <button onclick="showUpgrade('Upgrade to get your full personalized plan.')" style="background:linear-gradient(135deg,#2f5d34,#4e8b54);color:#fff;font-size:15px;font-weight:800;padding:14px 32px;border-radius:999px;border:none;cursor:pointer;box-shadow:0 4px 20px rgba(47,93,52,0.3);">✨ Upgrade to Pro Unlimited</button>
+            </div>
+          </div>
         </section>
       </div>
     </main>
@@ -3034,6 +3071,7 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
       $("gridVizWrap").innerHTML = "";
       $("bedPlannerWrap").style.display = "none";
       $("planEnd").style.display = "none";
+      $("proExampleWrap").style.display = "none";
       $("copyBtn").style.display = "none";
       $("pdfBtn").style.display = "none";
       lastPlanText = "";
@@ -3284,6 +3322,7 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
       $("gridVizWrap").innerHTML = "";
       $("bedPlannerWrap").style.display = "none";
       $("planEnd").style.display = "none";
+      $("proExampleWrap").style.display = "none";
       $("copyBtn").style.display = "none";
 
       const zip = cleanZip($("zipInput").value);
@@ -3435,6 +3474,11 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
         renderBedPlanner(lastPlants);
 
         $("planEnd").style.display = "block";
+
+        // Show premium example teaser for free/logged-out users
+        if (!isPro()) {
+          $("proExampleWrap").style.display = "block";
+        }
 
         $("aiStatus").textContent = "Done.";
         $("copyBtn").style.display = "inline-block";
