@@ -2106,8 +2106,10 @@
   </div>
 
   <!-- Upgrade modal -->
-  <div id="upgradeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;">
-    <div style="background:#fff;border-radius:24px;padding:40px 32px;max-width:400px;width:90%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,0.3);">
+  <div id="upgradeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;" onclick="if(event.target===this)hideUpgrade();">
+    <div style="background:#fff;border-radius:24px;padding:40px 32px 32px;max-width:400px;width:90%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,0.3);position:relative;">
+      <!-- Close X — always visible, 44px touch target -->
+      <button onclick="hideUpgrade()" aria-label="Close" style="position:absolute;top:12px;right:12px;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,0.06);border:none;cursor:pointer;font-size:18px;color:#555;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>
       <div style="font-size:40px;margin-bottom:12px;">🌿</div>
       <h2 style="font-size:22px;font-weight:800;color:#274c38;margin-bottom:8px;">Upgrade to RootPlans Pro</h2>
       <p style="font-size:14px;color:#6a7b6b;margin-bottom:20px;" id="upgradeReason">Unlock the full experience.</p>
@@ -2124,8 +2126,8 @@
         <p style="margin:3px 0;font-size:13px;color:#4a5e50;">✅ Chat assistant</p>
         <p style="margin:3px 0;font-size:13px;color:#4a5e50;">✅ Pet safety & pollinator badges</p>
       </div>
-      <button id="upgradePayBtn" style="width:100%;padding:14px;background:linear-gradient(135deg,#2d6a4f,#52b788);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:10px;">Upgrade for $4.99/month</button>
-      <button id="upgradeCloseBtn" style="background:none;border:none;color:#aaa;font-size:13px;cursor:pointer;margin-top:4px;">Maybe later</button>
+      <button id="upgradePayBtn" style="width:100%;padding:14px;background:linear-gradient(135deg,#2d6a4f,#52b788);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:12px;">Upgrade for $4.99/month</button>
+      <button id="upgradeCloseBtn" onclick="hideUpgrade()" style="width:100%;padding:12px;background:none;border:1px solid #dce8de;border-radius:12px;color:#6a7b6b;font-size:14px;font-weight:600;cursor:pointer;">No thanks, maybe later</button>
     </div>
   </div>
 
@@ -2203,6 +2205,11 @@
       }
       updateNavAuth();
     }
+    function hideUpgrade() {
+      document.getElementById("upgradeModal").style.display = "none";
+    }
+    window.hideUpgrade = hideUpgrade;
+
     function showUpgrade(reason) {
       if (!getSession()?.token) {
         window.location.href = "/rp-signup.html";
@@ -2287,9 +2294,6 @@
       window.location.href = "/pricing.html";
     });
 
-    document.getElementById("upgradeCloseBtn").addEventListener("click", () => {
-      document.getElementById("upgradeModal").style.display = "none";
-    });
 
     // ── Promo code ─────────────────────────────────────────────────────────
     document.getElementById("bypassBtn").addEventListener("click", async () => {
@@ -4235,7 +4239,7 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
     })();
 
     // Escape key closes popup
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') { utilClose(); utilMobileMenuClose(); utilMobileDrawerClose(); } });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { hideUpgrade(); utilClose(); utilMobileMenuClose(); utilMobileDrawerClose(); } });
 
     // Mobile functions
     function utilMobileMenuOpen() {
