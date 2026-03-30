@@ -2146,9 +2146,10 @@
       document.querySelectorAll("#rarityRow .pill[data-rarity='unique']").forEach(b => b.classList.remove("is-locked"));
       document.querySelectorAll("#rarityRow .pill[data-rarity='mixed']").forEach(b => b.classList.remove("is-locked"));
       document.getElementById("holisticHealingCheckbox")?.closest(".checkboxCard")?.classList.remove("is-locked");
-      ["railPest", "barPest"].forEach(id => document.getElementById(id)?.classList.remove("is-locked"));
+      ["railPest", "barPest", "railHealth", "barHealth"].forEach(id => document.getElementById(id)?.classList.remove("is-locked"));
       document.querySelectorAll(".util-menu-card").forEach(card => {
-        if (card.querySelector(".util-menu-card-title")?.textContent.includes("Pest")) card.classList.remove("is-locked");
+        const title = card.querySelector(".util-menu-card-title")?.textContent || "";
+        if (title.includes("Pest") || title.includes("Plant Health")) card.classList.remove("is-locked");
       });
       const fab = document.querySelector(".chat-fab");
       if (fab) fab.style.display = "flex";
@@ -2185,17 +2186,18 @@
           e.preventDefault(); showUpgrade("Holistic healing notes are a Premium feature.");
         }, true);
       }
-      // Pest buttons
-      ["railPest", "barPest"].forEach(id => {
+      // Pest + Plant Health — both premium only
+      ["railPest", "barPest", "railHealth", "barHealth"].forEach(id => {
         const b = document.getElementById(id);
         if (!b) return;
         b.classList.add("is-locked");
-        b.addEventListener("click", e => { e.stopPropagation(); showUpgrade("Pest diagnosis is a Premium feature."); }, true);
+        b.addEventListener("click", e => { e.stopPropagation(); showUpgrade("Pest & Plant Health tools are Premium features."); }, true);
       });
       document.querySelectorAll(".util-menu-card").forEach(card => {
-        if (card.querySelector(".util-menu-card-title")?.textContent.includes("Pest")) {
+        const title = card.querySelector(".util-menu-card-title")?.textContent || "";
+        if (title.includes("Pest") || title.includes("Plant Health")) {
           card.classList.add("is-locked");
-          card.addEventListener("click", e => { e.stopPropagation(); utilMobileMenuClose(); showUpgrade("Pest diagnosis is a Premium feature."); }, true);
+          card.addEventListener("click", e => { e.stopPropagation(); utilMobileMenuClose(); showUpgrade("Pest & Plant Health tools are Premium features."); }, true);
         }
       });
       // Chat FAB
@@ -4095,7 +4097,14 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
     }
 
     // Desktop popup functions
+    const PREMIUM_TOOLS = ['pest', 'health'];
+
     function utilOpen(tool) {
+      if (PREMIUM_TOOLS.includes(tool) && !isPro()) {
+        showUpgrade("Pest & Plant Health tools are Premium features.");
+        return;
+      }
+
       const popup = $('utilPopup');
       const body = $('utilPopupBody');
       const input = $('utilPopupInput');
@@ -4167,6 +4176,11 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
       $('utilOverlay').classList.remove('open');
     }
     function utilMobileOpen(tool) {
+      if (PREMIUM_TOOLS.includes(tool) && !isPro()) {
+        utilMobileMenuClose();
+        showUpgrade("Pest & Plant Health tools are Premium features.");
+        return;
+      }
       utilMobileMenuClose();
       const drawer = $('utilMobileDrawer');
       const body = $('utilDrawerBody');

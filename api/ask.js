@@ -30,9 +30,7 @@ export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
 
   const user = await getSessionUser(req);
-  if (!user) return res.status(401).json({ error: "Sign in to continue." });
-
-  const ent = await getEntitlement(user.id);
+  const ent = user ? await getEntitlement(user.id) : { isPremium: false, planTier: "free" };
 
   const { messages } = req.body || {};
   if (!messages || !Array.isArray(messages)) {
