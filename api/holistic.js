@@ -23,7 +23,7 @@ const rateLimitMap = new Map();
 const RATE_WINDOW_MS = 60_000;
 const RATE_MAX = 10;
 
-function isRateLimited(ip) {
+function isRateLimited(ip, max = RATE_MAX) {
   const now = Date.now();
   let entry = rateLimitMap.get(ip);
   if (!entry || now - entry.windowStart > RATE_WINDOW_MS) {
@@ -31,7 +31,7 @@ function isRateLimited(ip) {
   }
   entry.count++;
   rateLimitMap.set(ip, entry);
-  return entry.count > RATE_MAX;
+  return entry.count > max;
 }
 
 function sanitizeString(val, maxLen) {
@@ -69,40 +69,29 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method !== "POST") return res.status(405).send("Method not allowed");
 
-  // ── Auth ──────────────────────────────────────────────────────────────────
+  // ── Auth (optional — unauthenticated users get the free plan) ─────────────
   const user = await getSessionUser(req);
-  if (!user) return res.status(401).json({ error: "Sign in to continue." });
+  const ent  = user ? await getEntitlement(user.id) : { isPremium: false, planTier: "free" };
 
-  // ── Entitlement check ─────────────────────────────────────────────────────
-  const ent = await getEntitlement(user.id);
-
-  // ── Rate limiting ─────────────────────────────────────────────────────────
+  // ── Rate limiting (stricter for unauthenticated) ───────────────────────────
   const ip = getIp(req);
-  if (isRateLimited(ip)) {
-    return res.status(429).json({ error: "Too many requests" });
+  if (isRateLimited(ip, user ? 10 : 3)) {
+    return res.status(429).json({ error: "Too many requests. Please sign in for more plans." });
   }
 
   try {
     const body = req.body || {};
+    const zone     = sanitizeString(String(body.zone || "7"), 10);
+    const location = sanitizeString(String(body.location || ""), 100);
 
-    const prompt     = sanitizeString(body.prompt || "", 4000);
-    const zone       = sanitizeString(String(body.zone || "7"), 10);
-    const location   = sanitizeString(String(body.location || ""), 100);
-    const theme      = sanitizeString(String(body.theme || ""), 60);
-    const nativeOnly = body.nativeOnly === true;
-
-    // ── Premium-only feature flags ────────────────────────────────────────
-    // holisticHealing and conditions are premium features.
-    // Free users get the flag silently stripped — no error, just ignored.
-    const holisticHealing = body.holisticHealing === true && canAccess(ent, 'healthFunctional');
-    const conditions = canAccess(ent, 'healthFunctional') && Array.isArray(body.conditions)
-      ? body.conditions.slice(0, 10).map(c => sanitizeString(String(c), 60)).filter(Boolean)
-      : [];
-
-    const userMessage = prompt || buildFallbackPrompt({
-      zone, location, nativeOnly, theme, holisticHealing, conditions,
-      isPremium: ent.isPremium,
-    });
+    // ── Enforce free prompt for non-premium users (server-side, not trustable from client) ──
+    let userMessage;
+    if (ent.isPremium) {
+      const prompt = sanitizeString(body.prompt || "", 4000);
+      userMessage = prompt || buildFallbackPrompt({ zone, location, isPremium: true });
+    } else {
+      userMessage = buildFreePlanPrompt(zone, location);
+    }
 
     // ── Stream ────────────────────────────────────────────────────────────
     res.setHeader("Content-Type", "text/event-stream");
@@ -110,12 +99,11 @@ export default async function handler(req, res) {
     res.setHeader("X-Accel-Buffering", "no");
     res.flushHeaders();
 
-    // Send entitlement tier so client can show upsell if needed
     res.write(`data: ${JSON.stringify({ planTier: ent.planTier })}\n\n`);
 
     const stream = client.messages.stream({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: ent.isPremium ? 3500 : 1800,
+      max_tokens: ent.isPremium ? 3500 : 1200,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: userMessage }]
     });
@@ -134,6 +122,50 @@ export default async function handler(req, res) {
     res.write(`data: ${JSON.stringify({ error: msg })}\n\n`);
     res.end();
   }
+}
+
+function buildFreePlanPrompt(zone = "7", location = "") {
+  const locationLine = location ? `Location: ${location}.` : "";
+  return `
+You are RootPlans, a friendly garden planning assistant.
+
+Create a short, simple starter garden plan for a beginner in USDA Zone ${zone}. ${locationLine}
+
+Choose exactly 5 common, beginner-friendly plants that reliably grow well in Zone ${zone}. Do NOT use unusual, rare, or holistic plants. Keep everything brief and practical.
+
+USE THIS EXACT FORMAT — no deviations:
+
+## 🌱 Your Starter Garden Plan
+
+[2 sentences about gardening in Zone ${zone}.]
+
+## Recommended Plants
+
+For each of the 5 plants use this format exactly:
+
+**[Plant Name]** [☀️ Full Sun | ⛅ Partial Shade | 🌑 Full Shade]
+[One sentence: what it is and why it's easy to grow.]
+**Good companions:** [2 plants]
+
+---
+
+## Basic Care Tips
+
+- [Tip 1]
+- [Tip 2]
+- [Tip 3]
+- [Tip 4]
+
+---
+
+> 🔒 **Upgrade to RootPlans Pro** for a full personalized plan — custom themes, rare varieties, a detailed layout, seasonal calendar, pest guide, and shopping list.
+
+After the plan, output EXACTLY this block with no markdown fences:
+CALENDAR_JSON_START
+[one JSON object per plant: {"plant":"Plant Name","sow_start":0,"sow_end":0,"plant_start":4,"plant_end":5,"harvest_start":7,"harvest_end":9}]
+CALENDAR_JSON_END
+Use real month numbers for Zone ${zone}. Set sow_start/sow_end to 0 if not started indoors.
+  `.trim();
 }
 
 function buildFallbackPrompt({ zone = "7", nativeOnly = false, theme = "", holisticHealing = false, conditions = [], isPremium = false }) {
