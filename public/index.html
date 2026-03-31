@@ -937,42 +937,52 @@
     }
 
     @media print {
-      * {
-        background: white !important;
-        color: black !important;
-        border-color: #ccc !important;
-        box-shadow: none !important;
-      }
+      * { box-shadow: none !important; }
       body > * { display: none !important; }
       #pdfDoc {
         display: block !important;
-        padding: 0;
+        padding: 0 !important;
+        margin: 0 !important;
         font-family: Georgia, serif;
-        font-size: 12px;
-        color: black;
+        font-size: 11pt;
+        color: #1a1a1a;
+        background: white;
       }
       .pdf-header {
-        border-bottom: 1px solid #ccc !important;
-        padding-bottom: 8px;
-        margin-bottom: 16px;
+        border-bottom: 2px solid #274c38 !important;
+        padding-bottom: 8px !important;
+        margin-bottom: 20px !important;
       }
-      .pdf-header h1 { font-size: 20px; }
-      .pdf-header p { font-size: 11px; }
-      /* Hide plant photo grid and garden map — saves ink */
+      .pdf-header h1 { font-size: 20pt !important; color: #274c38 !important; }
+      .pdf-header p  { font-size: 9pt !important; color: #555 !important; }
       .pdf-plant-grid, .garden-map-wrap { display: none !important; }
       .pdf-plan-text {
         border-top: none !important;
-        padding-top: 0;
-        font-size: 11px;
-        line-height: 1.6;
+        padding-top: 0 !important;
+        font-size: 10pt;
+        line-height: 1.55;
       }
       .pdf-plan-text h2 {
-        font-size: 13px;
-        border-bottom: 1px solid #ccc !important;
-        padding-bottom: 2px;
+        font-size: 12pt !important;
+        font-weight: 800 !important;
+        color: #274c38 !important;
+        border-bottom: 1px solid #aaa !important;
+        padding-bottom: 2px !important;
+        margin-top: 18pt !important;
+        page-break-after: avoid;
       }
-      .pdf-plan-text h3 { font-size: 12px; }
-      .pdf-plan-text strong { font-weight: bold; }
+      .pdf-plan-text h3 { font-size: 11pt !important; color: #3a5a3a !important; page-break-after: avoid; }
+      .pdf-plan-text strong { font-weight: bold !important; color: #274c38 !important; }
+      .pdf-plan-text hr { border-top: 1px solid #ddd !important; margin: 6pt 0 !important; }
+      .pdf-plan-text ul { padding-left: 16pt !important; }
+      .pdf-plan-text li { margin-bottom: 2pt !important; }
+      /* Calendar table in print */
+      #pdfCalSection h2 { font-size: 12pt !important; color: #274c38 !important; }
+      .cal-table { width: 100% !important; border-collapse: collapse !important; font-size: 9pt !important; }
+      .cal-table th { background: #274c38 !important; color: white !important; padding: 4pt 6pt !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .cal-table td { padding: 3pt 6pt !important; border-bottom: 1px solid #ddd !important; }
+      .cal-table tr:nth-child(even) td { background: #f5f5f5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .cal-dot-pdf { display: inline-block !important; width: 7pt !important; height: 7pt !important; border-radius: 50% !important; margin-right: 3pt !important; vertical-align: middle !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     }
 
     .footer {
@@ -2164,7 +2174,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <!-- html2pdf removed — PDF export uses window.print() via #pdfDoc -->
   <script>
     // Treat single newlines as <br> so each plant field appears on its own line
     // Open all links in a new tab
@@ -3877,84 +3887,42 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
       return null;
     }
 
-    async function exportPDF(btn) {
-      const origText = btn.textContent;
-      btn.disabled = true;
-      btn.textContent = "Generating PDF…";
-
-      try {
-        const loc = detected.location ? ` · ${detected.location}` : "";
-        const meta = `Zone ${detected.zone}${loc} · ${selectedTheme} · Generated ${new Date().toLocaleDateString()}`;
-        const cleanText = (lastPlanText || "").replace(/CALENDAR_JSON_START[\s\S]*?CALENDAR_JSON_END/g, "").trim();
-        const planHtml = marked.parse(cleanText);
-
-        // Grab calendar HTML if rendered
-        const calEl = $("calendarSection");
-        const calHtml = (calEl && calEl.style.display !== "none") ? `
-          <div style="margin-top:32px;page-break-before:auto;">
-            <div style="font-size:16px;font-weight:800;color:#274c38;margin-bottom:4px;">📅 Month-by-Month Garden Calendar</div>
-            <div style="font-size:12px;color:#6a7b6b;margin-bottom:12px;">Based on your USDA zone — adjust by 1–2 weeks for your local microclimate.</div>
-            <div style="font-size:12px;margin-bottom:12px;">
-              <span style="display:inline-block;margin-right:12px;"><span style="display:inline-block;width:10px;height:10px;background:#a8d5ba;border-radius:2px;margin-right:4px;vertical-align:middle;"></span>Start indoors</span>
-              <span style="display:inline-block;margin-right:12px;"><span style="display:inline-block;width:10px;height:10px;background:#2f5d34;border-radius:2px;margin-right:4px;vertical-align:middle;"></span>Sow/Plant outdoors</span>
-              <span style="display:inline-block;"><span style="display:inline-block;width:10px;height:10px;background:#c9a96e;border-radius:2px;margin-right:4px;vertical-align:middle;"></span>Harvest window</span>
-            </div>
-            ${buildCalendarTableHtml(lastCalData)}
-          </div>` : "";
-
-        const container = document.createElement("div");
-        container.style.cssText = "position:fixed;left:-10000px;top:0;width:760px;background:#fff;font-family:Georgia,serif;color:#1f2b22;padding:32px;line-height:1.7;z-index:9999;";
-        container.innerHTML = `
-          <h1 style="font-size:26px;color:#274c38;margin-bottom:4px;">🌿 RootPlans Garden Plan</h1>
-          <p style="font-size:12px;color:#6a7b6b;border-bottom:2px solid #dce8de;padding-bottom:10px;margin-bottom:24px;">${escapeHtml(meta)}</p>
-          <style>
-            h2{font-size:18px;font-weight:800;color:#274c38;margin-top:28px;border-bottom:1px solid #dce8de;padding-bottom:4px;}
-            h3{font-size:15px;font-weight:700;color:#4a7a5a;margin-top:16px;}
-            strong{color:#274c38;}
-            ul{padding-left:18px;}
-            li{margin-bottom:3px;}
-            hr{border:none;border-top:1px solid #dce8de;margin:10px 0;}
-            p{margin:0 0 8px;}
-            .cal-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px;}
-            .cal-table th{background:#2f5d34;color:#fff;padding:5px 7px;text-align:left;}
-            .cal-table td{padding:4px 7px;border-bottom:1px solid #e8f0e8;vertical-align:top;}
-            .cal-table tr:nth-child(even) td{background:#f6faf6;}
-            .cal-dot-pdf{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:3px;vertical-align:middle;}
-          </style>
-          ${planHtml}
-          ${calHtml}
-          <p style="margin-top:40px;font-size:10px;color:#aaa;border-top:1px solid #eee;padding-top:10px;text-align:center;">Generated by RootPlans.com · For personal use only</p>`;
-
-        document.body.appendChild(container);
-
-        const filename = `RootPlans-Garden-Plan-${new Date().toISOString().slice(0,10)}.pdf`;
-        const worker = html2pdf().set({
-          margin: 10,
-          filename,
-          image: { type: "jpeg", quality: 0.95 },
-          html2canvas: { scale: 2, useCORS: true, logging: false },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-        }).from(container);
-
-        // Try standard save; fall back to blob URL for iOS WKWebView
-        try {
-          await worker.save();
-        } catch (saveErr) {
-          const blob = await worker.output("blob");
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url; a.download = filename; a.click();
-          setTimeout(() => URL.revokeObjectURL(url), 10000);
-        }
-
-        document.body.removeChild(container);
-      } catch (e) {
-        console.error("PDF export failed:", e);
-        alert("PDF export failed. Please try again or use your browser's Print → Save as PDF option.");
+    function exportPDF(btn) {
+      if (!lastPlanText) {
+        alert("Generate a plan first before downloading.");
+        return;
       }
 
-      btn.disabled = false;
-      btn.textContent = origText;
+      // Populate #pdfDoc with the current plan content
+      const loc = detected.location ? ` · ${detected.location}` : "";
+      const meta = `Zone ${detected.zone}${loc} · ${selectedTheme} · Generated ${new Date().toLocaleDateString()}`;
+      $("pdfMeta").textContent = meta;
+
+      // Plan text (calendar JSON block stripped)
+      const cleanText = lastPlanText.replace(/CALENDAR_JSON_START[\s\S]*?CALENDAR_JSON_END/g, "").trim();
+      $("pdfPlanText").innerHTML = marked.parse(cleanText);
+
+      // Calendar table (if available)
+      const calEl = $("calendarSection");
+      const calVisible = calEl && calEl.style.display !== "none" && lastCalData && lastCalData.length;
+      let calSection = $("pdfCalSection");
+      if (!calSection) {
+        calSection = document.createElement("div");
+        calSection.id = "pdfCalSection";
+        $("pdfDoc").appendChild(calSection);
+      }
+      if (calVisible) {
+        calSection.innerHTML = `
+          <div style="margin-top:24px;border-top:1px solid #ccc;padding-top:16px;">
+            <h2 style="font-size:14px;font-weight:800;margin-bottom:8px;">📅 Month-by-Month Garden Calendar</h2>
+            ${buildCalendarTableHtml(lastCalData)}
+          </div>`;
+      } else {
+        calSection.innerHTML = "";
+      }
+
+      // Print — browser handles Save as PDF natively on all platforms
+      window.print();
     }
 
     function buildCalendarTableHtml(data) {
