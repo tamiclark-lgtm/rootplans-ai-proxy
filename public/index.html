@@ -2136,15 +2136,6 @@
     </div>
   </div>
 
-  <!-- Hidden PDF document -->
-  <div id="pdfDoc">
-    <div class="pdf-header">
-      <h1>🌱 RootPlans</h1>
-      <p id="pdfMeta"></p>
-    </div>
-    <div class="pdf-plant-grid" id="pdfPlantGrid"></div>
-    <div class="pdf-plan-text" id="pdfPlanText"></div>
-  </div>
 
   <!-- Upgrade modal -->
   <div id="upgradeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;" onclick="if(event.target===this)hideUpgrade();">
@@ -4683,6 +4674,16 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
     btn.textContent = 'Send Message';
   }
 </script>
+
+<!-- PDF print document — direct body child so print CSS body > * rule works -->
+<div id="pdfDoc">
+  <div class="pdf-header">
+    <h1>🌱 RootPlans Garden Plan</h1>
+    <p id="pdfMeta"></p>
+  </div>
+  <div class="pdf-plan-text" id="pdfPlanText"></div>
+  <div id="pdfCalSection"></div>
+</div>
 
 </body>
 </html>
