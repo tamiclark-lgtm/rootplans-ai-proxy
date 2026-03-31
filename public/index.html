@@ -3912,8 +3912,15 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
         calSection.innerHTML = "";
       }
 
-      // Print — browser handles Save as PDF natively on all platforms
-      window.print();
+      // Show #pdfDoc briefly so browser lays it out before print
+      const doc = $("pdfDoc");
+      doc.style.display = "block";
+
+      // Let the browser paint one frame, then print, then hide again
+      setTimeout(() => {
+        window.print();
+        doc.style.display = "none";
+      }, 100);
     }
 
     function buildCalendarTableHtml(data) {
