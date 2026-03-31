@@ -3893,8 +3893,8 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
       const hasCalendar = calEl && calEl.style.display !== "none" && lastCalData && lastCalData.length;
       const calHtml = hasCalendar ? `
         <div style="margin-top:28px;padding-top:20px;border-top:2px solid #274c38;">
-          <h2 style="font-size:15px;font-weight:800;color:#274c38;margin-bottom:12px;">📅 Month-by-Month Garden Calendar</h2>
-          ${buildCalendarTableHtml(lastCalData)}
+          <h2 style="font-size:15px;font-weight:800;color:#274c38;margin-bottom:8px;">📊 Growing Timeline</h2>
+          ${buildCalendarGanttHtml(lastCalData)}
         </div>` : "";
 
       const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
@@ -3955,6 +3955,54 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
         <thead><tr><th>Plant</th><th>Start Indoors</th><th>Sow/Plant Outdoors</th><th>Harvest Window</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>`;
+    }
+
+    function buildCalendarGanttHtml(data) {
+      if (!data || !data.length) return "";
+      const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const curMonth = new Date().getMonth() + 1;
+
+      let headerCells = `<th style="width:110px;text-align:left;padding:4px 6px;">Plant</th>`;
+      MONTHS.forEach((m, i) => {
+        const isCur = (i + 1) === curMonth;
+        headerCells += `<th style="text-align:center;padding:4px 2px;font-size:8pt;${isCur ? 'background:#e8f4d0;color:#274c38;' : ''}">${m}</th>`;
+      });
+
+      let rows = "";
+      data.forEach((r, ri) => {
+        const rowBg = ri % 2 === 0 ? "#fff" : "#f8faf8";
+        let cells = `<td style="font-size:9pt;font-weight:700;color:#274c38;padding:3px 6px;white-space:nowrap;overflow:hidden;max-width:110px;">${escapeHtml(r.plant)}</td>`;
+        for (let mn = 1; mn <= 12; mn++) {
+          const isSow     = r.sow_start   && r.sow_end   && mn >= r.sow_start   && mn <= r.sow_end;
+          const isPlant   = r.plant_start && r.plant_end && mn >= r.plant_start && mn <= r.plant_end;
+          const isHarvest = r.harvest_start && r.harvest_end && mn >= r.harvest_start && mn <= r.harvest_end;
+          const isCur     = mn === curMonth;
+
+          let bg = "transparent";
+          if (isSow && isPlant) bg = "linear-gradient(to right,#a8d5ba 50%,#2f5d34 50%)";
+          else if (isSow)       bg = "#a8d5ba";
+          else if (isPlant)     bg = "#2f5d34";
+          else if (isHarvest)   bg = "#c9a96e";
+
+          const cellBg = isCur ? "#fffde7" : rowBg;
+          cells += `<td style="padding:3px 2px;background:${cellBg};-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+            <div style="height:12px;border-radius:3px;background:${bg};-webkit-print-color-adjust:exact;print-color-adjust:exact;"></div>
+          </td>`;
+        }
+        rows += `<tr style="background:${rowBg};">${cells}</tr>`;
+      });
+
+      return `
+        <div style="font-size:8pt;display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap;">
+          <span><span style="display:inline-block;width:12px;height:8px;background:#a8d5ba;border-radius:2px;margin-right:3px;vertical-align:middle;-webkit-print-color-adjust:exact;print-color-adjust:exact;"></span>Start indoors</span>
+          <span><span style="display:inline-block;width:12px;height:8px;background:#2f5d34;border-radius:2px;margin-right:3px;vertical-align:middle;-webkit-print-color-adjust:exact;print-color-adjust:exact;"></span>Sow/Plant outdoors</span>
+          <span><span style="display:inline-block;width:12px;height:8px;background:#c9a96e;border-radius:2px;margin-right:3px;vertical-align:middle;-webkit-print-color-adjust:exact;print-color-adjust:exact;"></span>Harvest window</span>
+          <span style="color:#777;">★ = current month</span>
+        </div>
+        <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+          <thead><tr style="background:#274c38;color:white;-webkit-print-color-adjust:exact;print-color-adjust:exact;">${headerCells}</tr></thead>
+          <tbody>${rows}</tbody>
+        </table>`;
     }
 
     $("pdfBtn").addEventListener("click", function() { exportPDF(this); });
