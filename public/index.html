@@ -1452,7 +1452,9 @@
 
           <div class="tinyNote" id="aiStatus" style="margin-top:12px;"></div>
           <div id="zoneBadge" style="display:none;margin-top:12px;padding:10px 14px;background:#edf4ef;border:1px solid #c6dcc9;border-radius:10px;font-size:13px;color:#274c38;font-weight:600;"></div>
+          <div class="planOutputArea">
           <div id="aiOutput" class="planOutput" style="display:none;"></div>
+          <div id="mobileReorderWrap">
           <div id="bedPlannerWrap" style="display:none;margin-top:32px;">
   <div class="bed-planner">
     <div class="bed-planner-title">🪴 Garden Bed Planner</div>
@@ -1506,11 +1508,19 @@
 </div>
           <div id="gridVizWrap" style="display:none;margin-top:32px;"></div>
           <div id="gardenMap" class="garden-map-wrap" style="display:none;"></div>
+          </div><!-- /mobileReorderWrap -->
           <div id="calendarSection" style="display:none;margin-top:32px;"></div>
           <div id="ganttSection" style="display:none;margin-top:24px;"></div>
           <div id="planEnd" style="display:none;margin-top:28px;padding-top:20px;border-top:2px solid var(--border);text-align:center;">
             <button id="pdfBtnBottom" class="btn" type="button" style="margin-bottom:16px;font-size:15px;padding:14px 32px;">⬇️ Download My Garden Plan (PDF)</button>
             <p style="font-size:13px;color:#7a8f7e;letter-spacing:0.08em;">— End of Plan —</p>
+          </div>
+          </div><!-- /planOutputArea -->
+
+          <!-- Mobile sticky bottom action bar — shown by JS after plan generates -->
+          <div id="mobilePlanBar">
+            <button class="mob-pdf-btn" onclick="exportPDF(this)">⬇️ Download PDF</button>
+            <button id="mobUpgradeBtn" class="mob-upgrade-btn" onclick="showUpgrade('Upgrade to Pro for a full personalized plan.')">Upgrade to Pro →</button>
           </div>
 
           <!-- Premium example teaser — shown to free users after plan generates -->
@@ -1995,6 +2005,83 @@
   #utilBottomBar { display: flex; }
   .app { padding-bottom: calc(70px + env(safe-area-inset-bottom)); }
   .footer { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
+
+  /* ── Mobile plan layout ── */
+  /* Reorder: calendar above plan body */
+  #aiOutput          { order: 2; }
+  #mobileReorderWrap { order: 3; }
+  #calendarSection   { order: 1; margin-top: 16px !important; }
+  #ganttSection      { order: 4; }
+  #planEnd           { order: 5; }
+
+  /* Wrap these in a flex column so order works */
+  .planOutputArea {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Mobile accordion sections ── */
+  .mob-section { border: 1px solid #dce8de; border-radius: 12px; margin-bottom: 10px; overflow: hidden; background: #fff; }
+  .mob-section summary {
+    list-style: none;
+    padding: 13px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #274c38;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    background: #f6faf6;
+  }
+  .mob-section summary::-webkit-details-marker { display: none; }
+  .mob-section summary::after { content: "›"; font-size: 20px; font-weight: 400; color: #7a9f7e; transition: transform 0.2s; }
+  .mob-section[open] summary::after { transform: rotate(90deg); }
+  .mob-section[open] summary { background: #edf4ef; }
+  .mob-section .mob-body { padding: 14px 16px; font-size: 13px; }
+  .mob-section .mob-body h2 { display: none; }
+  .mob-section .mob-body h3 { font-size: 13px; margin-top: 12px; }
+  .mob-section .mob-body p,
+  .mob-section .mob-body li { font-size: 13px; line-height: 1.55; }
+
+  /* Hide PDF button in top bar on mobile — sticky bar handles it */
+  #pdfBtn { display: none !important; }
+  /* Hide pdfBtnBottom — sticky bar handles it */
+  #pdfBtnBottom { display: none !important; }
+  /* Add bottom padding so sticky bar doesn't cover content */
+  .app { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
+
+  /* ── Mobile sticky bottom action bar ── */
+  #mobilePlanBar {
+    display: none; /* shown by JS after plan generates */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 300;
+    background: #fff;
+    border-top: 1px solid #dce8de;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    gap: 10px;
+    flex-direction: column;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  }
+  #mobilePlanBar.visible { display: flex; }
+  #mobilePlanBar .mob-pdf-btn {
+    background: #2f5d34; color: #fff; border: none; border-radius: 12px;
+    padding: 14px; font-size: 15px; font-weight: 700; width: 100%;
+    cursor: pointer; font-family: inherit;
+  }
+  #mobilePlanBar .mob-upgrade-btn {
+    background: transparent; color: #2f5d34;
+    border: 1.5px solid #2f5d34; border-radius: 12px;
+    padding: 11px; font-size: 14px; font-weight: 700; width: 100%;
+    cursor: pointer; font-family: inherit;
+  }
+}
+@media (min-width: 900px) {
+  #mobilePlanBar { display: none !important; }
 }
 
     /* ── Bed Planner ───────────────────── */
@@ -3274,6 +3361,7 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
       $("proExampleWrap").style.display = "none";
       $("copyBtn").style.display = "none";
       $("pdfBtn").style.display = "none";
+      const _bar1 = $("mobilePlanBar"); if (_bar1) _bar1.classList.remove("visible");
       lastPlanText = "";
       lastPlants = [];
       lastCalData = [];
@@ -3547,6 +3635,7 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
         $("planEnd").style.display = "none";
         if ($("proExampleWrap")) $("proExampleWrap").style.display = "none";
         $("copyBtn").style.display = "none";
+        const _bar2 = $("mobilePlanBar"); if (_bar2) _bar2.classList.remove("visible");
         lastCalData = [];
 
         const resp = await fetch(AI_PROXY_URL, {
@@ -3757,6 +3846,16 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
         $("aiStatus").textContent = "Done.";
         $("copyBtn").style.display = "inline-block";
         $("pdfBtn").style.display = "inline-block";
+
+        // Mobile: accordion sections + sticky action bar
+        if (window.innerWidth < 900) {
+          convertToMobileAccordions();
+          const bar = $("mobilePlanBar");
+          if (bar) bar.classList.add("visible");
+          // Hide upgrade button for Pro users
+          const upBtn = $("mobUpgradeBtn");
+          if (upBtn) upBtn.style.display = isPro() ? "none" : "";
+        }
         $("zoneBadge").textContent = `🌿 All plants in this plan are selected specifically for USDA Zone ${detected.zone}${detected.location ? " · " + detected.location : ""}.`;
         $("zoneBadge").style.display = "block";
 
@@ -3876,6 +3975,36 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
         } catch { /* try next */ }
       }
       return null;
+    }
+
+    function convertToMobileAccordions() {
+      const container = $("aiOutput");
+      if (!container) return;
+      const h2s = Array.from(container.querySelectorAll("h2"));
+      if (h2s.length < 2) return;
+      h2s.forEach(function(h2, idx) {
+        const title = h2.textContent.trim();
+        const nextH2 = h2s[idx + 1] || null;
+        // Collect siblings until next h2
+        const siblings = [];
+        let cur = h2.nextSibling;
+        while (cur && cur !== nextH2) {
+          siblings.push(cur);
+          cur = cur.nextSibling;
+        }
+        // Build <details class="mob-section">
+        const details = document.createElement("details");
+        details.className = "mob-section";
+        if (idx === 0) details.open = true;
+        const summary = document.createElement("summary");
+        summary.textContent = title;
+        details.appendChild(summary);
+        const body = document.createElement("div");
+        body.className = "mob-body";
+        siblings.forEach(function(n) { body.appendChild(n); });
+        details.appendChild(body);
+        h2.parentNode.replaceChild(details, h2);
+      });
     }
 
     function exportPDF(btn) {
