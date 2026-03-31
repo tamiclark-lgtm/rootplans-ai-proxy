@@ -1497,6 +1497,7 @@
           <div id="gridVizWrap" style="display:none;margin-top:32px;"></div>
           <div id="gardenMap" class="garden-map-wrap" style="display:none;"></div>
           <div id="calendarSection" style="display:none;margin-top:32px;"></div>
+          <div id="ganttSection" style="display:none;margin-top:24px;"></div>
           <div id="planEnd" style="display:none;margin-top:28px;padding-top:20px;border-top:2px solid var(--border);text-align:center;">
             <button id="pdfBtnBottom" class="btn" type="button" style="margin-bottom:16px;font-size:15px;padding:14px 32px;">⬇️ Download My Garden Plan (PDF)</button>
             <p style="font-size:13px;color:#7a8f7e;letter-spacing:0.08em;">— End of Plan —</p>
@@ -2025,6 +2026,35 @@
     .cal-dot { width:10px;height:10px;border-radius:2px;flex-shrink:0;margin-top:2px; }
     .cal-activity-label { font-weight:600;color:#2c3e2f; }
     @media(max-width:600px){ .cal-month-grid { grid-template-columns:1fr 1fr; } }
+    /* ── Gantt timeline (Premium) ── */
+    .gantt-wrap { font-family:'Inter',sans-serif; }
+    .gantt-header { display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px; }
+    .gantt-title { font-size:17px;font-weight:700;color:#274c38; }
+    .gantt-badge { font-size:10px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;background:#2f5d34;color:#fff;border-radius:4px;padding:2px 7px; }
+    .gantt-legend { display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px; }
+    .gantt-legend span { font-size:11px;color:#555;display:flex;align-items:center;gap:5px; }
+    .gantt-legend i { display:inline-block;width:22px;height:10px;border-radius:2px;flex-shrink:0; }
+    .gantt-table { width:100%;border-collapse:collapse;font-size:12px; }
+    .gantt-table th { font-size:10px;font-weight:600;color:#7a8f7e;text-transform:uppercase;letter-spacing:0.05em;padding:3px 4px;text-align:center;width:calc((100% - 110px)/12); }
+    .gantt-table th.gantt-plant-col { text-align:left;width:110px; }
+    .gantt-table td { padding:4px 2px;vertical-align:middle; }
+    .gantt-table td.gantt-plant-name { font-size:12px;font-weight:600;color:#274c38;padding-right:8px;white-space:nowrap;width:110px;max-width:110px;overflow:hidden;text-overflow:ellipsis; }
+    .gantt-table tr:nth-child(even) td { background:#f8faf8; }
+    .gantt-cell { height:14px;border-radius:3px; }
+    .gantt-cell.sow { background:#a8d5ba; }
+    .gantt-cell.plant { background:#2f5d34; }
+    .gantt-cell.harvest { background:#c9a96e; }
+    .gantt-cell.sow-plant { background:linear-gradient(to right,#a8d5ba 50%,#2f5d34 50%); }
+    .gantt-now-col td { position:relative; }
+    .gantt-now-col td::after { content:''; position:absolute;top:0;bottom:0;left:50%;width:2px;background:#e63946;opacity:0.7;pointer-events:none; }
+    .gantt-month-now { background:#fff3cd !important;font-weight:700;color:#856404 !important; }
+    .gantt-lock { margin-top:16px;background:linear-gradient(135deg,#f0f7f1,#e8f4ea);border:1.5px solid #b4d9bc;border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:14px; }
+    .gantt-lock-icon { font-size:22px;flex-shrink:0; }
+    .gantt-lock-text strong { display:block;font-size:14px;font-weight:700;color:#274c38;margin-bottom:3px; }
+    .gantt-lock-text span { font-size:12px;color:#5a7260; }
+    .gantt-lock-btn { margin-left:auto;flex-shrink:0;background:#2f5d34;color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap; }
+    .gantt-lock-btn:hover { background:#244a29; }
+    @media(max-width:600px){ .gantt-table th, .gantt-table td { font-size:9px; } .gantt-table td.gantt-plant-name { font-size:10px;width:70px;max-width:70px; } .gantt-table th.gantt-plant-col { width:70px; } }
     .quick-list-wrap { display:flex;flex-wrap:wrap;gap:5px; }
     .quick-list-item { padding:4px 10px;border-radius:14px;border:1px solid #dce8de;background:#f5f9f6;color:#274c38;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:background 0.15s; }
     .quick-list-item:hover { background:#4a7a5a;color:#fff;border-color:#4a7a5a; }
@@ -2211,6 +2241,29 @@
       document.getElementById("upgradeModal").style.display = "none";
     }
     window.hideUpgrade = hideUpgrade;
+
+    // ── Dev diagnostics — callable from browser console ──────────────────
+    window.testCalendar = function() {
+      const testData = [
+        {"plant":"Tomato","sow_start":2,"sow_end":3,"plant_start":5,"plant_end":6,"harvest_start":7,"harvest_end":9},
+        {"plant":"Basil","sow_start":3,"sow_end":4,"plant_start":5,"plant_end":6,"harvest_start":7,"harvest_end":10},
+        {"plant":"Zucchini","sow_start":0,"sow_end":0,"plant_start":5,"plant_end":6,"harvest_start":7,"harvest_end":9},
+        {"plant":"Marigold","sow_start":3,"sow_end":4,"plant_start":5,"plant_end":6,"harvest_start":0,"harvest_end":0},
+        {"plant":"Kale","sow_start":0,"sow_end":0,"plant_start":3,"plant_end":4,"harvest_start":5,"harvest_end":11}
+      ];
+      console.log("[testCalendar] Forcing render with test data:", testData);
+      lastCalData = testData;
+      $("planEnd").style.display = "block";
+      renderInlineCalendar(testData);
+      renderGanttTimeline(testData);
+      console.log("[testCalendar] Done — look for calendar section above the PDF button");
+    };
+    window.dumpCalState = function() {
+      console.log("[dumpCalState] lastCalData:", lastCalData);
+      console.log("[dumpCalState] lastPlanText tail:", (lastPlanText||"").slice(-500));
+      console.log("[dumpCalState] #calendarSection display:", $("calendarSection")?.style.display);
+      console.log("[dumpCalState] isPro():", isPro());
+    };
 
     function showUpgrade(reason) {
       if (!getSession()?.token) {
@@ -2418,8 +2471,8 @@
         <div class="cal-month-grid">`;
       for (let m = 1; m <= 12; m++) {
         const sow     = data.filter(r => r.sow_start && r.sow_end && m >= r.sow_start && m <= r.sow_end).map(r => r.plant);
-        const plant   = data.filter(r => m >= r.plant_start && m <= r.plant_end).map(r => r.plant);
-        const harvest = data.filter(r => m >= r.harvest_start && m <= r.harvest_end).map(r => r.plant);
+        const plant   = data.filter(r => r.plant_start   && r.plant_end   && m >= r.plant_start   && m <= r.plant_end).map(r => r.plant);
+        const harvest = data.filter(r => r.harvest_start && r.harvest_end && m >= r.harvest_start && m <= r.harvest_end).map(r => r.plant);
         const hasAny  = sow.length || plant.length || harvest.length;
         const isCur   = m === curMonth;
         html += `<div class="cal-month-card${isCur ? ' cal-now' : ''}">
@@ -2435,6 +2488,73 @@
       }
       html += `</div>`;
       wrap.innerHTML = html;
+      wrap.style.display = "block";
+    }
+
+    function renderGanttTimeline(data) {
+      const wrap = $("ganttSection");
+      if (!data || !data.length) { wrap.style.display = "none"; return; }
+
+      const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const curMonth = new Date().getMonth() + 1; // 1-based
+
+      if (isPro()) {
+        // ── Full Gantt for Pro users ───────────────────────────────────
+        let headerCells = `<th class="gantt-plant-col">Plant</th>`;
+        MONTHS.forEach((m, i) => {
+          const mn = i + 1;
+          headerCells += `<th class="${mn === curMonth ? 'gantt-month-now' : ''}">${m}</th>`;
+        });
+
+        let rows = "";
+        data.forEach(r => {
+          let cells = `<td class="gantt-plant-name" title="${escapeHtml(r.plant)}">${escapeHtml(r.plant)}</td>`;
+          for (let mn = 1; mn <= 12; mn++) {
+            const isSow     = r.sow_start   && r.sow_end   && mn >= r.sow_start   && mn <= r.sow_end;
+            const isPlant   = r.plant_start && r.plant_end && mn >= r.plant_start && mn <= r.plant_end;
+            const isHarvest = r.harvest_start && r.harvest_end && mn >= r.harvest_start && mn <= r.harvest_end;
+            let cls = "";
+            if (isSow && isPlant) cls = "sow-plant";
+            else if (isSow)       cls = "sow";
+            else if (isPlant)     cls = "plant";
+            else if (isHarvest)   cls = "harvest";
+            const nowClass = mn === curMonth ? " gantt-now-col" : "";
+            cells += `<td class="${nowClass}"><div class="gantt-cell ${cls}"></div></td>`;
+          }
+          rows += `<tr>${cells}</tr>`;
+        });
+
+        wrap.innerHTML = `<div class="gantt-wrap">
+          <div class="gantt-header">
+            <span class="gantt-title">📊 Advanced Growing Timeline</span>
+            <span class="gantt-badge">Premium</span>
+          </div>
+          <div class="gantt-legend">
+            <span><i style="background:#a8d5ba"></i> Start indoors</span>
+            <span><i style="background:#2f5d34"></i> Sow / Plant outdoors</span>
+            <span><i style="background:#c9a96e"></i> Harvest window</span>
+            <span><i style="background:linear-gradient(to right,#a8d5ba 50%,#2f5d34 50%)"></i> Both</span>
+            <span style="display:flex;align-items:center;gap:5px;"><span style="display:inline-block;width:3px;height:16px;background:#e63946;border-radius:1px;opacity:0.7"></span> Current month</span>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="gantt-table">
+              <thead><tr>${headerCells}</tr></thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        </div>`;
+      } else {
+        // ── Locked teaser for free users ───────────────────────────────
+        wrap.innerHTML = `<div class="gantt-lock">
+          <div class="gantt-lock-icon">📊</div>
+          <div class="gantt-lock-text">
+            <strong>Advanced Growing Timeline</strong>
+            <span>See seed-starting, transplant, and harvest windows across all 12 months — at a glance.</span>
+          </div>
+          <button class="gantt-lock-btn" onclick="showUpgrade()">Unlock with Premium</button>
+        </div>`;
+      }
+
       wrap.style.display = "block";
     }
 
@@ -3150,6 +3270,8 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
       $("gardenMap").innerHTML = "";
       $("calendarSection").style.display = "none";
       $("calendarSection").innerHTML = "";
+      $("ganttSection").style.display = "none";
+      $("ganttSection").innerHTML = "";
       $("gridVizWrap").style.display = "none";
       $("gridVizWrap").innerHTML = "";
       $("bedPlannerWrap").style.display = "none";
@@ -3159,6 +3281,7 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
       $("pdfBtn").style.display = "none";
       lastPlanText = "";
       lastPlants = [];
+      lastCalData = [];
 
       renderSuggestions("");
       renderSelectedConditions();
@@ -3421,12 +3544,15 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
         $("gardenMap").innerHTML = "";
         $("calendarSection").style.display = "none";
         $("calendarSection").innerHTML = "";
+        $("ganttSection").style.display = "none";
+        $("ganttSection").innerHTML = "";
         $("gridVizWrap").style.display = "none";
         $("gridVizWrap").innerHTML = "";
         $("bedPlannerWrap").style.display = "none";
         $("planEnd").style.display = "none";
         if ($("proExampleWrap")) $("proExampleWrap").style.display = "none";
         $("copyBtn").style.display = "none";
+        lastCalData = [];
 
         const resp = await fetch(AI_PROXY_URL, {
           method: "POST",
@@ -3471,13 +3597,17 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
               if (parsed.error) throw new Error(parsed.error);
               if (parsed.text) {
                 fullText += parsed.text;
-                // Strip calendar JSON block from visible output
-                const visibleText = fullText.replace(/CALENDAR_JSON_START[\s\S]*?CALENDAR_JSON_END/g, "").trim();
+                // Strip calendar JSON block from visible output (only when block is complete)
+                const visibleText = fullText
+                  .replace(/CALENDAR_JSON_START[\s\S]*?CALENDAR_JSON_END/g, "")
+                  .replace(/CALENDAR_JSON_START[\s\S]*$/g, "") // strip partial block at end
+                  .trim();
                 $("aiOutput").innerHTML = marked.parse(visibleText);
                 addPollinatorTooltips($("aiOutput"));
               }
             } catch (parseErr) {
-              if (parseErr.message !== "Unexpected token") throw parseErr;
+              // Never re-throw — a bad SSE event must not abort the whole pipeline
+              console.warn("SSE parse error (ignored):", parseErr.message, "payload:", payload?.slice(0, 80));
             }
           }
 
@@ -3538,22 +3668,87 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
           });
         }
 
-        // ── Parse & render Gantt calendar + Grid visualizer ─────────────
+        // ── Parse & render calendar ──────────────────────────────────────
         let calData = [];
         try {
-          // Match CALENDAR_JSON block — handle code fences, extra whitespace, and multi-line JSON
-          const calMatch = fullText.match(/CALENDAR_JSON_START[\s\S]*?(\[[\s\S]*?\])[\s\S]*?CALENDAR_JSON_END/);
-          if (calMatch) {
-            const raw = calMatch[1].trim();
-            const parsed = JSON.parse(raw);
-            // Only accept if it's a non-empty array of valid entries
-            if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].plant && parsed[0].plant !== "Plant Name") {
-              calData = parsed;
-              lastCalData = calData;
+          // --- STEP 1: Presence check ---
+          const hasStart = fullText.includes("CALENDAR_JSON_START");
+          const hasEnd   = fullText.includes("CALENDAR_JSON_END");
+          console.log(`[Cal] STEP1 fullText.length=${fullText.length} hasSTART=${hasStart} hasEND=${hasEnd}`);
+          console.log(`[Cal] STEP1 tail(400): <<<${fullText.slice(-400)}>>>`);
+
+          // --- STEP 2: Extract raw JSON ---
+          let rawJson = null;
+          let matchStrategy = "none";
+
+          const fullMatch = fullText.match(/CALENDAR_JSON_START[\s\S]*?(\[[\s\S]*?\])[\s\S]*?CALENDAR_JSON_END/);
+          if (fullMatch) {
+            rawJson = fullMatch[1].trim();
+            matchStrategy = "full-block";
+          } else {
+            const startMatch = fullText.match(/CALENDAR_JSON_START[\s\S]*?(\[[\s\S]*?\])/);
+            if (startMatch) {
+              rawJson = startMatch[1].trim();
+              matchStrategy = "partial-no-end";
             }
           }
-          if (calData.length) renderInlineCalendar(calData);
-        } catch(e) { console.warn('Calendar parse failed:', e); }
+
+          console.log(`[Cal] STEP2 strategy=${matchStrategy} rawJson(120)=${rawJson ? rawJson.slice(0,120) : "null"}`);
+
+          // --- STEP 3: Parse JSON ---
+          let parsed = null;
+          if (rawJson) {
+            rawJson = rawJson.replace(/^```[a-zA-Z]*\s*/i, "").replace(/\s*```\s*$/i, "").trim();
+            parsed = JSON.parse(rawJson);
+            console.log(`[Cal] STEP3 JSON.parse OK — isArray=${Array.isArray(parsed)} length=${Array.isArray(parsed) ? parsed.length : "n/a"}`);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              console.log("[Cal] STEP3 first entry:", JSON.stringify(parsed[0]));
+            }
+          }
+
+          // --- STEP 4: Validate & filter ---
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            calData = parsed.filter(r => {
+              const ok = r.plant && r.plant !== "Plant Name" && typeof r.plant_start === "number" && typeof r.plant_end === "number";
+              if (!ok) console.warn("[Cal] STEP4 rejected entry:", JSON.stringify(r));
+              return ok;
+            });
+            console.log(`[Cal] STEP4 valid entries: ${calData.length} / ${parsed.length}`);
+            if (calData.length) lastCalData = calData;
+          } else if (parsed !== null) {
+            console.warn("[Cal] STEP4 parsed but not a valid array:", typeof parsed);
+          }
+
+          // --- STEP 5: Render or show error state ---
+          if (calData.length) {
+            console.log(`[Cal] STEP5 ✅ rendering ${calData.length} plants`);
+            renderInlineCalendar(calData);
+            renderGanttTimeline(calData);
+          } else {
+            console.warn("[Cal] STEP5 ❌ no calendar data — showing fallback");
+            // Show visible fallback so failure is obvious (not invisible)
+            const wrap = $("calendarSection");
+            const reason = !hasStart ? "AI did not output calendar block"
+              : !hasEnd   ? "Calendar block truncated (no END marker)"
+              : rawJson === null ? "No JSON array found in block"
+              : parsed === null  ? "JSON parse failed"
+              : "All entries filtered out";
+            wrap.innerHTML = `<div style="padding:14px 16px;background:#fff8e1;border:1px solid #f0c040;border-radius:10px;font-size:12px;color:#7a6000;">
+              <strong>⚠️ Calendar not available</strong> — ${reason}.
+              <br><span style="opacity:0.7">Open DevTools → Console and look for [Cal] lines for details.</span>
+            </div>`;
+            wrap.style.display = "block";
+            // Still show locked Gantt teaser for non-pro
+            renderGanttTimeline([]);
+          }
+        } catch(e) {
+          console.error("[Cal] STEP ERROR:", e.message, e);
+          const wrap = $("calendarSection");
+          wrap.innerHTML = `<div style="padding:14px 16px;background:#fff0f0;border:1px solid #f0a0a0;border-radius:10px;font-size:12px;color:#7a0000;">
+            <strong>⚠️ Calendar parse error:</strong> ${e.message}
+          </div>`;
+          wrap.style.display = "block";
+        }
         renderGridViz(lastPlants, calData);
         renderBedPlanner(lastPlants);
 
@@ -3688,47 +3883,109 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
       return null;
     }
 
-    $("pdfBtn").addEventListener("click", async () => {
-      $("pdfBtn").disabled = true;
-      $("pdfBtn").textContent = "Building PDF...";
+    async function exportPDF(btn) {
+      const origText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = "Generating PDF…";
 
-      const loc = detected.location ? ` · ${detected.location}` : "";
-      const meta = `Zone ${detected.zone}${loc} · ${selectedTheme} · Generated ${new Date().toLocaleDateString()}`;
-      const cleanText = (lastPlanText || "").replace(/CALENDAR_JSON_START[\s\S]*?CALENDAR_JSON_END/g, "").trim();
-      const planHtml = marked.parse(cleanText);
+      try {
+        const loc = detected.location ? ` · ${detected.location}` : "";
+        const meta = `Zone ${detected.zone}${loc} · ${selectedTheme} · Generated ${new Date().toLocaleDateString()}`;
+        const cleanText = (lastPlanText || "").replace(/CALENDAR_JSON_START[\s\S]*?CALENDAR_JSON_END/g, "").trim();
+        const planHtml = marked.parse(cleanText);
 
-      const container = document.createElement("div");
-      container.style.cssText = "position:fixed;left:-10000px;top:0;width:760px;background:#fff;font-family:Georgia,serif;color:#1f2b22;padding:32px;line-height:1.7;z-index:9999;";
-      container.innerHTML = `
-        <h1 style="font-size:26px;color:#274c38;margin-bottom:4px;">🌿 RootPlans Garden Plan</h1>
-        <p style="font-size:12px;color:#6a7b6b;border-bottom:2px solid #dce8de;padding-bottom:10px;margin-bottom:24px;">${escapeHtml(meta)}</p>
-        <style>
-          h2{font-size:18px;font-weight:800;color:#274c38;margin-top:28px;border-bottom:1px solid #dce8de;padding-bottom:4px;}
-          h3{font-size:15px;font-weight:700;color:#4a7a5a;margin-top:16px;}
-          strong{color:#274c38;}
-          ul{padding-left:18px;}
-          li{margin-bottom:3px;}
-          hr{border:none;border-top:1px solid #dce8de;margin:10px 0;}
-          p{margin:0 0 8px;}
-        </style>
-        ${planHtml}
-        <p style="margin-top:40px;font-size:10px;color:#aaa;border-top:1px solid #eee;padding-top:10px;text-align:center;">Generated by RootPlans.com · For personal use only</p>`;
+        // Grab calendar HTML if rendered
+        const calEl = $("calendarSection");
+        const calHtml = (calEl && calEl.style.display !== "none") ? `
+          <div style="margin-top:32px;page-break-before:auto;">
+            <div style="font-size:16px;font-weight:800;color:#274c38;margin-bottom:4px;">📅 Month-by-Month Garden Calendar</div>
+            <div style="font-size:12px;color:#6a7b6b;margin-bottom:12px;">Based on your USDA zone — adjust by 1–2 weeks for your local microclimate.</div>
+            <div style="font-size:12px;margin-bottom:12px;">
+              <span style="display:inline-block;margin-right:12px;"><span style="display:inline-block;width:10px;height:10px;background:#a8d5ba;border-radius:2px;margin-right:4px;vertical-align:middle;"></span>Start indoors</span>
+              <span style="display:inline-block;margin-right:12px;"><span style="display:inline-block;width:10px;height:10px;background:#2f5d34;border-radius:2px;margin-right:4px;vertical-align:middle;"></span>Sow/Plant outdoors</span>
+              <span style="display:inline-block;"><span style="display:inline-block;width:10px;height:10px;background:#c9a96e;border-radius:2px;margin-right:4px;vertical-align:middle;"></span>Harvest window</span>
+            </div>
+            ${buildCalendarTableHtml(lastCalData)}
+          </div>` : "";
 
-      document.body.appendChild(container);
-      await html2pdf().set({
-        margin: 10,
-        filename: `RootPlans-Garden-Plan-${new Date().toISOString().slice(0,10)}.pdf`,
-        image: { type: "jpeg", quality: 0.95 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-      }).from(container).save();
-      document.body.removeChild(container);
+        const container = document.createElement("div");
+        container.style.cssText = "position:fixed;left:-10000px;top:0;width:760px;background:#fff;font-family:Georgia,serif;color:#1f2b22;padding:32px;line-height:1.7;z-index:9999;";
+        container.innerHTML = `
+          <h1 style="font-size:26px;color:#274c38;margin-bottom:4px;">🌿 RootPlans Garden Plan</h1>
+          <p style="font-size:12px;color:#6a7b6b;border-bottom:2px solid #dce8de;padding-bottom:10px;margin-bottom:24px;">${escapeHtml(meta)}</p>
+          <style>
+            h2{font-size:18px;font-weight:800;color:#274c38;margin-top:28px;border-bottom:1px solid #dce8de;padding-bottom:4px;}
+            h3{font-size:15px;font-weight:700;color:#4a7a5a;margin-top:16px;}
+            strong{color:#274c38;}
+            ul{padding-left:18px;}
+            li{margin-bottom:3px;}
+            hr{border:none;border-top:1px solid #dce8de;margin:10px 0;}
+            p{margin:0 0 8px;}
+            .cal-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px;}
+            .cal-table th{background:#2f5d34;color:#fff;padding:5px 7px;text-align:left;}
+            .cal-table td{padding:4px 7px;border-bottom:1px solid #e8f0e8;vertical-align:top;}
+            .cal-table tr:nth-child(even) td{background:#f6faf6;}
+            .cal-dot-pdf{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:3px;vertical-align:middle;}
+          </style>
+          ${planHtml}
+          ${calHtml}
+          <p style="margin-top:40px;font-size:10px;color:#aaa;border-top:1px solid #eee;padding-top:10px;text-align:center;">Generated by RootPlans.com · For personal use only</p>`;
 
-      $("pdfBtn").disabled = false;
-      $("pdfBtn").textContent = "Download PDF";
-    });
+        document.body.appendChild(container);
 
-    $("pdfBtnBottom").addEventListener("click", () => $("pdfBtn").click());
+        const filename = `RootPlans-Garden-Plan-${new Date().toISOString().slice(0,10)}.pdf`;
+        const worker = html2pdf().set({
+          margin: 10,
+          filename,
+          image: { type: "jpeg", quality: 0.95 },
+          html2canvas: { scale: 2, useCORS: true, logging: false },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+        }).from(container);
+
+        // Try standard save; fall back to blob URL for iOS WKWebView
+        try {
+          await worker.save();
+        } catch (saveErr) {
+          const blob = await worker.output("blob");
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url; a.download = filename; a.click();
+          setTimeout(() => URL.revokeObjectURL(url), 10000);
+        }
+
+        document.body.removeChild(container);
+      } catch (e) {
+        console.error("PDF export failed:", e);
+        alert("PDF export failed. Please try again or use your browser's Print → Save as PDF option.");
+      }
+
+      btn.disabled = false;
+      btn.textContent = origText;
+    }
+
+    function buildCalendarTableHtml(data) {
+      if (!data || !data.length) return "";
+      const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      let rows = "";
+      data.forEach(r => {
+        const sow     = (r.sow_start && r.sow_end)   ? `${MONTHS[r.sow_start-1]}–${MONTHS[r.sow_end-1]}`       : "—";
+        const plant   = (r.plant_start && r.plant_end) ? `${MONTHS[r.plant_start-1]}–${MONTHS[r.plant_end-1]}`   : "—";
+        const harvest = (r.harvest_start && r.harvest_end) ? `${MONTHS[r.harvest_start-1]}–${MONTHS[r.harvest_end-1]}` : "—";
+        rows += `<tr>
+          <td><strong>${escapeHtml(r.plant)}</strong></td>
+          <td>${sow !== "—" ? `<span class="cal-dot-pdf" style="background:#a8d5ba"></span>${sow}` : "—"}</td>
+          <td>${plant !== "—" ? `<span class="cal-dot-pdf" style="background:#2f5d34"></span>${plant}` : "—"}</td>
+          <td>${harvest !== "—" ? `<span class="cal-dot-pdf" style="background:#c9a96e"></span>${harvest}` : "—"}</td>
+        </tr>`;
+      });
+      return `<table class="cal-table">
+        <thead><tr><th>Plant</th><th>Start Indoors</th><th>Sow/Plant Outdoors</th><th>Harvest Window</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+    }
+
+    $("pdfBtn").addEventListener("click", function() { exportPDF(this); });
+    $("pdfBtnBottom").addEventListener("click", function() { exportPDF(this); });
 
     // Pro/free UI is applied by initAuth() after session validation
 

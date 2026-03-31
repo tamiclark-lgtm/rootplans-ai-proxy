@@ -16,7 +16,14 @@ You specialize in:
 - attractive plant combinations
 - easy-to-follow planting advice
 
-Your responses should be practical, clear, homeowner-friendly, and aesthetically aware. Avoid medical advice or medical claims about plants; use language like "traditionally used".`;
+Your responses should be practical, clear, homeowner-friendly, and aesthetically aware. Avoid medical advice or medical claims about plants; use language like "traditionally used".
+
+CRITICAL OUTPUT RULE — this applies to every single response, no exceptions:
+After your plan content is complete, you MUST output a planting calendar block in this exact format with NO backticks, NO code fences, NO extra text around it:
+CALENDAR_JSON_START
+[{"plant":"Plant Name","sow_start":0,"sow_end":0,"plant_start":4,"plant_end":5,"harvest_start":7,"harvest_end":9}]
+CALENDAR_JSON_END
+Replace "Plant Name" with the actual plant names from your plan. Use real month numbers (1=Jan, 12=Dec) for the zone. Set sow_start and sow_end to 0 if seeds are not started indoors. Include one entry per recommended plant. This block is REQUIRED — do not omit it.`;
 
 // Simple in-memory rate limiter (per-IP, resets on cold start)
 const rateLimitMap = new Map();
@@ -84,10 +91,11 @@ export default async function handler(req, res) {
     const zone     = sanitizeString(String(body.zone || "7"), 10);
     const location = sanitizeString(String(body.location || ""), 100);
 
-    // ── Enforce free prompt for non-premium users (server-side, not trustable from client) ──
+    // ── Build user message ────────────────────────────────────────────────────
+    // Calendar instruction is in the system prompt — guaranteed for all responses.
     let userMessage;
     if (ent.isPremium) {
-      const prompt = sanitizeString(body.prompt || "", 4000);
+      const prompt = sanitizeString(body.prompt || "", 12000);
       userMessage = prompt || buildFallbackPrompt({ zone, location, isPremium: true });
     } else {
       userMessage = buildFreePlanPrompt(zone, location);
@@ -99,20 +107,37 @@ export default async function handler(req, res) {
     res.setHeader("X-Accel-Buffering", "no");
     res.flushHeaders();
 
+    console.log(`[holistic] isPremium=${ent.isPremium} zone=${zone} promptLen=${userMessage.length} maxTokens=${ent.isPremium ? 8000 : 2000}`);
+
     res.write(`data: ${JSON.stringify({ planTier: ent.planTier })}\n\n`);
 
     const stream = client.messages.stream({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: ent.isPremium ? 6000 : 1600,
+      max_tokens: ent.isPremium ? 8000 : 2000,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: userMessage }]
     });
 
+    let fullResponse = "";
     for await (const chunk of stream) {
       if (chunk.type === "content_block_delta" && chunk.delta.type === "text_delta") {
+        fullResponse += chunk.delta.text;
         res.write(`data: ${JSON.stringify({ text: chunk.delta.text })}\n\n`);
         if (res.flush) res.flush();
       }
+    }
+
+    // Log whether calendar block was produced — visible in vercel dev terminal
+    const hasCalStart = fullResponse.includes("CALENDAR_JSON_START");
+    const hasCalEnd   = fullResponse.includes("CALENDAR_JSON_END");
+    console.log(`[holistic] done — responseLen=${fullResponse.length} hasCAL_START=${hasCalStart} hasCAL_END=${hasCalEnd}`);
+    if (!hasCalStart) {
+      console.warn("[holistic] ⚠️  AI did NOT output CALENDAR_JSON_START — calendar will be missing on client");
+    } else if (!hasCalEnd) {
+      console.warn("[holistic] ⚠️  AI output CALENDAR_JSON_START but NOT CALENDAR_JSON_END — likely truncated");
+    } else {
+      const calBlock = fullResponse.match(/CALENDAR_JSON_START[\s\S]*?CALENDAR_JSON_END/);
+      console.log("[holistic] ✅ Calendar block found:", calBlock ? calBlock[0].slice(0, 120) : "?");
     }
 
     res.write("data: [DONE]\n\n");
