@@ -190,7 +190,7 @@ OUTPUT THIS EXACT FORMAT with no additions:
 
 ---
 
-> 🔒 **Upgrade to RootPlans Pro** for a full personalized plan — custom themes, rare varieties, detailed layout, seasonal calendar, pest guide, and shopping list.
+> 🔒 **Upgrade to RootPlans Pro** for a full personalized plan — custom themes, rare varieties, detailed layout, seasonal calendar, per-plant pest guidance, and shopping list.
 
 After the plan output EXACTLY this block — no markdown fences, no extra text:
 CALENDAR_JSON_START

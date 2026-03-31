@@ -3043,7 +3043,7 @@ For each of the 5 plants, use this format:
 
 ---
 
-> 🔒 **Upgrade to RootPlans Pro** for your full personalized plan — including a detailed layout, seasonal care calendar, pest guide, shopping list, and rare plant selections tailored to your exact preferences.
+> 🔒 **Upgrade to RootPlans Pro** for your full personalized plan — including a detailed layout, seasonal care calendar, per-plant pest guidance, shopping list, and rare plant selections tailored to your exact preferences.
 
 After the plan, output EXACTLY this block:
 CALENDAR_JSON_START
@@ -3094,7 +3094,7 @@ ${selectedPlantType !== "decorative" && selectedRarity === "common" ? "- Priorit
 ${(()=>{ const g = parseInt(document.getElementById('gridCountInput')?.value||'0'); return g > 0 ? `- GARDEN GRID: The gardener has ${g} raised bed squares (each 4×4 ft = 16 sq ft, total ${g*16} sq ft). For each plant in section 2, include: how many 4×4 squares it needs AND the planting depth. Format as: 📐 Needs X square(s) · Plant X inches deep` : ''; })()}
 ${(selectedStaples.length || customStaples.length) ? `- REQUIRED — these must appear in the plan no matter what: ${[...selectedStaples, ...customStaples].join(", ")}. Note any zone-specific care adjustments if needed.` : ""}
 ${(selectedExclusions.length || customExclusions.length) ? `- EXCLUDED — do NOT include these under any circumstances: ${[...selectedExclusions, ...customExclusions].join(", ")}.` : ""}
-${selectedPests.length ? `- ACTIVE PESTS: The gardener is already dealing with: ${selectedPests.join(", ")}. In section 8, prioritize fixes for these specific pests and recommend companion plants or varieties that naturally deter them.` : ""}
+${selectedPests.length ? `- ACTIVE PESTS: The gardener is already dealing with: ${selectedPests.join(", ")}. In each plant entry's Common pests line, note if that plant is especially affected by or helps deter these pests.` : ""}
 
 SUNLIGHT: ${selectedSunlight ? `Only recommend plants that thrive in "${selectedSunlight}" conditions.` : "Include a mix of sun tolerances."}
 
@@ -3104,7 +3104,8 @@ USE THIS EXACT FORMAT — every plant entry must follow this template with no de
 [One sentence description — what it is and why it fits this garden.]
 **Good companions:** [2–3 plants that grow well next to it]${selectedPlantType !== "decorative" ? `
 **Nutrition:** [2–3 key nutritional highlights, comma-separated]
-**Best consumed:** [One sentence on best way to eat/use it]` : ""}${holisticHealing ? `
+**Best consumed:** [One sentence on best way to eat/use it]` : ""}
+**Common pests:** [2–4 most likely pests or diseases for this specific plant — names only, comma-separated, no explanations]${holisticHealing ? `
 **Traditionally used for:** [One cautious sentence using phrases like "traditionally associated with" or "commonly used in folk practice for" — no medical claims]` : ""}
 
 For every plant also add these two lines:
@@ -3140,19 +3141,12 @@ Give a beginner a concrete shopping checklist organized into three groups:
 **🛠️ Basic Tools & Supplies** — list only the essential tools a beginner truly needs (e.g. trowel, watering can or hose attachment, gloves, plant labels, mulch). Keep it minimal — 5–7 items max.
 For each item, add a one-line tip on what to look for or avoid when buying.
 
-## 8. Common Pests & How to Stop Them
-For the plants in this plan, list the 4–5 most likely pests or diseases the gardener will encounter. For each one:
-- **Pest name** — what it looks like and which plants it targets
-- **Early warning signs** — how to spot it before it spreads
-- **Organic fix** — cheapest, safest solution (neem oil, hand-picking, companion planting, etc.)
-- **Prevention tip** — one thing to do now to avoid it entirely
-
-## 9. Safety Note
+## 8. Safety Note
 [2–3 sentences: note any plants to handle carefully, remind that holistic notes are not medical advice.]
 
-Complete ALL 9 sections. Do not stop early.
+Complete ALL 8 sections. Do not stop early.
 
-After section 9, output EXACTLY this block with no markdown fences, no extra text, no code blocks:
+After section 8, output EXACTLY this block with no markdown fences, no extra text, no code blocks:
 CALENDAR_JSON_START
 [{"plant":"Plant Name","sow_start":3,"sow_end":4,"plant_start":5,"plant_end":6,"harvest_start":7,"harvest_end":9}]
 CALENDAR_JSON_END
