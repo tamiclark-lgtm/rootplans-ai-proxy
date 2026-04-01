@@ -57,6 +57,14 @@ export default async function handler(req, res) {
     const session = await stripe.checkout.sessions.create(sessionParams);
     res.json({ url: session.url });
   } catch (e) {
+    console.error('[checkout] Stripe error', {
+      type: e.type,
+      code: e.code,
+      statusCode: e.statusCode,
+      message: e.message,
+      hasKey: !!process.env.STRIPE_SECRET_KEY,
+      keyPrefix: process.env.STRIPE_SECRET_KEY?.slice(0, 7),
+    });
     res.status(500).json({ error: e.message });
   }
 }

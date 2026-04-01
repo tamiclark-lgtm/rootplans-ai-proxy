@@ -4,6 +4,7 @@
   ],
   "functions": {
     "api/holistic.js":            { "maxDuration": 60 },
+    "api/checkout.js":            { "maxDuration": 30 },
     "api/billing-portal.js":      { "maxDuration": 15 },
     "api/webhooks/revenuecat.js": { "maxDuration": 15 },
     "api/webhooks/stripe.js":     { "maxDuration": 15 },
