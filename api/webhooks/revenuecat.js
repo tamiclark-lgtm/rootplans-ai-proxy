@@ -9,6 +9,17 @@
 //
 // We use lg_users.id as the RC appUserID, so we can resolve users directly
 // from the app_user_id field in the event payload.
+//
+// ── RETRY BEHAVIOUR ────────────────────────────────────────────────────────
+// RevenueCat retries webhook delivery for any non-2xx response (exponential
+// back-off, up to 24 hours).  This handler returns HTTP 500 on DB errors so
+// RC will retry automatically.  Ops teams should monitor:
+//   • Vercel function logs for "[webhooks/revenuecat] DB" error lines
+//   • RevenueCat Dashboard → Project → Integrations → Webhooks → delivery log
+//   • The `environment` field logged on every write — sandbox writes in
+//     production indicate a test device is hitting the production backend
+// Authorisation failures return 401 (RC will retry — check the secret).
+// Unknown/skipped event types return 200 (no retry needed).
 
 import { getDb } from '../_lib/db.js';
 
@@ -41,7 +52,7 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  const body = req.body;
+  const body  = req.body;
   const event = body?.event;
 
   if (!event?.type) {
@@ -75,7 +86,11 @@ export default async function handler(req, res) {
     const rows = await sql`SELECT id FROM lg_users WHERE id = ${app_user_id} LIMIT 1`;
     userExists = rows.length > 0;
   } catch (err) {
-    console.error('[webhooks/revenuecat] DB lookup error', err);
+    console.error('[webhooks/revenuecat] DB lookup error', {
+      type, app_user_id,
+      error: err.message,
+      stack: err.stack,
+    });
     return res.status(500).json({ error: 'DB error' });
   }
 
@@ -93,8 +108,14 @@ export default async function handler(req, res) {
   if (EXPIRED_TYPES.has(type))  newStatus = 'expired';
 
   if (!newStatus) {
+    console.log(`[webhooks/revenuecat] unhandled type=${type} app_user_id=${app_user_id}`);
     return res.status(200).json({ ok: true, note: `Unhandled event type: ${type}` });
   }
+
+  console.log(
+    `[webhooks/revenuecat] processing type=${type} user_id=${app_user_id}` +
+    ` environment=${env} newStatus=${newStatus} product=${product_id || 'none'}`
+  );
 
   try {
     await sql`
@@ -115,9 +136,17 @@ export default async function handler(req, res) {
         updated_at         = NOW()
     `;
   } catch (err) {
-    console.error('[webhooks/revenuecat] DB upsert error', err);
+    console.error('[webhooks/revenuecat] DB upsert error', {
+      type, app_user_id, env, newStatus,
+      error: err.message,
+      stack: err.stack,
+    });
     return res.status(500).json({ error: 'DB error' });
   }
 
+  console.log(
+    `[webhooks/revenuecat] success type=${type} user_id=${app_user_id}` +
+    ` environment=${env} status=${newStatus}`
+  );
   return res.status(200).json({ ok: true });
 }

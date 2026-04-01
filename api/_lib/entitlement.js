@@ -7,6 +7,14 @@
 //
 // Returns a normalized entitlement object used by ALL backend endpoints
 // and the frontend session.  Never call Stripe or Apple IAP directly here.
+//
+// SANDBOX POLICY:
+//   RevenueCat and Apple IAP both distinguish between sandbox and production
+//   purchases via the `environment` column ('sandbox' | 'production').
+//   In this file, _getRcRecord() only returns a record as eligible for
+//   premium access when environment = 'production'.  In non-production
+//   Vercel deployments (VERCEL_ENV !== 'production') sandbox records are
+//   also accepted so developers can test end-to-end without real purchases.
 
 import { getDb } from './db.js';
 
@@ -39,15 +47,35 @@ const FEATURE_TIERS = {
 export const RC_ENTITLEMENT_ID = 'premium';
 
 // ── Internal DB reads ─────────────────────────────────────────────────────────
+//
+// In production (VERCEL_ENV === 'production') only records with
+// environment = 'production' are returned.  Sandbox records from TestFlight /
+// Xcode runs are silently excluded so they cannot grant real Premium access.
+// In preview/development deployments both environments are accepted so
+// engineers can test the full flow without a live App Store purchase.
 async function _getRcRecord(userId) {
   const sql = getDb();
+  const isVercelProd = process.env.VERCEL_ENV === 'production';
   try {
-    const rows = await sql`
-      SELECT * FROM lg_apple_subscriptions
-      WHERE user_id = ${userId}
-      ORDER BY updated_at DESC
-      LIMIT 1
-    `;
+    let rows;
+    if (isVercelProd) {
+      // Production: only trust production-environment purchases
+      rows = await sql`
+        SELECT * FROM lg_apple_subscriptions
+        WHERE user_id = ${userId}
+          AND environment = 'production'
+        ORDER BY updated_at DESC
+        LIMIT 1
+      `;
+    } else {
+      // Non-production (preview / local dev): accept both environments
+      rows = await sql`
+        SELECT * FROM lg_apple_subscriptions
+        WHERE user_id = ${userId}
+        ORDER BY updated_at DESC
+        LIMIT 1
+      `;
+    }
     return rows[0] || null;
   } catch { return null; }
 }
@@ -94,6 +122,25 @@ export async function getEntitlement(userId) {
     stripeRec &&
     stripeRec.status === 'active' &&
     (!stripeRec.expires_at || new Date(stripeRec.expires_at) > now);
+
+  // Log which record (if any) is granting access — useful for debugging
+  // sandbox vs production issues and webhook delivery problems.
+  if (rcRec) {
+    console.log(
+      `[entitlement] userId=${userId} rcRecord found: status=${rcRec.status}` +
+      ` environment=${rcRec.environment} active=${rcActive}` +
+      ` VERCEL_ENV=${process.env.VERCEL_ENV || 'unset'}`
+    );
+  }
+  if (stripeRec) {
+    console.log(
+      `[entitlement] userId=${userId} stripeRecord found: status=${stripeRec.status}` +
+      ` active=${stripeActive}`
+    );
+  }
+  if (!rcRec && !stripeRec) {
+    console.log(`[entitlement] userId=${userId} no subscription records found`);
+  }
 
   const isActive = rcActive || stripeActive;
   const source   = rcActive ? 'revenuecat' : stripeActive ? 'stripe' : 'none';

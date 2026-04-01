@@ -25,7 +25,34 @@ CALENDAR_JSON_START
 CALENDAR_JSON_END
 Replace "Plant Name" with the actual plant names from your plan. Use real month numbers (1=Jan, 12=Dec) for the zone. Set sow_start and sow_end to 0 if seeds are not started indoors. Include one entry per recommended plant. This block is REQUIRED — do not omit it.`;
 
-// Simple in-memory rate limiter (per-IP, resets on cold start)
+// ── RATE LIMITER — IMPORTANT OPERATIONAL NOTES ────────────────────────────────
+//
+// The in-memory Map below is a SINGLE-INSTANCE limiter only.  Vercel runs this
+// function across multiple isolated serverless instances (one per concurrent
+// request during scale-out), so each instance maintains its own counter.  A
+// determined user can bypass this limit simply by sending requests that land
+// on different instances.
+//
+// Current effective limit (per instance):
+//   • Authenticated users:   10 requests per 60-second window
+//   • Unauthenticated users:  3 requests per 60-second window
+//
+// This still provides meaningful protection against:
+//   • Single-instance abuse (e.g. rapid-fire loops from one connection)
+//   • Accidental bursts from a misbehaving client on the same instance
+//
+// RECOMMENDED NEXT STEP — distributed rate limiting:
+//   Replace this Map with Vercel KV (built-in Redis) or Upstash Redis using a
+//   sliding-window algorithm so that ALL instances share the same counter per
+//   IP.  Example libraries: `@upstash/ratelimit`, `rate-limiter-flexible`.
+//   Pattern:
+//     const ratelimit = new Ratelimit({ redis: kv, limiter: Ratelimit.slidingWindow(10, '60 s') });
+//     const { success } = await ratelimit.limit(ip);
+//     if (!success) return res.status(429).json({ error: '...' });
+//
+// DO NOT remove this limiter before the distributed replacement is in place —
+// it still catches the most common abuse patterns on warm instances.
+// ─────────────────────────────────────────────────────────────────────────────
 const rateLimitMap = new Map();
 const RATE_WINDOW_MS = 60_000;
 const RATE_MAX = 10;

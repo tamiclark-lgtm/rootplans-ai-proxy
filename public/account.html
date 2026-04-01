@@ -3,37 +3,279 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Account — Little Gem</title>
+  <title>My Account — RootPlans</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/gem.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary:       #2f5d34;
+      --primary2:      #4e8b54;
+      --primary-dark:  #244a29;
+      --text:          #2c3e2f;
+      --muted:         #5a7260;
+      --border:        #d4e0d6;
+      --bg:            #f6f8f5;
+      --card-bg:       #ffffff;
+      --error:         #c0392b;
+      --success:       #276228;
+      --success-bg:    #edf7ee;
+      --warning:       #7a5100;
+      --warning-bg:    #fff8e1;
+      --r-lg:          12px;
+      --r-xl:          16px;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── NAV ───────────────────────────────────────────────────────── */
+    .nav {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+    .nav-logo img { height: 32px; width: auto; display: block; }
+    .nav-sign-out {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .nav-sign-out:hover { border-color: var(--error); color: var(--error); }
+
+    /* ── LOADING ────────────────────────────────────────────────────── */
+    #loadingOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(246,248,245,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+    #loadingOverlay.hidden { display: none; }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid rgba(47,93,52,0.15);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── PAGE LAYOUT ────────────────────────────────────────────────── */
+    .page {
+      flex: 1;
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 40px 20px 60px;
+    }
+    .page-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 28px;
+    }
+
+    /* ── CARDS ──────────────────────────────────────────────────────── */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 28px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    /* ── INFO ROWS ──────────────────────────────────────────────────── */
     .info-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 0;
+      padding: 12px 0;
       border-bottom: 1px solid var(--border);
       font-size: 14px;
+      gap: 12px;
     }
     .info-row:last-child { border-bottom: none; }
-    .info-label { color: var(--muted); font-weight: 500; }
-    .info-value { color: var(--text); font-weight: 600; }
-    .plan-card {
-      background: linear-gradient(135deg, #4C1D95 0%, #2D1B69 100%);
-      border-radius: var(--r-xl);
-      padding: 28px;
-      color: #fff;
+    .info-label { color: var(--muted); font-weight: 500; flex-shrink: 0; }
+    .info-value { color: var(--text); font-weight: 600; text-align: right; }
+
+    /* ── PLAN BADGE ─────────────────────────────────────────────────── */
+    .plan-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      gap: 12px;
+    }
+    .plan-name-text {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+    .badge-active   { background: var(--success-bg); color: var(--success); }
+    .badge-free     { background: #f0f0f0; color: #555; }
+    .badge-expired  { background: #fff3f3; color: var(--error); }
+
+    /* ── ALERTS ─────────────────────────────────────────────────────── */
+    .alert {
+      border-radius: var(--r-lg);
+      padding: 13px 16px;
+      font-size: 14px;
       margin-bottom: 20px;
     }
-    .plan-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 22px;
-      margin-bottom: 4px;
+    .alert-error   { background: #fef2f2; color: var(--error);   border: 1px solid #fecaca; }
+    .alert-success { background: var(--success-bg); color: var(--success); border: 1px solid #c3e6c5; }
+    .alert-info    { background: #eef4fb; color: #1a5276; border: 1px solid #bcd4ec; }
+    .hidden { display: none !important; }
+
+    /* ── BUTTONS ────────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: var(--r-lg);
+      font-size: 14px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: background 0.2s, box-shadow 0.2s, opacity 0.2s;
+      min-height: 44px;
     }
-    .plan-status { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 16px; }
-    .plan-detail { font-size: 14px; color: rgba(255,255,255,0.85); margin-bottom: 6px; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      color: #fff;
+    }
+    .btn-primary:hover { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); box-shadow: 0 4px 12px rgba(47,93,52,0.25); }
+    .btn-secondary {
+      background: #fff;
+      color: var(--primary);
+      border: 1.5px solid var(--primary);
+    }
+    .btn-secondary:hover { background: var(--bg); }
+    .btn-ghost {
+      background: none;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+    .btn-danger {
+      background: none;
+      color: var(--error);
+      border: 1px solid #fecaca;
+    }
+    .btn-danger:hover { background: #fef2f2; }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-loading::after {
+      content: '';
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    /* ── UPGRADE BOX ────────────────────────────────────────────────── */
+    .upgrade-box {
+      border: 1.5px dashed var(--primary2);
+      border-radius: var(--r-xl);
+      padding: 26px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .upgrade-box h3 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .upgrade-box p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    /* ── FOOTER ─────────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    footer a { color: var(--muted); text-decoration: underline; }
+
+    @media (max-width: 480px) {
+      .page { padding: 24px 14px 48px; }
+      .card { padding: 20px; }
+      .plan-header { flex-direction: column; align-items: flex-start; }
+      .btn-row { flex-direction: column; }
+      .btn-row .btn { width: 100%; }
+    }
   </style>
 </head>
 <body>
@@ -41,254 +283,243 @@
   <!-- NAV -->
   <nav class="nav">
     <div class="nav-inner">
-      <a href="/" class="nav-logo">✨ Little Gem</a>
-      <div class="nav-links">
-        <a href="/library.html" class="nav-link">My Books</a>
-      </div>
-      <div id="navAuth" class="nav-auth">
-        <a href="/login.html" class="nav-link">Sign In</a>
-        <a href="/signup.html" class="btn btn-primary btn-sm">Create Your Book</a>
-      </div>
-      <button class="nav-hamburger" id="navToggle" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
+      <a href="/" class="nav-logo">
+        <img src="/rootplans.png" alt="RootPlans" />
+      </a>
+      <button class="nav-sign-out" id="signOutBtn">Sign Out</button>
     </div>
   </nav>
 
   <!-- LOADING OVERLAY -->
-  <div id="loadingOverlay" class="loading-overlay">
-    <div class="spinner" style="width:36px;height:36px;border-width:3px;border-color:rgba(109,40,217,0.2);border-top-color:var(--primary);"></div>
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
   </div>
 
-  <div class="account-grid">
+  <!-- MAIN PAGE -->
+  <main class="page" id="pageContent" style="display:none;">
 
-    <!-- SIDEBAR NAV -->
-    <aside class="account-sidebar">
-      <button class="account-nav-item active" onclick="showSection('subscription')">📋 Subscription</button>
-      <button class="account-nav-item" onclick="showSection('profile')">👤 Profile</button>
-      <button class="account-nav-item" onclick="showSection('security')">🔒 Security</button>
-      <button class="account-nav-item" onclick="LG.logout()" style="color:var(--error);">Sign Out</button>
-    </aside>
+    <h1 class="page-title">My Account</h1>
 
-    <!-- MAIN CONTENT -->
-    <div class="account-content">
+    <div id="pageAlert" class="alert hidden"></div>
 
-      <!-- GLOBAL ALERT -->
-      <div id="accountAlert" class="alert hidden"></div>
-
-      <!-- ── SUBSCRIPTION SECTION ─────────────────────────────────────── -->
-      <section id="sectionSubscription">
-        <h2 class="account-section-title">Subscription &amp; Billing</h2>
-
-        <!-- Plan card -->
-        <div id="planCard" class="plan-card hidden">
-          <p class="plan-name" id="planName">—</p>
-          <p class="plan-status" id="planStatus">—</p>
-          <p class="plan-detail" id="planDetail1">—</p>
-          <p class="plan-detail" id="planDetail2" class="hidden">—</p>
-        </div>
-
-        <!-- Free tier -->
-        <div id="noPlanCard" class="card hidden">
-          <p style="font-size:15px;color:var(--text);font-weight:600;margin-bottom:8px;">Free Plan</p>
-          <p style="font-size:14px;color:var(--muted);margin-bottom:20px;">You have 1 active garden plan. Upgrade to Premium for up to 7 plans, advanced AI, pest diagnosis, and more.</p>
-          <a href="/pricing.html" class="btn btn-primary">Upgrade to Premium →</a>
-        </div>
-
-        <!-- Billing actions: web RC users -->
-        <div id="billingActions" class="card hidden" style="margin-top:0;">
-          <h3 style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px;">Manage Subscription</h3>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <p style="font-size:14px;color:var(--muted);line-height:1.6;">
-              To manage or cancel your subscription, contact us at <strong>hello@rootplans.com</strong> or manage via your App Store account settings.
-            </p>
-            <a href="/pricing.html" class="btn btn-ghost">View Plans</a>
-          </div>
-        </div>
-
-        <!-- Billing actions: Apple IAP (iOS only) -->
-        <div id="appleBillingActions" class="card hidden" style="margin-top:0;">
-          <h3 style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px;">Manage Subscription</h3>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <p style="font-size:14px;color:var(--muted);line-height:1.6;">
-              Your subscription is managed through Apple. To change or cancel, go to
-              <strong>Settings → Apple ID → Subscriptions</strong> on your device.
-            </p>
-            <button class="btn btn-ghost" onclick="handleRestorePurchases()" id="restoreBtn">
-              <span class="btn-text">Restore Purchases</span>
-              <span class="spinner spinner-dark"></span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Trial notice -->
-        <div id="trialNotice" class="hidden" style="margin-top:0;"></div>
-      </section>
-
-      <!-- ── PROFILE SECTION ──────────────────────────────────────────── -->
-      <section id="sectionProfile" class="hidden">
-        <h2 class="account-section-title">Profile</h2>
-        <div class="card">
-          <div id="profileInfo">
-            <div class="info-row">
-              <span class="info-label">Name</span>
-              <span class="info-value" id="profileName">—</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Email</span>
-              <span class="info-value" id="profileEmail">—</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Member since</span>
-              <span class="info-value" id="profileJoined">—</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ── SECURITY SECTION ─────────────────────────────────────────── -->
-      <section id="sectionSecurity" class="hidden">
-        <h2 class="account-section-title">Security</h2>
-        <div class="card">
-          <h3 style="font-size:16px;font-weight:700;margin-bottom:6px;">Change Password</h3>
-          <p style="font-size:14px;color:var(--muted);margin-bottom:20px;">We'll send a password reset link to your email address.</p>
-          <button class="btn btn-secondary" onclick="sendPasswordReset()" id="resetBtn">
-            <span class="btn-text">Send Reset Link</span>
-            <span class="spinner spinner-dark"></span>
-          </button>
-          <div id="resetMsg" class="alert hidden" style="margin-top:16px;"></div>
-        </div>
-
-        <div class="card" style="margin-top:16px;border-color:var(--error);">
-          <h3 style="font-size:16px;font-weight:700;color:var(--error);margin-bottom:6px;">Sign Out</h3>
-          <p style="font-size:14px;color:var(--muted);margin-bottom:16px;">This will sign you out on this device.</p>
-          <button class="btn btn-ghost" onclick="LG.logout()">Sign Out</button>
-        </div>
-      </section>
-
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <p class="footer-brand">✨ Little Gem</p>
-      <div class="footer-links">
-        <a href="/">Home</a>
-        <a href="/library.html">My Books</a>
-        <a href="/create.html">Create Book</a>
+    <!-- ── PROFILE CARD ──────────────────────────────────────────────── -->
+    <div class="card">
+      <p class="card-title">Profile</p>
+      <div class="info-row">
+        <span class="info-label">Name</span>
+        <span class="info-value" id="profileName">—</span>
       </div>
-      <p class="footer-copy">© 2025 Little Gem · All rights reserved</p>
+      <div class="info-row">
+        <span class="info-label">Email</span>
+        <span class="info-value" id="profileEmail">—</span>
+      </div>
     </div>
+
+    <!-- ── SUBSCRIPTION CARD ─────────────────────────────────────────── -->
+    <div class="card" id="subCard">
+      <p class="card-title">Subscription</p>
+
+      <!-- Free plan state -->
+      <div id="stateFree" class="hidden">
+        <div class="upgrade-box">
+          <h3>You're on the Free Plan</h3>
+          <p>Get unlimited garden plans, advanced AI recommendations, pest diagnosis, and more with Premium.</p>
+          <a href="/pricing.html" class="btn btn-primary">Upgrade to Premium</a>
+        </div>
+      </div>
+
+      <!-- Premium: active state -->
+      <div id="statePremium" class="hidden">
+        <div class="plan-header">
+          <span class="plan-name-text" id="planLabel">Premium</span>
+          <span class="badge badge-active" id="planBadge">Active</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Billed via</span>
+          <span class="info-value" id="planSource">—</span>
+        </div>
+        <div class="info-row" id="expiryRow">
+          <span class="info-label">Renews</span>
+          <span class="info-value" id="planExpiry">—</span>
+        </div>
+        <div class="btn-row" id="subActions"></div>
+      </div>
+
+      <!-- Expired / no-longer-active state -->
+      <div id="stateExpired" class="hidden">
+        <div class="plan-header">
+          <span class="plan-name-text">Premium (Expired)</span>
+          <span class="badge badge-expired">Expired</span>
+        </div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.6;margin-top:4px;margin-bottom:18px;">
+          Your Premium subscription is no longer active. Renew to restore access.
+        </p>
+        <a href="/pricing.html" class="btn btn-primary">Renew Premium</a>
+      </div>
+    </div>
+
+    <!-- ── SECURITY CARD ─────────────────────────────────────────────── -->
+    <div class="card">
+      <p class="card-title">Security</p>
+      <p style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:16px;">
+        Send a password reset link to your email address.
+      </p>
+      <button class="btn btn-secondary" id="resetBtn">Send Reset Email</button>
+      <div id="resetMsg" class="alert hidden" style="margin-top:16px;"></div>
+    </div>
+
+    <!-- ── SIGN OUT CARD ─────────────────────────────────────────────── -->
+    <div class="card" style="border-color:#fecaca;">
+      <p class="card-title" style="color:var(--error);">Sign Out</p>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:16px;">This will sign you out on this device.</p>
+      <button class="btn btn-danger" id="signOutCard">Sign Out</button>
+    </div>
+
+  </main>
+
+  <footer>
+    <a href="/privacy.html">Privacy Policy</a> &nbsp;&middot;&nbsp;
+    <a href="/terms.html">Terms &amp; Conditions</a> &nbsp;&middot;&nbsp;
+    &copy; 2026 RootPlans
   </footer>
 
-  <script src="/js/auth.js"></script>
-  <script src="/js/iap.js"></script>
+  <script src="/js/rp-auth.js"></script>
   <script>
     let currentUser = null;
+    let currentSub  = null;
 
+    // ── INIT ────────────────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', async function () {
-      if (!LG.requireAuth()) return;
+      if (!RP.requireAuth()) return;   // redirects to /rp-login.html if not authed
 
-      const { user, subscription } = await LG.init();
+      const { user, subscription } = await RP.init();
+
       document.getElementById('loadingOverlay').classList.add('hidden');
+      document.getElementById('pageContent').style.display = '';
 
       if (!user) {
-        window.location.href = '/signup.html?next=/account.html';
+        window.location.href = '/rp-login.html?next=' + encodeURIComponent('/account.html');
         return;
       }
 
       currentUser = user;
+      currentSub  = subscription;
+
       renderProfile(user);
       renderSubscription(subscription);
     });
 
+    // ── PROFILE ─────────────────────────────────────────────────────────────
     function renderProfile(user) {
-      document.getElementById('profileName').textContent = user.name || '—';
+      document.getElementById('profileName').textContent  = user.name  || '—';
       document.getElementById('profileEmail').textContent = user.email || '—';
-      document.getElementById('profileJoined').textContent = '—'; // Would come from user.createdAt
     }
 
+    // ── SUBSCRIPTION ─────────────────────────────────────────────────────────
     function renderSubscription(sub) {
-      const planCard         = document.getElementById('planCard');
-      const noPlanCard       = document.getElementById('noPlanCard');
-      const billingActs      = document.getElementById('billingActions');
-      const appleBillingActs = document.getElementById('appleBillingActions');
+      const stateFree    = document.getElementById('stateFree');
+      const statePremium = document.getElementById('statePremium');
+      const stateExpired = document.getElementById('stateExpired');
+      const subActions   = document.getElementById('subActions');
 
-      if (!sub || !sub.isPremium) {
-        // Free tier
-        noPlanCard.classList.remove('hidden');
+      // Hide all states first
+      stateFree.classList.add('hidden');
+      statePremium.classList.add('hidden');
+      stateExpired.classList.add('hidden');
+
+      if (!sub || sub.planTier === 'free') {
+        stateFree.classList.remove('hidden');
         return;
       }
 
-      planCard.classList.remove('hidden');
+      if (sub.isPremium && sub.subscriptionStatus === 'active') {
+        statePremium.classList.remove('hidden');
 
-      if (sub.subscriptionSource === 'revenuecat') {
-        appleBillingActs.classList.remove('hidden');
-      } else {
-        billingActs.classList.remove('hidden');
-      }
+        // Plan label: monthly vs annual
+        const isAnnual = sub.productId && (
+          sub.productId.toLowerCase().includes('annual') ||
+          sub.productId.toLowerCase().includes('yearly') ||
+          sub.productId.toLowerCase().includes('year')
+        );
+        document.getElementById('planLabel').textContent =
+          isAnnual ? 'Premium Annual' : 'Premium Monthly';
 
-      document.getElementById('planName').textContent = 'Premium Plan';
-      document.getElementById('planStatus').textContent = '✓ Active';
+        // Source
+        const sourceEl = document.getElementById('planSource');
+        if (sub.subscriptionSource === 'stripe') {
+          sourceEl.textContent = 'Stripe (web)';
+        } else if (sub.subscriptionSource === 'revenuecat') {
+          sourceEl.textContent = 'Apple App Store (iOS)';
+        } else {
+          sourceEl.textContent = '—';
+        }
 
-      if (sub.expiresAt) {
-        const date = new Date(sub.expiresAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-        document.getElementById('planDetail1').textContent = 'Renews: ' + date;
-      }
-    }
+        // Expiry
+        if (sub.expiresAt) {
+          const d = new Date(sub.expiresAt);
+          document.getElementById('planExpiry').textContent =
+            d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        } else {
+          document.getElementById('expiryRow').classList.add('hidden');
+        }
 
-    async function handleRestorePurchases() {
-      const btn = document.getElementById('restoreBtn');
-      if (btn) { btn.classList.add('loading'); btn.disabled = true; }
-
-      const result = await LG_IAP.restorePurchases();
-
-      if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
-
-      if (!result.ok) {
-        showAlert(result.error || 'Restore failed. Please try again.', 'error');
+        // Action buttons
+        subActions.innerHTML = '';
+        if (sub.subscriptionSource === 'stripe') {
+          const btn = document.createElement('button');
+          btn.className = 'btn btn-secondary';
+          btn.id = 'portalBtn';
+          btn.textContent = 'Manage Billing';
+          btn.addEventListener('click', openStripePortal);
+          subActions.appendChild(btn);
+        } else if (sub.subscriptionSource === 'revenuecat') {
+          const link = document.createElement('a');
+          link.className = 'btn btn-secondary';
+          link.href = 'https://apps.apple.com/account/subscriptions';
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.textContent = 'Manage in App Store';
+          subActions.appendChild(link);
+        }
         return;
       }
 
-      if (result.isEntitled) {
-        // Re-fetch session so subscription display updates
-        const { subscription } = await LG.init();
-        renderSubscription(subscription);
-        showAlert('Subscription restored successfully.', 'success');
-      } else {
-        showAlert('No active subscription found on this Apple ID.', 'info');
-      }
+      // Catch-all: expired or otherwise inactive
+      stateExpired.classList.remove('hidden');
     }
 
-    function showSection(name) {
-      ['subscription', 'profile', 'security'].forEach(s => {
-        document.getElementById('section' + s.charAt(0).toUpperCase() + s.slice(1)).classList.toggle('hidden', s !== name);
-      });
-      document.querySelectorAll('.account-nav-item').forEach((el, i) => {
-        el.classList.toggle('active', el.textContent.toLowerCase().includes(name));
-      });
-    }
-
-    async function openPortal() {
+    // ── STRIPE PORTAL ────────────────────────────────────────────────────────
+    async function openStripePortal() {
       const btn = document.getElementById('portalBtn');
-      btn.classList.add('loading');
+      if (!btn) return;
       btn.disabled = true;
+      btn.classList.add('btn-loading');
+      btn.textContent = '';
 
-      const result = await LG.openBillingPortal();
-      if (result && !result.ok) {
-        btn.classList.remove('loading');
+      try {
+        const { ok, data } = await RP.apiFetch('/api/billing-portal', { method: 'POST' });
+        if (ok && data.url) {
+          window.location.href = data.url;
+        } else {
+          showAlert(data.error || 'Could not open billing portal. Please try again.', 'error');
+          btn.disabled = false;
+          btn.classList.remove('btn-loading');
+          btn.textContent = 'Manage Billing';
+        }
+      } catch {
+        showAlert('Could not reach the server. Please try again.', 'error');
         btn.disabled = false;
-        showAlert(result.data?.error || 'Could not open billing portal. Please try again.', 'error');
+        btn.classList.remove('btn-loading');
+        btn.textContent = 'Manage Billing';
       }
-      // If redirect succeeded, page will navigate away
     }
 
-    async function sendPasswordReset() {
+    // ── PASSWORD RESET ───────────────────────────────────────────────────────
+    document.getElementById('resetBtn').addEventListener('click', async function () {
       if (!currentUser?.email) return;
-      const btn = document.getElementById('resetBtn');
-      btn.classList.add('loading');
+      const btn = this;
       btn.disabled = true;
+      btn.textContent = 'Sending…';
 
       try {
         await fetch('/api/auth/forgot-password', {
@@ -296,23 +527,32 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: currentUser.email }),
         });
-        const msg = document.getElementById('resetMsg');
-        msg.textContent = '✓ Reset link sent to ' + currentUser.email + '. Check your inbox.';
-        msg.className = 'alert alert-success';
+        showResetMsg('Reset link sent to ' + currentUser.email + '. Check your inbox.', 'success');
       } catch {
-        const msg = document.getElementById('resetMsg');
-        msg.textContent = 'Could not send reset email. Please try again.';
-        msg.className = 'alert alert-error';
+        showResetMsg('Could not send reset email. Please try again.', 'error');
       } finally {
-        btn.classList.remove('loading');
         btn.disabled = false;
+        btn.textContent = 'Send Reset Email';
       }
-    }
+    });
 
-    function showAlert(msg, type) {
-      const el = document.getElementById('accountAlert');
+    function showResetMsg(msg, type) {
+      const el = document.getElementById('resetMsg');
       el.textContent = msg;
       el.className = 'alert alert-' + type;
+    }
+
+    // ── SIGN OUT ─────────────────────────────────────────────────────────────
+    function doSignOut() { RP.logout(); }
+    document.getElementById('signOutBtn').addEventListener('click', doSignOut);
+    document.getElementById('signOutCard').addEventListener('click', doSignOut);
+
+    // ── ALERTS ───────────────────────────────────────────────────────────────
+    function showAlert(msg, type) {
+      const el = document.getElementById('pageAlert');
+      el.textContent = msg;
+      el.className = 'alert alert-' + type;
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   </script>
 </body>
