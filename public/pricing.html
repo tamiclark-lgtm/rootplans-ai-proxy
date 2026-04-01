@@ -10,8 +10,225 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/gem.css" />
   <style>
-    .lock-icon { display:inline-block; margin-right:4px; opacity:0.5; font-size:12px; }
-    .feature-locked { color: var(--muted); }
+    /* ── Pricing page overrides ── */
+    body { background: #f6f8f5; }
+
+    .pricing-hero {
+      text-align: center;
+      padding: 72px 24px 48px;
+      background: #fff;
+      border-bottom: 1px solid #e4ede6;
+    }
+    .pricing-hero h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(28px, 4vw, 46px);
+      color: #1a2e1c;
+      margin: 0 0 16px;
+      line-height: 1.2;
+    }
+    .pricing-hero p {
+      font-size: 17px;
+      color: #5a7260;
+      max-width: 520px;
+      margin: 0 auto 28px;
+      line-height: 1.7;
+    }
+
+    .pricing-title {
+      text-align: center;
+      padding: 48px 24px 8px;
+    }
+    .pricing-title h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(20px, 3vw, 28px);
+      color: #1a2e1c;
+      margin: 0;
+    }
+
+    .pricing-plans {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      max-width: 1000px;
+      margin: 36px auto 0;
+      padding: 0 24px;
+      align-items: start;
+    }
+
+    .plan-card {
+      background: #fff;
+      border: 1px solid #d4e0d6;
+      border-radius: 16px;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .plan-card.featured {
+      border: 2px solid #4e8b54;
+      transform: scale(1.03);
+      box-shadow: 0 8px 32px rgba(47,93,52,0.13);
+    }
+    .plan-card h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      color: #1a2e1c;
+      margin: 0;
+    }
+    .plan-tagline {
+      font-size: 14px;
+      color: #5a7260;
+      margin: 0;
+    }
+    .plan-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+    .plan-card ul li {
+      font-size: 14px;
+      color: #2c3e2f;
+      padding-left: 20px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .plan-card ul li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #4e8b54;
+      font-weight: 700;
+    }
+
+    .badge {
+      background: #4e8b54;
+      color: #fff;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 12px;
+      display: inline-block;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      align-self: flex-start;
+    }
+
+    /* CTA buttons */
+    .btn-primary-cta, .btn-secondary-cta {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: inherit;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      margin-top: auto;
+      transition: opacity 0.2s;
+    }
+    .btn-primary-cta {
+      background: linear-gradient(135deg, #2f5d34, #4e8b54);
+      color: #fff;
+    }
+    .btn-primary-cta:hover { opacity: 0.9; }
+    .btn-secondary-cta {
+      background: transparent;
+      color: #2f5d34;
+      border: 1.5px solid #2f5d34;
+    }
+    .btn-secondary-cta:hover { background: #edf4ef; }
+
+    /* Why section */
+    .pricing-why {
+      max-width: 640px;
+      margin: 64px auto 0;
+      padding: 0 24px;
+      text-align: center;
+    }
+    .pricing-why h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(20px, 3vw, 26px);
+      color: #1a2e1c;
+      margin: 0 0 16px;
+    }
+    .pricing-why p {
+      font-size: 15px;
+      color: #5a7260;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    /* FAQ */
+    .pricing-faq {
+      max-width: 640px;
+      margin: 56px auto 0;
+      padding: 0 24px;
+    }
+    .pricing-faq h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(20px, 3vw, 26px);
+      color: #1a2e1c;
+      margin: 0 0 28px;
+      text-align: center;
+    }
+    .faq-item {
+      border: 1px solid #d4e0d6;
+      border-radius: 12px;
+      padding: 20px 24px;
+      background: #fff;
+      margin-bottom: 16px;
+    }
+    .faq-item h4 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a2e1c;
+      margin: 0 0 8px;
+    }
+    .faq-item p {
+      font-size: 14px;
+      color: #5a7260;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* Final CTA */
+    .pricing-cta {
+      text-align: center;
+      padding: 64px 24px 80px;
+      margin-top: 56px;
+      background: #fff;
+      border-top: 1px solid #e4ede6;
+    }
+    .pricing-cta h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(22px, 3vw, 32px);
+      color: #1a2e1c;
+      margin: 0 0 24px;
+    }
+    .pricing-cta .btn-primary-cta {
+      display: inline-block;
+      width: auto;
+      padding: 16px 40px;
+      font-size: 16px;
+    }
+
+    /* Already premium notice */
+    #alreadyPremiumNotice {
+      max-width: 480px;
+      margin: 0 auto 24px;
+    }
+
+    @media (max-width: 700px) {
+      .plan-card.featured { transform: none; }
+      .pricing-plans { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -32,147 +249,132 @@
     </div>
   </nav>
 
-  <!-- HEADER -->
-  <div style="text-align:center;padding:72px 24px 0;background:#fff;">
-    <span class="section-eyebrow">Simple Pricing</span>
-    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(32px,4vw,48px);color:var(--text);margin:12px 0 16px;">
-      Grow More with RootPlans 🌱
-    </h1>
-    <p style="font-size:17px;color:var(--muted);max-width:520px;margin:0 auto 16px;line-height:1.6;">
-      Create up to 10 garden plans per month and design a garden tailored to your home, health goals, and growing space.
-    </p>
-    <div id="alreadyPremiumNotice" class="hidden" style="margin:0 auto;max-width:480px;">
-      <div class="alert alert-success" style="text-align:left;">
-        ✓ You're on Premium. <a href="/account.html">Manage your plan →</a>
+  <!-- iOS App Store UI (shown only inside Capacitor app) -->
+  <div id="iosPricingSection" class="hidden" style="padding:40px 24px;">
+    <div class="pricing-plans" id="iosOfferingsGrid">
+      <div class="plan-card" style="grid-column:1/-1;text-align:center;padding:40px;">
+        <p style="color:#5a7260;font-size:15px;">Loading plans…</p>
       </div>
+    </div>
+    <div style="text-align:center;margin-top:28px;">
+      <button class="btn btn-ghost btn-sm" onclick="handleIosRestore()" id="btnRestore">
+        <span class="btn-text">Restore Purchases</span>
+        <span class="spinner spinner-dark"></span>
+      </button>
+    </div>
+    <div style="max-width:480px;margin:20px auto 0;text-align:center;">
+      <p style="font-size:12px;color:#5a7260;line-height:1.7;">
+        Payment charged to your Apple ID at confirmation. Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current period. Manage subscriptions in your App Store account settings.
+      </p>
     </div>
   </div>
 
-  <!-- PRICING GRID -->
-  <section class="pricing-section">
+  <!-- Web content -->
+  <div id="webPricingSection">
 
-    <!-- iOS App Store UI (shown only inside Capacitor app) -->
-    <div id="iosPricingSection" class="hidden">
-      <div class="pricing-grid" id="iosOfferingsGrid">
-        <div class="pricing-card" style="grid-column:1/-1;text-align:center;padding:40px;">
-          <p style="color:var(--muted);font-size:15px;">Loading plans…</p>
+    <!-- HERO -->
+    <section class="pricing-hero">
+      <div id="alreadyPremiumNotice" class="hidden">
+        <div class="alert alert-success" style="text-align:left;max-width:480px;margin:0 auto 24px;">
+          ✓ You're already on Premium. <a href="/account.html">Manage your plan →</a>
         </div>
       </div>
-      <div style="text-align:center;margin-top:28px;">
-        <button class="btn btn-ghost btn-sm" onclick="handleIosRestore()" id="btnRestore">
-          <span class="btn-text">Restore Purchases</span>
-          <span class="spinner spinner-dark"></span>
+      <h1>Plan your garden with confidence</h1>
+      <p>Design a garden that fits your space, your goals, and your life — from your first layout to a fully personalized growing plan.</p>
+      <button class="btn-primary-cta" onclick="handleFreePlan()" id="btnFree" style="display:inline-block;width:auto;padding:14px 36px;">Start Free</button>
+    </section>
+
+    <!-- TITLE -->
+    <section class="pricing-title">
+      <h2>Simple pricing. No surprises.</h2>
+    </section>
+
+    <!-- PLANS -->
+    <section class="pricing-plans">
+
+      <!-- FREE -->
+      <div class="plan-card">
+        <h3>Free — $0 forever</h3>
+        <p class="plan-tagline">Start here. No pressure.</p>
+        <ul>
+          <li>1 active garden plan</li>
+          <li>Personalized plant recommendations</li>
+          <li>Basic layout builder (your space + zone)</li>
+          <li>Seasonal guidance</li>
+          <li>Save and revisit your plan</li>
+        </ul>
+        <button class="btn-secondary-cta" onclick="handleFreePlan()">Get Started Free</button>
+      </div>
+
+      <!-- ANNUAL (FEATURED) -->
+      <div class="plan-card featured">
+        <div class="badge">Best Value</div>
+        <h3>Premium Annual — $39/year</h3>
+        <p class="plan-tagline"><strong>Just $3.25/month — save 35%</strong></p>
+        <ul>
+          <li>Unlimited garden plans</li>
+          <li>Advanced layout tools</li>
+          <li>Functional &amp; health-focused planning</li>
+          <li>Native plant recommendations</li>
+          <li>Pest &amp; plant health guidance</li>
+          <li>Early access to new features</li>
+        </ul>
+        <button class="btn-primary-cta" onclick="handleUpgrade('yearly')" id="btnAnnual">
+          <span class="btn-text">Choose Annual</span>
+          <span class="spinner"></span>
         </button>
       </div>
-      <div style="max-width:480px;margin:20px auto 0;text-align:center;">
-        <p style="font-size:12px;color:var(--muted);line-height:1.7;">
-          Payment charged to your Apple ID at confirmation. Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current period. Manage subscriptions in your App Store account settings.
-        </p>
+
+      <!-- MONTHLY -->
+      <div class="plan-card">
+        <h3>Premium — $4.99/month</h3>
+        <p class="plan-tagline">Flexible, full access.</p>
+        <ul>
+          <li>Unlimited garden plans</li>
+          <li>Advanced layout tools</li>
+          <li>Functional &amp; health-focused planning</li>
+          <li>Native plant recommendations</li>
+          <li>Pest &amp; plant health guidance</li>
+          <li>Cancel any time</li>
+        </ul>
+        <button class="btn-secondary-cta" onclick="handleUpgrade('monthly')" id="btnMonthly">
+          <span class="btn-text">Go Premium</span>
+          <span class="spinner"></span>
+        </button>
       </div>
-    </div>
 
-    <!-- Web pricing grid -->
-    <div id="webPricingSection">
-      <div class="pricing-grid">
+    </section>
 
-        <!-- FREE -->
-        <div class="pricing-card">
-          <p class="pricing-name">Free</p>
-          <p class="pricing-tagline">Start growing — no credit card needed</p>
-          <div class="pricing-price">
-            <span class="amount">$0</span>
-            <span class="period">forever</span>
-          </div>
-          <div class="pricing-divider"></div>
-          <ul class="pricing-features">
-            <li>1 active garden plan</li>
-            <li>Basic garden suggestions</li>
-            <li>Core plant library</li>
-            <li>Save and view your plan</li>
-            <li class="feature-locked"><span class="lock-icon">🔒</span>Advanced garden planning</li>
-            <li class="feature-locked"><span class="lock-icon">🔒</span>Pest &amp; disease diagnosis</li>
-            <li class="feature-locked"><span class="lock-icon">🔒</span>Health &amp; functional gardening</li>
-            <li class="feature-locked"><span class="lock-icon">🔒</span>Full plant library</li>
-          </ul>
-          <button class="btn btn-secondary btn-block" onclick="handleFreePlan()" id="btnFree">
-            <span class="btn-text">Get Started Free</span>
-            <span class="spinner"></span>
-          </button>
-        </div>
-
-        <!-- PREMIUM ANNUAL — FEATURED -->
-        <div class="pricing-card pricing-card--featured">
-          <div class="pricing-badge">⭐ Best Value</div>
-          <p class="pricing-name">Premium — Annual</p>
-          <p class="pricing-tagline">Everything, at the best price</p>
-          <div class="pricing-price">
-            <span class="amount">$3.25</span>
-            <span class="period">/ month</span>
-            <span class="original">billed $39 / year · save 35%</span>
-          </div>
-          <div class="pricing-divider"></div>
-          <ul class="pricing-features">
-            <li><strong>Up to 10 garden plans per month</strong></li>
-            <li>Archive plans, create new ones</li>
-            <li>Advanced garden planning</li>
-            <li>Full plant library</li>
-            <li>Pest &amp; disease diagnosis tools</li>
-            <li>Health &amp; functional food gardening</li>
-            <li>Larger, flexible garden builder</li>
-          </ul>
-          <button class="btn btn-primary btn-block" onclick="handleUpgrade('yearly')" id="btnAnnual">
-            <span class="btn-text">Upgrade to Premium</span>
-            <span class="spinner"></span>
-          </button>
-        </div>
-
-        <!-- PREMIUM MONTHLY -->
-        <div class="pricing-card">
-          <p class="pricing-name">Premium — Monthly</p>
-          <p class="pricing-tagline">Flexible month-to-month access</p>
-          <div class="pricing-price">
-            <span class="amount">$4.99</span>
-            <span class="period">/ month</span>
-          </div>
-          <div class="pricing-divider"></div>
-          <ul class="pricing-features">
-            <li><strong>Up to 10 garden plans per month</strong></li>
-            <li>Archive plans, create new ones</li>
-            <li>Advanced garden planning</li>
-            <li>Full plant library</li>
-            <li>Pest &amp; disease diagnosis tools</li>
-            <li>Health &amp; functional food gardening</li>
-            <li>Cancel any time</li>
-          </ul>
-          <button class="btn btn-secondary btn-block" onclick="handleUpgrade('monthly')" id="btnMonthly">
-            <span class="btn-text">Choose Monthly</span>
-            <span class="spinner"></span>
-          </button>
-        </div>
-
-      </div>
-    </div><!-- /webPricingSection -->
+    <!-- WHY -->
+    <section class="pricing-why">
+      <h2>Built for real gardens — not generic advice</h2>
+      <p>RootPlans creates plans based on your actual yard, your sunlight, your goals, and your local growing conditions. This is a plan you can actually use — not guesswork.</p>
+    </section>
 
     <!-- FAQ -->
-    <div style="max-width:640px;margin:64px auto 0;text-align:center;">
-      <h2 style="font-family:'Playfair Display',serif;font-size:26px;color:var(--text);margin-bottom:32px;">Common Questions</h2>
-      <div style="text-align:left;display:flex;flex-direction:column;gap:20px;">
-        <div style="border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 24px;background:#fff;">
-          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">Can I try before upgrading?</p>
-          <p style="font-size:14px;color:var(--muted);line-height:1.6;">Yes — the Free plan lets you create one full garden plan, forever. Upgrade when you need more plans or advanced features.</p>
-        </div>
-        <div style="border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 24px;background:#fff;">
-          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">What happens to my plans if I cancel?</p>
-          <p style="font-size:14px;color:var(--muted);line-height:1.6;">Your plans are always yours. If you cancel Premium, you keep access to view all saved plans, but you'll return to the 1-plan-per-month limit for new creations.</p>
-        </div>
-        <div style="border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 24px;background:#fff;">
-          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">What is the plan archive?</p>
-          <p style="font-size:14px;color:var(--muted);line-height:1.6;">Premium users can archive plans they're not actively working on. Archived plans don't count toward your 10-plan limit, so you can always start fresh.</p>
-        </div>
+    <section class="pricing-faq">
+      <h2>FAQ</h2>
+      <div class="faq-item">
+        <h4>Can I use RootPlans for free?</h4>
+        <p>Yes — the free plan lets you create and manage one active garden plan.</p>
       </div>
-    </div>
+      <div class="faq-item">
+        <h4>What happens if I upgrade?</h4>
+        <p>You unlock unlimited plans, more advanced tools, and deeper customization.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Can I cancel anytime?</h4>
+        <p>Yes — you can cancel your subscription at any time. Your plans stay yours.</p>
+      </div>
+    </section>
 
-  </section>
+    <!-- FINAL CTA -->
+    <section class="pricing-cta">
+      <h2>Start your first garden plan today</h2>
+      <button class="btn-primary-cta" onclick="handleFreePlan()">Start Free</button>
+    </section>
+
+  </div><!-- /webPricingSection -->
 
   <footer class="footer">
     <div class="footer-inner">
@@ -255,30 +457,27 @@
         var planKey  = isAnnual ? 'yearly' : 'monthly';
         _iosPackages[planKey] = pkg;
 
-        var featured = isAnnual ? ' pricing-card--featured' : '';
-        var badge    = isAnnual ? '<div class="pricing-badge">⭐ Best Value</div>' : '';
-        var label    = isAnnual ? 'Premium — Annual' : 'Premium — Monthly';
+        var featured = isAnnual ? ' featured' : '';
+        var badge    = isAnnual ? '<div class="badge">Best Value</div>' : '';
+        var label    = isAnnual ? 'Premium Annual — ' + p.priceString + '/year' : 'Premium — ' + p.priceString + '/month';
+        var tagline  = isAnnual ? '<p class="plan-tagline"><strong>Save 35% vs monthly</strong></p>' : '<p class="plan-tagline">Flexible, full access.</p>';
         var btnId    = isAnnual ? 'iosBtnAnnual' : 'iosBtnMonthly';
-        var period   = isAnnual ? '/ year' : '/ month';
+        var btnClass = isAnnual ? 'btn-primary-cta' : 'btn-secondary-cta';
 
         html +=
-          '<div class="pricing-card' + featured + '">' +
+          '<div class="plan-card' + featured + '">' +
             badge +
-            '<p class="pricing-name">' + label + '</p>' +
-            '<div class="pricing-price">' +
-              '<span class="amount">' + p.priceString + '</span>' +
-              '<span class="period">' + period + '</span>' +
-            '</div>' +
-            '<div class="pricing-divider"></div>' +
-            '<ul class="pricing-features">' +
-              '<li><strong>Up to 10 garden plans per month</strong></li>' +
-              '<li>Advanced garden planning &amp; pest diagnosis</li>' +
-              '<li>Health &amp; functional gardening</li>' +
-              '<li>Full plant library</li>' +
+            '<h3>' + label + '</h3>' +
+            tagline +
+            '<ul>' +
+              '<li>Unlimited garden plans</li>' +
+              '<li>Advanced layout tools</li>' +
+              '<li>Functional &amp; health-focused planning</li>' +
+              '<li>Native plant recommendations</li>' +
+              '<li>Pest &amp; plant health guidance</li>' +
             '</ul>' +
-            '<button class="btn ' + (isAnnual ? 'btn-primary' : 'btn-secondary') + ' btn-block"' +
-              ' id="' + btnId + '" onclick="handleIosPurchase(\'' + planKey + '\')">' +
-              '<span class="btn-text">Upgrade to Premium</span>' +
+            '<button class="' + btnClass + '" id="' + btnId + '" onclick="handleIosPurchase(\'' + planKey + '\')">' +
+              '<span class="btn-text">' + (isAnnual ? 'Choose Annual' : 'Go Premium') + '</span>' +
               '<span class="spinner"></span>' +
             '</button>' +
           '</div>';
