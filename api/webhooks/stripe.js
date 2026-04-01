@@ -16,9 +16,7 @@
 import Stripe from "stripe";
 import { getDb } from "../_lib/db.js";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  httpClient: Stripe.createNodeHttpClient(),
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Stripe statuses that still mean the user should have access
 const STRIPE_ACTIVE_STATUSES = new Set(["active", "trialing", "past_due"]);
