@@ -1226,6 +1226,7 @@
             <a href="/guide.html" target="_blank" class="nav-guide-link" style="color:#fff;font-size:13px;font-weight:600;text-decoration:none;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:999px;padding:7px 16px;white-space:nowrap;letter-spacing:0.03em;font-family:'Inter',sans-serif;">📖 User Guide</a>
             <a id="navSignupBtn" href="/rp-signup.html" style="display:none;color:#2f5d34;font-size:13px;font-weight:700;text-decoration:none;background:#fff;border:1px solid rgba(255,255,255,0.9);border-radius:999px;padding:7px 16px;white-space:nowrap;letter-spacing:0.03em;font-family:'Inter',sans-serif;">Sign Up</a>
             <a id="navLoginBtn" href="/rp-login.html" style="display:none;color:rgba(255,255,255,0.85);font-size:13px;font-weight:500;text-decoration:none;white-space:nowrap;font-family:'Inter',sans-serif;padding:7px 4px;">Login</a>
+            <span id="navPlanBadge" style="display:none;font-size:12px;font-weight:700;border-radius:999px;padding:5px 12px;letter-spacing:0.04em;font-family:'Inter',sans-serif;white-space:nowrap;"></span>
             <button id="navLogoutBtn" onclick="navLogout()" style="display:none;color:#fff;font-size:13px;font-weight:600;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:999px;padding:7px 16px;white-space:nowrap;letter-spacing:0.03em;font-family:'Inter',sans-serif;cursor:pointer;transition:opacity 0.15s;">Logout</button>
           </div>
         </div>
@@ -2268,9 +2269,18 @@
       const navSignupBtn = document.getElementById("navSignupBtn");
       const navLoginBtn  = document.getElementById("navLoginBtn");
       const navLogoutBtn = document.getElementById("navLogoutBtn");
+      const navPlanBadge = document.getElementById("navPlanBadge");
       if (navSignupBtn)  navSignupBtn.style.display  = loggedIn ? "none"         : "inline-block";
       if (navLoginBtn)   navLoginBtn.style.display   = loggedIn ? "none"         : "inline-block";
       if (navLogoutBtn)  navLogoutBtn.style.display  = loggedIn ? "inline-block" : "none";
+      if (navPlanBadge && loggedIn) {
+        const premium = isPro();
+        navPlanBadge.textContent = premium ? "Premium" : "Free";
+        navPlanBadge.style.display = "inline-block";
+        navPlanBadge.style.background = premium ? "rgba(184,146,42,0.25)" : "rgba(255,255,255,0.12)";
+        navPlanBadge.style.color = premium ? "#f0c84a" : "rgba(255,255,255,0.65)";
+        navPlanBadge.style.border = premium ? "1px solid rgba(184,146,42,0.5)" : "1px solid rgba(255,255,255,0.18)";
+      }
     }
 
     // ── Subscription / Pro tier ────────────────────────────────────────────
