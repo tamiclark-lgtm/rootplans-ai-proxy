@@ -193,6 +193,31 @@
     var _iosPackages = {};
 
     document.addEventListener('DOMContentLoaded', async function () {
+      const params = new URLSearchParams(location.search);
+      const justUpgraded = params.get('upgraded') === 'true';
+
+      if (justUpgraded) {
+        // Poll subscription status until webhook confirms premium (up to 8s)
+        showAlert('Confirming your subscription…', 'info');
+        var confirmed = false;
+        for (var attempt = 0; attempt < 8; attempt++) {
+          await new Promise(function(r) { setTimeout(r, 1000); });
+          try {
+            var { subscription } = await RP.init();
+            if (subscription?.isPremium) { confirmed = true; break; }
+          } catch (e) { /* keep polling */ }
+        }
+        if (confirmed) {
+          showAlert('Welcome to Premium! Your plan is now active. 🌱', 'success');
+          document.getElementById('alreadyPremiumNotice').classList.remove('hidden');
+        } else {
+          showAlert('Payment received — your Premium access will activate within a minute. Refresh the page if needed.', 'info');
+        }
+        // Clean up URL
+        history.replaceState({}, '', '/pricing.html');
+        return;
+      }
+
       const { user, subscription } = await RP.init();
 
       if (subscription?.isPremium) {

@@ -51,19 +51,17 @@ async function createPlan(user, req, res) {
 
   if (activeCount >= ent.planLimit) {
     if (ent.isPremium) {
-      // Premium users at their 7-plan cap
       return res.status(403).json({
         error:    'plan_limit_reached',
         isPremium: true,
-        message:  'You already have 7 active gardens. Archive one to create a new plan.',
+        message:  `You already have ${PLAN_LIMITS.premium} active gardens. Archive one to create a new plan.`,
         planLimit: PLAN_LIMITS.premium,
       });
     } else {
-      // Free users at their 1-plan cap
       return res.status(403).json({
         error:     'plan_limit_reached',
         isPremium: false,
-        message:   'Free users can create 1 garden. Upgrade to Premium to create up to 7 active gardens.',
+        message:   `Free users can have 1 active garden. Upgrade to Premium for up to ${PLAN_LIMITS.premium}.`,
         planLimit: PLAN_LIMITS.free,
       });
     }

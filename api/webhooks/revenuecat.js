@@ -37,7 +37,7 @@ export default async function handler(req, res) {
 
   // Verify shared secret (set in RevenueCat dashboard → Webhooks → Authorization)
   const secret = process.env.REVENUECAT_WEBHOOK_SECRET;
-  if (secret && req.headers.authorization !== secret) {
+  if (!secret || req.headers.authorization !== secret) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 

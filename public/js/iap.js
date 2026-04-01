@@ -242,10 +242,20 @@
 
   // ── Backend sync ───────────────────────────────────────────────────────────
   async function _syncWithBackend() {
-    if (typeof LG === 'undefined') return;
+    // Support both RP (rp-auth.js) and LG (auth.js) session managers
+    var apiFetch = (typeof RP !== 'undefined' && RP.apiFetch)
+      ? RP.apiFetch.bind(RP)
+      : (typeof LG !== 'undefined' && LG.apiFetch)
+        ? LG.apiFetch.bind(LG)
+        : null;
+    if (!apiFetch) {
+      console.warn('[IAP] _syncWithBackend: no session manager available (RP/LG)');
+      return;
+    }
     try {
-      var res = await LG.apiFetch('/api/apple/verify', { method: 'POST' });
+      var res = await apiFetch('/api/apple/verify', { method: 'POST' });
       if (!res.ok) console.warn('[IAP] backend sync error', res.data);
+      else console.log('[IAP] backend sync ok — isPremium:', res.data?.active);
     } catch (e) {
       console.warn('[IAP] backend sync network error', e);
     }

@@ -8,15 +8,8 @@ import { getDb } from "../_lib/db.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-const ACTIVE_EVENTS = new Set([
-  "checkout.session.completed",
-  "invoice.paid",
-  "customer.subscription.updated",
-]);
-
-const CANCELLED_EVENTS = new Set([
-  "customer.subscription.deleted",
-]);
+// Stripe statuses that still mean the user should have access
+const STRIPE_ACTIVE_STATUSES = new Set(["active", "trialing", "past_due"]);
 
 export const config = { api: { bodyParser: false } };
 
@@ -77,6 +70,7 @@ export default async function handler(req, res) {
       console.log(`[webhooks/stripe] activated user ${userId}`);
 
     } else if (type === "invoice.paid") {
+      // Renewal — upsert so event ordering doesn't matter
       const invoice = event.data.object;
       if (!invoice.subscription) return res.json({ ok: true });
 
@@ -89,18 +83,25 @@ export default async function handler(req, res) {
         : null;
 
       await sql`
-        UPDATE stripe_subscriptions
-        SET status = 'active', expires_at = ${expiresAt}, updated_at = NOW()
-        WHERE user_id = ${userId}
+        INSERT INTO stripe_subscriptions
+          (user_id, stripe_customer_id, stripe_subscription_id, status, plan, expires_at, updated_at)
+        VALUES
+          (${userId}, ${invoice.customer}, ${invoice.subscription},
+           'active', ${sub.metadata?.plan || 'monthly'}, ${expiresAt}, NOW())
+        ON CONFLICT (user_id) DO UPDATE SET
+          status      = 'active',
+          expires_at  = EXCLUDED.expires_at,
+          updated_at  = NOW()
       `;
-      console.log(`[webhooks/stripe] renewed user ${userId}`);
+      console.log(`[webhooks/stripe] renewed user ${userId} expires=${expiresAt}`);
 
     } else if (type === "customer.subscription.updated") {
       const sub = event.data.object;
       const userId = sub.metadata?.user_id;
       if (!userId) return res.json({ ok: true, note: "no user_id in sub metadata" });
 
-      const status = sub.status === "active" ? "active" : "expired";
+      // past_due and trialing still get access; everything else is expired
+      const status = STRIPE_ACTIVE_STATUSES.has(sub.status) ? "active" : "expired";
       const expiresAt = sub.current_period_end
         ? new Date(sub.current_period_end * 1000)
         : null;
@@ -110,16 +111,17 @@ export default async function handler(req, res) {
         SET status = ${status}, expires_at = ${expiresAt}, updated_at = NOW()
         WHERE user_id = ${userId}
       `;
-      console.log(`[webhooks/stripe] updated user ${userId} to ${status}`);
+      console.log(`[webhooks/stripe] updated user ${userId} stripe_status=${sub.status} → ${status}`);
 
     } else if (type === "customer.subscription.deleted") {
       const sub = event.data.object;
       const userId = sub.metadata?.user_id;
       if (!userId) return res.json({ ok: true, note: "no user_id in sub metadata" });
 
+      // Clear expires_at so the account page doesn't show a stale future date
       await sql`
         UPDATE stripe_subscriptions
-        SET status = 'expired', updated_at = NOW()
+        SET status = 'expired', expires_at = NOW(), updated_at = NOW()
         WHERE user_id = ${userId}
       `;
       console.log(`[webhooks/stripe] cancelled user ${userId}`);
