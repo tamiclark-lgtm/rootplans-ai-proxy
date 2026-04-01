@@ -2,7 +2,9 @@ import Stripe from "stripe";
 import { setCors, getSessionUser } from "./_lib/helpers.js";
 import { getDb } from "./_lib/db.js";
 
-const stripe  = new Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe  = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  httpClient: Stripe.createNodeHttpClient(),
+});
 const APP_URL = process.env.APP_URL || "https://www.rootplans.com";
 
 const PLANS = {
