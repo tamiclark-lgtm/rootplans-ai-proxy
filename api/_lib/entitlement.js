@@ -38,7 +38,7 @@ const FEATURE_TIERS = {
 // Must match the Identifier field of your entitlement in the RC dashboard.
 export const RC_ENTITLEMENT_ID = 'premium';
 
-// ── Internal DB read ──────────────────────────────────────────────────────────
+// ── Internal DB reads ─────────────────────────────────────────────────────────
 async function _getRcRecord(userId) {
   const sql = getDb();
   try {
@@ -52,41 +52,67 @@ async function _getRcRecord(userId) {
   } catch { return null; }
 }
 
+async function _getStripeRecord(userId) {
+  const sql = getDb();
+  try {
+    const rows = await sql`
+      SELECT * FROM stripe_subscriptions
+      WHERE user_id = ${userId}
+      ORDER BY updated_at DESC
+      LIMIT 1
+    `;
+    return rows[0] || null;
+  } catch { return null; }
+}
+
 // ── Main export ───────────────────────────────────────────────────────────────
 /**
  * Returns the normalized entitlement for a user.
+ * Checks both Apple (RevenueCat) and Stripe — whichever is active wins.
  *
  * {
  *   planTier:           "free" | "premium"
  *   subscriptionStatus: "active" | "inactive" | "expired"
- *   subscriptionSource: "revenuecat" | "none"
- *   planLimit:          1 | 7
- *   isPremium:          boolean  (shorthand)
+ *   subscriptionSource: "revenuecat" | "stripe" | "none"
+ *   planLimit:          1 | 10
+ *   isPremium:          boolean
  * }
  */
 export async function getEntitlement(userId) {
-  const rec = await _getRcRecord(userId);
+  const [rcRec, stripeRec] = await Promise.all([
+    _getRcRecord(userId),
+    _getStripeRecord(userId),
+  ]);
   const now = new Date();
 
-  const isActive =
-    rec &&
-    rec.status === 'active' &&
-    (!rec.expires_at || new Date(rec.expires_at) > now);
+  const rcActive =
+    rcRec &&
+    rcRec.status === 'active' &&
+    (!rcRec.expires_at || new Date(rcRec.expires_at) > now);
+
+  const stripeActive =
+    stripeRec &&
+    stripeRec.status === 'active' &&
+    (!stripeRec.expires_at || new Date(stripeRec.expires_at) > now);
+
+  const isActive = rcActive || stripeActive;
+  const source   = rcActive ? 'revenuecat' : stripeActive ? 'stripe' : 'none';
+  const activeRec = rcActive ? rcRec : stripeActive ? stripeRec : (rcRec || stripeRec);
 
   const planTier = isActive ? 'premium' : 'free';
 
   let subscriptionStatus = 'inactive';
-  if (isActive)                         subscriptionStatus = 'active';
-  else if (rec?.status === 'expired')   subscriptionStatus = 'expired';
+  if (isActive)                             subscriptionStatus = 'active';
+  else if (activeRec?.status === 'expired') subscriptionStatus = 'expired';
 
   return {
     planTier,
     subscriptionStatus,
-    subscriptionSource: rec ? 'revenuecat' : 'none',
+    subscriptionSource: source,
     planLimit:          PLAN_LIMITS[planTier],
     isPremium:          planTier === 'premium',
-    expiresAt:          rec?.expires_at || null,
-    productId:          rec?.product_id || null,
+    expiresAt:          activeRec?.expires_at || null,
+    productId:          rcRec?.product_id || null,
   };
 }
 

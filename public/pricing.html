@@ -305,8 +305,31 @@
         window.location.href = '/rp-signup.html?next=/pricing.html&plan=' + plan;
         return;
       }
-      // Web: show promo code option or iOS app link
-      showAlert('Have a promo code? Enter it in the app. Or download the RootPlans iOS app to subscribe.', 'info');
+      var btnId = plan === 'yearly' ? 'btnAnnual' : 'btnMonthly';
+      var btn = document.getElementById(btnId);
+      if (btn) { btn.classList.add('loading'); btn.disabled = true; }
+
+      try {
+        var { token } = RP.getSession ? RP.getSession() : {};
+        var headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = 'Bearer ' + token;
+
+        var resp = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify({ plan: plan })
+        });
+        var data = await resp.json();
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          showAlert(data.error || 'Could not start checkout. Please try again.', 'error');
+          if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
+        }
+      } catch (e) {
+        showAlert('Network error. Please try again.', 'error');
+        if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
+      }
     }
 
     function showAlert(msg, type) {

@@ -26,6 +26,7 @@ export default async function handler(req, res) {
       mode: "subscription",
       customer_email: user.email,
       metadata: { user_id: String(user.id), plan },
+      subscription_data: { metadata: { user_id: String(user.id), plan } },
       line_items: [{
         price_data: {
           currency: "usd",
