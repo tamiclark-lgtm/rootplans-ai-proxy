@@ -2279,12 +2279,7 @@
     function isPro() {
       const sub = getSession()?.subscription;
       if (!sub) return false;
-      const now = new Date();
-      return (
-        sub.status === "trialing" ||
-        sub.status === "active" ||
-        (sub.status === "canceled" && sub.renewalDate && new Date(sub.renewalDate) > now)
-      );
+      return sub.isPremium === true;
     }
     function plansUsed() {
       return parseInt(localStorage.getItem(PLANS_USED_KEY) || "0");
