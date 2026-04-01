@@ -161,6 +161,16 @@
     }
     .btn-secondary-cta:hover { background: #edf4ef; }
 
+    /* Spinner visibility for custom CTA buttons */
+    .btn-primary-cta .spinner,
+    .btn-secondary-cta .spinner { display: none; }
+    .btn-primary-cta.loading .spinner,
+    .btn-secondary-cta.loading .spinner { display: inline-block; }
+    .btn-primary-cta.loading .btn-text,
+    .btn-secondary-cta.loading .btn-text { display: none; }
+    .btn-primary-cta.loading,
+    .btn-secondary-cta.loading { opacity: 0.7; pointer-events: none; }
+
     /* Why section */
     .pricing-why {
       max-width: 640px;
