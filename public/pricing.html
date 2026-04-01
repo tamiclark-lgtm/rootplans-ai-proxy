@@ -459,34 +459,75 @@
       }
     });
 
+    // ── iOS: static fallback paywall (shown when products fail to load) ──────────
+    function renderIosFallbackPaywall() {
+      document.getElementById('iosOfferingsGrid').innerHTML =
+        '<div class="plan-card">' +
+          '<h3>Premium — $4.99/month</h3>' +
+          '<p class="plan-tagline">Flexible, full access.</p>' +
+          '<ul>' +
+            '<li>Unlimited garden plans</li>' +
+            '<li>Advanced layout tools</li>' +
+            '<li>Functional &amp; health-focused planning</li>' +
+            '<li>Native plant recommendations</li>' +
+            '<li>Pest &amp; plant health guidance</li>' +
+          '</ul>' +
+          '<button class="btn-secondary-cta" disabled>' +
+            '<span class="btn-text">Go Premium</span>' +
+          '</button>' +
+        '</div>' +
+        '<div class="plan-card featured">' +
+          '<div class="badge">Best Value</div>' +
+          '<h3>Premium Annual — $39.99/year</h3>' +
+          '<p class="plan-tagline"><strong>Save 33% vs monthly</strong></p>' +
+          '<ul>' +
+            '<li>Unlimited garden plans</li>' +
+            '<li>Advanced layout tools</li>' +
+            '<li>Functional &amp; health-focused planning</li>' +
+            '<li>Native plant recommendations</li>' +
+            '<li>Pest &amp; plant health guidance</li>' +
+          '</ul>' +
+          '<button class="btn-primary-cta" disabled>' +
+            '<span class="btn-text">Choose Annual</span>' +
+          '</button>' +
+        '</div>';
+    }
+
     // ── iOS: load RC offerings ────────────────────────────────────────────────
     async function loadIosOfferings() {
       if (!window.LG_IAP?.isAvailable()) {
-        document.getElementById('iosOfferingsGrid').innerHTML =
-          '<div class="pricing-card" style="grid-column:1/-1;text-align:center;padding:40px;">' +
-          '<p style="color:var(--muted)">App Store unavailable. Please try again later.</p></div>';
+        renderIosFallbackPaywall();
         return;
       }
 
       const offering = await LG_IAP.getOfferings();
       if (!offering?.availablePackages?.length) {
-        document.getElementById('iosOfferingsGrid').innerHTML =
-          '<div class="pricing-card" style="grid-column:1/-1;text-align:center;padding:40px;">' +
-          '<p style="color:var(--muted)">No plans available right now.</p></div>';
+        renderIosFallbackPaywall();
+        return;
+      }
+
+      // Only render ANNUAL and MONTHLY packages — ignore any other products
+      var ALLOWED_TYPES = new Set(['ANNUAL', 'MONTHLY']);
+      var packages = offering.availablePackages.filter(function(pkg) {
+        return ALLOWED_TYPES.has(pkg.packageType);
+      });
+
+      if (!packages.length) {
+        renderIosFallbackPaywall();
         return;
       }
 
       var html = '';
-      offering.availablePackages.forEach(function (pkg) {
-        var p       = pkg.product;
-        var isAnnual = pkg.packageType === 'ANNUAL' || (p.subscriptionPeriod || '').includes('Y');
+      packages.forEach(function (pkg) {
+        var p        = pkg.product;
+        var isAnnual = pkg.packageType === 'ANNUAL';
         var planKey  = isAnnual ? 'yearly' : 'monthly';
         _iosPackages[planKey] = pkg;
 
         var featured = isAnnual ? ' featured' : '';
         var badge    = isAnnual ? '<div class="badge">Best Value</div>' : '';
         var label    = isAnnual ? 'Premium Annual — ' + p.priceString + '/year' : 'Premium — ' + p.priceString + '/month';
-        var tagline  = isAnnual ? '<p class="plan-tagline"><strong>Save 35% vs monthly</strong></p>' : '<p class="plan-tagline">Flexible, full access.</p>';
+        var tagline  = isAnnual ? '<p class="plan-tagline"><strong>Save 33% vs monthly</strong></p>' : '<p class="plan-tagline">Flexible, full access.</p>';
         var btnId    = isAnnual ? 'iosBtnAnnual' : 'iosBtnMonthly';
         var btnClass = isAnnual ? 'btn-primary-cta' : 'btn-secondary-cta';
 
