@@ -446,7 +446,7 @@
         return;
       }
 
-      const { user, subscription } = await RP.init();
+      var { user, subscription } = await RP.init();
 
       if (subscription?.isPremium) {
         document.getElementById('alreadyPremiumNotice').classList.remove('hidden');
