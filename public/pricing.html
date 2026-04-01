@@ -13,6 +13,22 @@
     /* ── Pricing page overrides ── */
     body { background: #f6f8f5; }
 
+    /* ── Nav overrides — replace gem.css purple with RootPlans green ── */
+    .nav { background: #fff; border-bottom: 1px solid #d4e0d6; }
+    .nav-logo { display: flex; align-items: center; text-decoration: none; }
+    .nav-logo img { height: 36px; width: auto; display: block; }
+    .btn.btn-primary.btn-sm,
+    .nav-auth .btn-primary {
+      background: #2f5d34 !important;
+      border-color: #2f5d34 !important;
+      color: #fff !important;
+    }
+    .nav-link.active {
+      color: #2f5d34 !important;
+      background: #edf4ef !important;
+      border-radius: 8px;
+    }
+
     .pricing-hero {
       text-align: center;
       padding: 72px 24px 48px;
@@ -235,7 +251,7 @@
 
   <nav class="nav">
     <div class="nav-inner">
-      <a href="/" class="nav-logo">🌱 RootPlans</a>
+      <a href="/" class="nav-logo"><img src="/rootplans.png" alt="RootPlans" /></a>
       <div class="nav-links">
         <a href="/pricing.html" class="nav-link active">Pricing</a>
       </div>
