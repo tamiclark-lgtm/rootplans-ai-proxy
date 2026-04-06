@@ -1302,6 +1302,17 @@
             <button class="pill" type="button" data-theme="Ailment Support" aria-pressed="false">Ailment Support<span class="lock-badge">🔒</span></button>
             <button class="pill" type="button" data-theme="Pollinator Paradise" aria-pressed="false">Pollinator Paradise<span class="lock-badge">🔒</span></button>
             <button class="pill" type="button" data-theme="Low-Maintenance Beauty" aria-pressed="false">Low-Maintenance Beauty</button>
+            <button class="pill" type="button" data-theme="Herb Garden" aria-pressed="false">Herb Garden</button>
+          </div>
+
+          <!-- Herb Garden sub-type (shown only when Herb Garden is selected) -->
+          <div id="herbTypeRow" style="display:none;margin-top:10px;">
+            <p style="font-size:13px;color:#5a7260;margin-bottom:8px;font-weight:500;">What kind of herb garden?</p>
+            <div class="pillRow" style="flex-wrap:wrap;">
+              <button class="pill" type="button" data-herb="Edible" aria-pressed="false">Edible</button>
+              <button class="pill" type="button" data-herb="Decorative" aria-pressed="false">Decorative</button>
+              <button class="pill" type="button" data-herb="Mixed" aria-pressed="true">Mixed</button>
+            </div>
           </div>
 
           <div id="themeCard" class="resultCard" style="display:none;">
@@ -2721,6 +2732,7 @@
 
     let detected = { zip: "", zone: "", location: "" };
     let selectedTheme = "";
+    let selectedHerbType = "Mixed"; // default when Herb Garden is chosen
 
     // ── Favorite ZIPs (persisted in localStorage) ───────────────────────
     function getFavs() {
@@ -2976,14 +2988,28 @@
 
       const showConditions = theme === "Ailment Support";
       $("conditionsCard").style.display = showConditions ? "block" : "none";
-
       if (!showConditions) {
         selectedConditions = [];
         renderSelectedConditions();
       }
 
+      const showHerbType = theme === "Herb Garden";
+      $("herbTypeRow").style.display = showHerbType ? "block" : "none";
+      if (!showHerbType) selectedHerbType = "Mixed";
+
       updatePreferenceSummary();
     }
+
+    // Wire up herb sub-type pills
+    document.querySelectorAll("#herbTypeRow .pill[data-herb]").forEach(btn => {
+      btn.addEventListener("click", function () {
+        selectedHerbType = this.dataset.herb;
+        document.querySelectorAll("#herbTypeRow .pill[data-herb]").forEach(b => {
+          b.setAttribute("aria-pressed", b.dataset.herb === selectedHerbType ? "true" : "false");
+        });
+        updatePreferenceSummary();
+      });
+    });
 
     function renderSuggestions(filterText) {
       const row = $("suggestionsRow");
@@ -3062,7 +3088,12 @@
       const { nativeOnly, holisticHealing } = getPreferenceState();
       const items = [];
 
-      if (selectedTheme) items.push(`Theme: ${selectedTheme}`);
+      if (selectedTheme) {
+        const themeLabel = selectedTheme === "Herb Garden"
+          ? `Theme: Herb Garden (${selectedHerbType})`
+          : `Theme: ${selectedTheme}`;
+        items.push(themeLabel);
+      }
       if (selectedSunlight) items.push(`Sunlight: ${selectedSunlight}`);
       const ptLabel = { both: "Edible & decorative plants (grouped)", edible: "Edible plants only", decorative: "Decorative plants only" };
       items.push(ptLabel[selectedPlantType] || "Edible & decorative plants");
@@ -3151,13 +3182,14 @@ Create a practical, beautiful, beginner-friendly garden plan for:
 - ZIP: ${zip}
 - USDA Zone: ${zone}
 - ${locationLine}
-- Theme: ${selectedTheme}
+- Theme: ${selectedTheme === "Herb Garden" ? `Herb Garden — ${selectedHerbType} herbs` : selectedTheme}
 - Sunlight available: ${selectedSunlight || "Not specified — include a mix"}
 - Session variation seed: ${Math.floor(Math.random() * 10000)} — use this to ensure a FRESH, DIFFERENT selection of plants every time. Never default to the same plants you typically suggest first. Explore the full range of what grows well in this zone.
 - Plant type preference: ${selectedPlantType === "edible" ? "Edible plants only" : selectedPlantType === "decorative" ? "Decorative/ornamental plants only" : "Both edible and decorative (group them separately in section 2)"}
 - Native plants only: ${nativeOnly ? "Yes" : "No"}
 - Include holistic healing powers: ${holisticHealing ? "Yes" : "No"}
 ${selectedTheme === "Ailment Support" ? `- Functional focus: ${conditionText}` : ""}
+${selectedTheme === "Herb Garden" ? `- Herb garden focus: ${selectedHerbType === "Edible" ? "Select only culinary and edible herbs (basil, rosemary, thyme, parsley, chives, mint, dill, cilantro, oregano, sage, lemon balm, etc.). Do not include ornamental-only plants." : selectedHerbType === "Decorative" ? "Select herbs primarily for their visual beauty, fragrance, and texture (lavender, salvia, catmint, fennel, bee balm, chamomile, hyssop, borage, etc.). Edibility is secondary." : "Select a mix of culinary herbs and ornamental herbs — a garden that is both beautiful and functional. Include edible varieties alongside decorative ones."}` : ""}
 
 VARIETY SEED: ${Math.floor(Math.random() * 9000) + 1000} — use this to randomize your plant selection so results differ each generation even with the same settings.
 
@@ -3301,11 +3333,13 @@ Rules: month numbers 1–12 only. sow = start indoors, plant = transplant/direct
       $("zoneInfoBtn").classList.remove("active");
       $("themeCard").style.display = "none";
       $("conditionsCard").style.display = "none";
+      $("herbTypeRow").style.display = "none";
       $("preferenceCard").style.display = "none";
       $("statusText").textContent = "";
 
       detected = { zip: "", zone: "", location: "" };
       selectedTheme = "";
+      selectedHerbType = "Mixed";
       selectedConditions = [];
       selectedPlantType = "both";
       selectedSunlight = "";
