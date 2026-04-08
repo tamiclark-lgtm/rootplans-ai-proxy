@@ -394,6 +394,16 @@
       </div>
     </section>
 
+    <!-- PROMO CODE -->
+    <section style="max-width:420px;margin:0 auto 48px;padding:0 24px;text-align:center;">
+      <p style="font-size:13px;color:#5a7260;margin-bottom:12px;font-weight:500;">Have a promo code?</p>
+      <div style="display:flex;gap:8px;">
+        <input id="promoInput" placeholder="Enter code" style="flex:1;padding:11px 14px;border:1px solid #d4e0d6;border-radius:10px;font-size:14px;font-family:inherit;outline:none;" />
+        <button id="promoBtn" onclick="applyPromoCode()" style="padding:11px 20px;background:#2f5d34;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;">Apply</button>
+      </div>
+      <p id="promoMsg" style="margin-top:8px;font-size:13px;min-height:18px;"></p>
+    </section>
+
     <!-- FINAL CTA -->
     <section class="pricing-cta">
       <h2>Start your first garden plan today</h2>
@@ -620,6 +630,45 @@
       } catch (e) {
         showAlert('Network error. Please try again.', 'error');
         if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
+      }
+    }
+
+    async function applyPromoCode() {
+      if (!RP.isLoggedIn()) {
+        window.location.href = '/rp-signup.html?next=/pricing.html';
+        return;
+      }
+      var input = document.getElementById('promoInput');
+      var btn   = document.getElementById('promoBtn');
+      var msg   = document.getElementById('promoMsg');
+      var code  = (input.value || '').trim();
+      if (!code) { input.focus(); return; }
+
+      btn.disabled = true; btn.textContent = 'Applying…';
+      msg.style.color = '#5a7260'; msg.textContent = '';
+
+      try {
+        var { token } = RP.getSession ? RP.getSession() : {};
+        var resp = await fetch('/api/promo/redeem', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({ code }),
+        });
+        var data = await resp.json();
+        if (resp.ok) {
+          msg.style.color = '#2f5d34';
+          msg.textContent = '✓ Code applied! Redirecting…';
+          await RP.init();
+          setTimeout(function() { window.location.href = '/'; }, 1200);
+        } else {
+          msg.style.color = '#c0392b';
+          msg.textContent = data.error || 'Invalid code. Please try again.';
+          btn.disabled = false; btn.textContent = 'Apply';
+        }
+      } catch (e) {
+        msg.style.color = '#c0392b';
+        msg.textContent = 'Something went wrong. Please try again.';
+        btn.disabled = false; btn.textContent = 'Apply';
       }
     }
 
