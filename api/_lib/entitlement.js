@@ -80,6 +80,14 @@ async function _getRcRecord(userId) {
   } catch { return null; }
 }
 
+async function _getAdminFlag(userId) {
+  const sql = getDb();
+  try {
+    const rows = await sql`SELECT is_admin FROM lg_users WHERE id = ${userId} LIMIT 1`;
+    return !!rows[0]?.is_admin;
+  } catch { return false; }
+}
+
 async function _getStripeRecord(userId) {
   const sql = getDb();
   try {
@@ -96,21 +104,36 @@ async function _getStripeRecord(userId) {
 // ── Main export ───────────────────────────────────────────────────────────────
 /**
  * Returns the normalized entitlement for a user.
- * Checks both Apple (RevenueCat) and Stripe — whichever is active wins.
+ * Admins (lg_users.is_admin = true) short-circuit to premium.
+ * Otherwise checks both Apple (RevenueCat) and Stripe — whichever is active wins.
  *
  * {
  *   planTier:           "free" | "premium"
  *   subscriptionStatus: "active" | "inactive" | "expired"
- *   subscriptionSource: "revenuecat" | "stripe" | "none"
+ *   subscriptionSource: "revenuecat" | "stripe" | "admin" | "none"
  *   planLimit:          1 | 10
  *   isPremium:          boolean
  * }
  */
 export async function getEntitlement(userId) {
-  const [rcRec, stripeRec] = await Promise.all([
+  const [rcRec, stripeRec, isAdmin] = await Promise.all([
     _getRcRecord(userId),
     _getStripeRecord(userId),
+    _getAdminFlag(userId),
   ]);
+
+  if (isAdmin) {
+    console.log(`[entitlement] userId=${userId} admin bypass → premium`);
+    return {
+      planTier:           'premium',
+      subscriptionStatus: 'active',
+      subscriptionSource: 'admin',
+      planLimit:          PLAN_LIMITS.premium,
+      isPremium:          true,
+      expiresAt:          null,
+      productId:          null,
+    };
+  }
   const now = new Date();
 
   const rcActive =

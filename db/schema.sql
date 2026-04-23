@@ -58,6 +58,11 @@ CREATE TABLE IF NOT EXISTS lg_password_resets (
 
 CREATE INDEX IF NOT EXISTS idx_resets_token ON lg_password_resets (token);
 
+-- ── Admin flag ────────────────────────────────────────────────────────────
+-- Grants unconditional premium entitlement via api/_lib/entitlement.js.
+-- Flip manually in Neon, or via scripts/make-admin.mjs.
+ALTER TABLE lg_users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN NOT NULL DEFAULT FALSE;
+
 -- ── Optional: Clean up expired sessions periodically ──────────────────────
 -- Run this manually or via a cron job:
 -- DELETE FROM lg_sessions WHERE expires_at < NOW();
